@@ -28,9 +28,17 @@ git clone https://github.com/AGORA-COL/fred_colombia_implementation.git
 cd fred_colombia_implementation
 ```
 
+3. Run the makefile:
+```bash
+make setup
+```
+This will setup FRED from https://github.com/confunguido/FRED
+
 ## Outputs
 
 The program will output a series of data tables showing the progression of the disease, such as number of infected, number of recovered, number of deceased individuals, Hospitalizations, and ICU usage over time. 
+
+This repo doesn't cointain any of FRED's outputs due to their large sizes. However here we include the input files neccesary to run the model.
 
 ## Contributing
 
