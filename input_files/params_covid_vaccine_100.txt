@@ -1,0 +1,233 @@
+
+#########################################################
+## VACCINATION
+#########################################################
+enable_vaccination = 1
+number_of_vaccines = 6
+vaccine_tracefile = none
+vaccine_prioritize_acip = 0
+vaccine_prioritize_by_age = 0
+vaccine_priority_age_low = 16
+vaccine_priority_age_high = 100
+vaccine_dose_priority = 4
+vaccine_priority_only = 1
+vaccinate_symptomatics = 1
+refresh_vaccine_queues_daily = 0
+vaccine_acceptance_probability = 0.9
+vaccination_capacity_file = vaccine_capacity_bogota_file.txt
+enable_vaccine_stock_timeseries = 1
+vaccine_stock_timeseries_file = vaccine_stock_bogota_file.txt
+
+## Vaccine priority definition
+enable_vaccination_phases = 1
+vaccination_phases_names = 12 age ltc essentialworkers age essentialworkers comorbidity teachers age age age age age
+vaccination_phases_age_low = 12 80 16 16 60 16 16 16 50 40 30 20 16
+vaccination_phases_age_high = 12 120 120 120 79 59 59 59 59 49 39 29 19
+vaccination_phases_id = 12 1 1 1 2 2 3 3 4 5 6 7 8
+vaccination_phases_pop_prob = 12 0.0 0.0 0.0001 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0
+
+
+## VACCINE NAME: AstraZeneca
+vaccine_number_of_doses[0] = 2
+vaccine_total_avail[0] = 20000000
+vaccine_additional_per_day[0] = 100000
+vaccine_starting_day[0] = 0
+vaccine_efficacy_duration_age_groups[0] = 1 120
+vaccine_efficacy_duration_values[0] = 1 99999
+vaccine_strains[0] = 0 1 2 3 4
+vaccine_enable_differential_efficacy[0] = 1
+vaccine_disease_efficacy_modifier[0] = 5 1.00 1.00 1.00 1.00 0.86
+vaccine_disease_efficacy_symptoms_modifier[0] = 5 1.00 1.00 1.00 1.00 1.00
+vaccine_disease_efficacy_hospitalization_modifier[0] = 5 1.00 1.00 1.00 1.00 1.41
+
+
+vaccine_next_dosage_day[0][0] = 84
+vaccine_dose_efficacy_age_groups[0][0] = 1 100
+vaccine_dose_efficacy_values[0][0] = 1 0.0000
+vaccine_dose_efficacy_symptoms_age_groups[0][0] = 1 100
+vaccine_dose_efficacy_symptoms_values[0][0] = 1 0.0000
+vaccine_dose_efficacy_hospitalization_age_groups[0][0] = 1 100
+vaccine_dose_efficacy_hospitalization_values[0][0] = 1 0.8000
+vaccine_dose_efficacy_delay_age_groups[0][0] = 1 100
+vaccine_dose_efficacy_delay_values[0][0] = 1 15
+
+
+vaccine_next_dosage_day[0][1] = 84
+vaccine_dose_efficacy_age_groups[0][1] = 1 100
+vaccine_dose_efficacy_values[0][1] = 1 0.7830
+vaccine_dose_efficacy_symptoms_age_groups[0][1] = 1 100
+vaccine_dose_efficacy_symptoms_values[0][1] = 1 0.0000
+vaccine_dose_efficacy_hospitalization_age_groups[0][1] = 1 100
+vaccine_dose_efficacy_hospitalization_values[0][1] = 1 0.5392
+vaccine_dose_efficacy_delay_age_groups[0][1] = 1 100
+vaccine_dose_efficacy_delay_values[0][1] = 1 15
+
+
+## VACCINE NAME: Sinovac
+vaccine_number_of_doses[1] = 2
+vaccine_total_avail[1] = 20000000
+vaccine_additional_per_day[1] = 100000
+vaccine_starting_day[1] = 0
+vaccine_efficacy_duration_age_groups[1] = 1 120
+vaccine_efficacy_duration_values[1] = 1 99999
+vaccine_strains[1] = 0 1 2 3 4
+vaccine_enable_differential_efficacy[1] = 1
+vaccine_disease_efficacy_modifier[1] = 5 1.00 1.00 1.00 1.00 0.80
+vaccine_disease_efficacy_symptoms_modifier[1] = 5 1.00 1.00 1.00 1.00 1.00
+vaccine_disease_efficacy_hospitalization_modifier[1] = 5 1.00 1.00 1.00 1.00 1.05
+
+
+vaccine_next_dosage_day[1][0] = 28
+vaccine_dose_efficacy_age_groups[1][0] = 1 100
+vaccine_dose_efficacy_values[1][0] = 1 0.5790
+vaccine_dose_efficacy_symptoms_age_groups[1][0] = 1 100
+vaccine_dose_efficacy_symptoms_values[1][0] = 1 0.0000
+vaccine_dose_efficacy_hospitalization_age_groups[1][0] = 1 100
+vaccine_dose_efficacy_hospitalization_values[1][0] = 1 0.0000
+vaccine_dose_efficacy_delay_age_groups[1][0] = 1 100
+vaccine_dose_efficacy_delay_values[1][0] = 1 15
+
+
+vaccine_next_dosage_day[1][1] = 28
+vaccine_dose_efficacy_age_groups[1][1] = 1 100
+vaccine_dose_efficacy_values[1][1] = 1 0.5070
+vaccine_dose_efficacy_symptoms_age_groups[1][1] = 1 100
+vaccine_dose_efficacy_symptoms_values[1][1] = 1 0.0000
+vaccine_dose_efficacy_hospitalization_age_groups[1][1] = 1 100
+vaccine_dose_efficacy_hospitalization_values[1][1] = 1 0.7677
+vaccine_dose_efficacy_delay_age_groups[1][1] = 1 100
+vaccine_dose_efficacy_delay_values[1][1] = 1 15
+
+
+## VACCINE NAME: Pfizer
+vaccine_number_of_doses[2] = 2
+vaccine_total_avail[2] = 20000000
+vaccine_additional_per_day[2] = 100000
+vaccine_starting_day[2] = 0
+vaccine_efficacy_duration_age_groups[2] = 1 120
+vaccine_efficacy_duration_values[2] = 1 99999
+vaccine_strains[2] = 0 1 2 3 4
+vaccine_enable_differential_efficacy[2] = 1
+vaccine_disease_efficacy_modifier[2] = 5 1.00 1.00 1.00 1.00 0.96
+vaccine_disease_efficacy_symptoms_modifier[2] = 5 1.00 1.00 1.00 1.00 1.00
+vaccine_disease_efficacy_hospitalization_modifier[2] = 5 1.00 1.00 1.00 1.00 1.00
+
+
+vaccine_next_dosage_day[2][0] = 21
+vaccine_dose_efficacy_age_groups[2][0] = 1 100
+vaccine_dose_efficacy_values[2][0] = 1 0.7121
+vaccine_dose_efficacy_symptoms_age_groups[2][0] = 1 100
+vaccine_dose_efficacy_symptoms_values[2][0] = 1 0.0000
+vaccine_dose_efficacy_hospitalization_age_groups[2][0] = 1 100
+vaccine_dose_efficacy_hospitalization_values[2][0] = 1 0.3052
+vaccine_dose_efficacy_delay_age_groups[2][0] = 1 100
+vaccine_dose_efficacy_delay_values[2][0] = 1 14
+
+
+vaccine_next_dosage_day[2][1] = 21
+vaccine_dose_efficacy_age_groups[2][1] = 1 100
+vaccine_dose_efficacy_values[2][1] = 1 0.9130
+vaccine_dose_efficacy_symptoms_age_groups[2][1] = 1 100
+vaccine_dose_efficacy_symptoms_values[2][1] = 1 0.0000
+vaccine_dose_efficacy_hospitalization_age_groups[2][1] = 1 100
+vaccine_dose_efficacy_hospitalization_values[2][1] = 1 0.0000
+vaccine_dose_efficacy_delay_age_groups[2][1] = 1 100
+vaccine_dose_efficacy_delay_values[2][1] = 1 7
+
+
+## VACCINE NAME: Moderna
+vaccine_number_of_doses[3] = 2
+vaccine_total_avail[3] = 20000000
+vaccine_additional_per_day[3] = 100000
+vaccine_starting_day[3] = 0
+vaccine_efficacy_duration_age_groups[3] = 1 120
+vaccine_efficacy_duration_values[3] = 1 99999
+vaccine_strains[3] = 0 1 2 3 4
+vaccine_enable_differential_efficacy[3] = 1
+vaccine_disease_efficacy_modifier[3] = 5 1.00 1.00 1.00 1.00 0.94
+vaccine_disease_efficacy_symptoms_modifier[3] = 5 1.00 1.00 1.00 1.00 1.00
+vaccine_disease_efficacy_hospitalization_modifier[3] = 5 1.00 1.00 1.00 1.00 1.00
+
+
+vaccine_next_dosage_day[3][0] = 28
+vaccine_dose_efficacy_age_groups[3][0] = 1 100
+vaccine_dose_efficacy_values[3][0] = 1 0.7340
+vaccine_dose_efficacy_symptoms_age_groups[3][0] = 1 100
+vaccine_dose_efficacy_symptoms_values[3][0] = 1 0.0000
+vaccine_dose_efficacy_hospitalization_age_groups[3][0] = 1 100
+vaccine_dose_efficacy_hospitalization_values[3][0] = 1 1.0000
+vaccine_dose_efficacy_delay_age_groups[3][0] = 1 100
+vaccine_dose_efficacy_delay_values[3][0] = 1 14
+
+
+vaccine_next_dosage_day[3][1] = 28
+vaccine_dose_efficacy_age_groups[3][1] = 1 100
+vaccine_dose_efficacy_values[3][1] = 1 0.9410
+vaccine_dose_efficacy_symptoms_age_groups[3][1] = 1 100
+vaccine_dose_efficacy_symptoms_values[3][1] = 1 0.0000
+vaccine_dose_efficacy_hospitalization_age_groups[3][1] = 1 100
+vaccine_dose_efficacy_hospitalization_values[3][1] = 1 0.0000
+vaccine_dose_efficacy_delay_age_groups[3][1] = 1 100
+vaccine_dose_efficacy_delay_values[3][1] = 1 14
+
+
+## VACCINE NAME: Janssen
+vaccine_number_of_doses[4] = 1
+vaccine_total_avail[4] = 20000000
+vaccine_additional_per_day[4] = 100000
+vaccine_starting_day[4] = 0
+vaccine_efficacy_duration_age_groups[4] = 1 120
+vaccine_efficacy_duration_values[4] = 1 99999
+vaccine_strains[4] = 0 1 2 3 4
+vaccine_enable_differential_efficacy[4] = 1
+vaccine_disease_efficacy_modifier[4] = 5 1.00 1.00 1.00 1.00 0.86
+vaccine_disease_efficacy_symptoms_modifier[4] = 5 1.00 1.00 1.00 1.00 1.00
+vaccine_disease_efficacy_hospitalization_modifier[4] = 5 1.00 1.00 1.00 1.00 1.07
+
+
+vaccine_next_dosage_day[4][0] = 0
+vaccine_dose_efficacy_age_groups[4][0] = 1 100
+vaccine_dose_efficacy_values[4][0] = 1 0.6990
+vaccine_dose_efficacy_symptoms_age_groups[4][0] = 1 100
+vaccine_dose_efficacy_symptoms_values[4][0] = 1 0.0000
+vaccine_dose_efficacy_hospitalization_age_groups[4][0] = 1 100
+vaccine_dose_efficacy_hospitalization_values[4][0] = 1 0.7708
+vaccine_dose_efficacy_delay_age_groups[4][0] = 1 100
+vaccine_dose_efficacy_delay_values[4][0] = 1 14
+
+
+## VACCINE NAME: PfizerLong
+vaccine_number_of_doses[5] = 2
+vaccine_total_avail[5] = 20000000
+vaccine_additional_per_day[5] = 100000
+vaccine_starting_day[5] = 0
+vaccine_efficacy_duration_age_groups[5] = 1 120
+vaccine_efficacy_duration_values[5] = 1 99999
+vaccine_strains[5] = 0 1 2 3 4
+vaccine_enable_differential_efficacy[5] = 1
+vaccine_disease_efficacy_modifier[5] = 5 1.00 1.00 1.00 1.00 0.96
+vaccine_disease_efficacy_symptoms_modifier[5] = 5 1.00 1.00 1.00 1.00 1.00
+vaccine_disease_efficacy_hospitalization_modifier[5] = 5 1.00 1.00 1.00 1.00 1.00
+
+
+vaccine_next_dosage_day[5][0] = 84
+vaccine_dose_efficacy_age_groups[5][0] = 1 100
+vaccine_dose_efficacy_values[5][0] = 1 0.7121
+vaccine_dose_efficacy_symptoms_age_groups[5][0] = 1 100
+vaccine_dose_efficacy_symptoms_values[5][0] = 1 0.0000
+vaccine_dose_efficacy_hospitalization_age_groups[5][0] = 1 100
+vaccine_dose_efficacy_hospitalization_values[5][0] = 1 0.3052
+vaccine_dose_efficacy_delay_age_groups[5][0] = 1 100
+vaccine_dose_efficacy_delay_values[5][0] = 1 14
+
+
+vaccine_next_dosage_day[5][1] = 84
+vaccine_dose_efficacy_age_groups[5][1] = 1 100
+vaccine_dose_efficacy_values[5][1] = 1 0.9130
+vaccine_dose_efficacy_symptoms_age_groups[5][1] = 1 100
+vaccine_dose_efficacy_symptoms_values[5][1] = 1 0.0000
+vaccine_dose_efficacy_hospitalization_age_groups[5][1] = 1 100
+vaccine_dose_efficacy_hospitalization_values[5][1] = 1 0.0000
+vaccine_dose_efficacy_delay_age_groups[5][1] = 1 100
+vaccine_dose_efficacy_delay_values[5][1] = 1 7
+
