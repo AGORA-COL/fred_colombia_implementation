@@ -1,5 +1,5 @@
 ##==============================================#
-## Author: Guido Espana
+## Original author: Guido Espana
 ## Simulate COVID-19 in BOG
 ## Year: 2019
 #==============================================#
@@ -10,7 +10,6 @@ library(pomp)
 library(lubridate)
 library(tidyverse)
 library(fredtools)
-
 
 ####################################
 ## FRED set cluster enviromental variables
