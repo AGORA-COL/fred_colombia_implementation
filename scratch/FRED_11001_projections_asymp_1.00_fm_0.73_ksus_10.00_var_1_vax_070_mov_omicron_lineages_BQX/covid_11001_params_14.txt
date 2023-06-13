@@ -1,0 +1,1610 @@
+days = 546 
+verbose = 0 
+
+report_incidence_by_county = 1 
+enable_nursing_homes_importations = 1 
+##nursing_home_room_mean_size = 1.5 
+track_infection_events = 4 
+track_fatality_events = 1 
+track_age_distribution = 0 
+report_age_of_infection = 4 
+influenza_asymp_infectivity = 1 
+
+num_demes = 1 
+synthetic_population_directory = $FRED_HOME/populations 
+synthetic_population_version = colombia 
+
+enable_transmission_bias = 1 
+neighborhood_same_age_bias = 0.03814697265625 
+
+enable_group_quarters = 1 
+school_classroom_size = 28 
+
+#enable_classroom_size_array = 1 
+#school_classroom_size_array = 20 18 18 18 23 26 35 35 36 34 36 37 36 34 34 34 31 31 31 31 31 
+#school_classroom_size = 28 
+school_fixed_staff = 5 
+# from: http://www.statemaster.com/graph/edu_ele_sec_pup_rat-elementary-secondary-pupil-teacher-ratio
+school_student_teacher_ratio = 18 
+
+##########################################################
+#
+# INFLUENZA PARAMETERS (non-default only)
+#
+##########################################################
+influenza_transmissibility = 0.45263671875 
+## 1/Days of duration. For 7 months, 0.004761905, for 12 months, 1/365 0.002739726
+##influenza_immunity_loss_rate = 0.002739726 
+influenza_immunity_loss_rate = 0.004761905 
+influenza_immunity_proportion_loss = 0.16 
+
+enable_age_specific_susceptibility = 1 
+influenza_susceptibility_by_age_rate = 1.54337326102462 
+influenza_susceptibility_by_age_offset = 0.320295091171441 
+
+## Only works if susceptibility by age is enabled
+enable_age_specific_susceptibility_min = 0 
+influenza_susceptibility_by_age_minage = 10 
+influenza_susceptibility_by_age_minvalue = 1 
+
+
+influenza_asymp_infectivity = 1 
+
+influenza_symptoms_distributions = cdf 
+influenza_days_incubating = 20 0.0 0.000052702 0.013228307 0.105780556 0.287451511 0.489344450 0.659061444 0.782112347 0.864292281 0.916687866 0.949244409 0.969206796 0.981379769 0.988798803 0.993332569 0.996116366 0.997836124 0.998905962 0.999576482 1.0 
+
+
+influenza_infectious_distributions = offset_from_start_of_symptoms 
+influenza_infectious_start_offset = -3.0 
+influenza_infectious_enable_cdf_offset_from_start_of_symptoms = 1 
+influenza_days_infectious = 17 0.0 0.000000064 0.000363758 0.010539872 0.065204975 0.193457196 0.378077421 0.571310336 0.733089707 0.847966224 0.919854729 0.960563168 0.981822020 0.992205141 0.996999103 0.999108981 1.0 
+
+influenza_enable_case_fatality = 1 
+influenza_min_symptoms_for_case_fatality = 1.0 
+
+### CASE FATALITY AND SYMPTOMS PROB ##########
+influenza_days_symptomatic = 46 0.000000000 0.000000000 0.000000000 0.000000000 0.000000000 0.000000003 0.000000219 0.000004821 0.000051710 0.000332279 0.001461857 0.004822123 0.012717511 0.028102498 0.053888728 0.092111933 0.143313597 0.206356020 0.278675303 0.356818712 0.437063348 0.515950975 0.590649803 0.659126269 0.720157729 0.773237597 0.818424846 0.856179135 0.887208695 0.912345196 0.932450111 0.948350983 0.960802805 0.970468668 0.977914057 0.983609989 0.987941306 0.991217441 0.993683850 0.995533013 0.996914389 0.997943049 0.998706941 0.999272856 0.999691237 1.000000000 
+influenza_prob_symptoms_age_groups = 8 10 20 30 40 50 60 70 120 
+influenza_prob_symptoms_values = 8 0.290000000 0.210000000 0.270000000 0.330000000 0.400000000 0.490000000 0.630000000 0.690000000 
+influenza_case_fatality_age_groups = 9 9 19 29 39 49 59 69 79 120 
+influenza_case_fatality_values = 9 0.000446182 0.002660442 0.009206429 0.020599690 0.032460415 0.098623077 0.252830619 0.525916996 0.999999971 
+influenza_case_fatality_prob_by_day = 44 0.000000589 0.000018648 0.000114071 0.000357040 0.000785795 0.001394906 0.002143633 0.002971355 0.003812421 0.004607621 0.005312453 0.005902797 0.006377048 0.006753295 0.007062263 0.007339158 0.007617510 0.007926213 0.008289157 0.008726321 0.009255357 0.009893161 0.010657272 0.011567091 0.012645030 0.013917708 0.015417330 0.017183448 0.019265316 0.021725211 0.024643254 0.028124643 0.032310806 0.037397218 0.043662871 0.051521184 0.061612543 0.074983227 0.093459327 0.120510200 0.163528277 0.241112976 0.414478178 1.000000000 
+### END CASE FATALITY ###################
+
+### HOSPITALIZATION:
+influenza_hospitalization_distributions = cdf 
+influenza_prob_hospitalization_values = 9 0 0.00100092573584906 0.00294999766666667 0.00732511330909091 0.00947757590322581 0.0183607096533333 0.0264019329032258 0.0369757396808511 0.0309133779069767 
+influenza_prob_hospitalization_age_groups = 9 9 19 29 39 49 59 69 79 120 
+influenza_days_hospitalization_delay = 14 0 0.018 0.059 0.153 0.265 0.429 0.579 0.716 0.81 0.878 0.93 0.971 0.983 1 
+influenza_days_hospitalization = 38 0 0 0 0.003 0.012 0.03 0.051 0.113 0.178 0.263 0.371 0.469 0.575 0.686 0.776 0.848 0.899 0.939 0.959 0.978 0.992 0.994 0.997 0.999 0.999 0.999 1 1 1 1 1 1 1 1 1 1 1 1 
+##influenza_days_hospitalization = 38 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 
+
+##########################################################
+# FACEMASK USAGE----------------
+##########################################################
+enable_face_mask_usage = 1 
+enable_face_mask_timeseries = 1 
+face_mask_symptomatic_only = 0 
+face_mask_odds_ratio_method = 1 
+face_mask_locations = 6 household school classroom workplace office other 
+face_mask_compliance = 6 0.0 0.5 0.95 0.7 0.7 0.3 
+day_start_wearing_face_masks = 0 
+days_to_wear_face_masks = 500 
+influenza_face_mask_transmission_efficacy = 0.73 
+influenza_face_mask_susceptibility_efficacy = 1 
+
+##########################################################
+# ISOLATION OF SYMPTOMATICS----------------
+##########################################################
+enable_isolation = 1 
+isolation_delay = 1 
+#isolation_rate = 0.345 # singapore 
+isolation_rate = 0.05175 
+
+##########################################################
+# CHRONIC CONDITIONS (OPTIONAL)------------
+##########################################################
+enable_chronic_condition = 0 
+
+# If chronic conditions are enabled, then the age map data for the
+# various conditions will be used
+asthma_prob_age_groups = 2 18 120 
+asthma_prob_values = 2  0.084 0.077 
+COPD_prob_age_groups = 8 18 24 44 54 64 74 84 120 
+COPD_prob_values = 8 0 0.025 0.0405  0.057 0.0755 0.0935 0.1045 0.075 
+chronic_renal_disease_prob_age_groups = 5 19 39 59 69 120 
+chronic_renal_disease_prob_values = 5  0 0.0563 0.092 0.2158 .4403 
+diabetes_prob_age_groups = 4 17 44 64 120 
+diabetes_prob_values = 4 0 0.042 .175 .268 
+heart_disease_prob_age_groups = 5 19 39 59 79 120 
+heart_disease_prob_values = 5 0 0.006 0.0595 0.148 0.255 
+hypertension_prob_age_groups = 6 29 39 49 59 69 120 
+hypertension_prob_values = 6 .1211 .2227 .4135 .6012 .7343 .7731 
+hypercholestrolemia_prob_age_groups = 5 34 44 54 64 120 
+hypercholestrolemia_prob_values = 5 0 .255 .415 .52 .53 
+
+# Chronic condition hospitalization multipliers
+asthma_hospitalization_prob_mult_age_groups = 1 120 
+asthma_hospitalization_prob_mult_values = 1 1.0 
+COPD_hospitalization_prob_mult_age_groups = 1 120 
+COPD_hospitalization_prob_mult_values = 1 1.0 
+chronic_renal_disease_hospitalization_prob_mult_age_groups = 1 120 
+chronic_renal_disease_hospitalization_prob_mult_values = 1 1.0 
+diabetes_hospitalization_prob_mult_age_groups = 1 120 
+diabetes_hospitalization_prob_mult_values = 1 1.0 
+heart_disease_hospitalization_prob_mult_age_groups = 1 120 
+heart_disease_hospitalization_prob_mult_values = 1 1.0 
+hypertension_hospitalization_prob_mult_age_groups = 1 120 
+hypertension_hospitalization_prob_mult_values = 1 1.0 
+hypercholestrolemia_hospitalization_prob_mult_age_groups = 1 120 
+hypercholestrolemia_hospitalization_prob_mult_values = 1 1.0 
+pregnancy_hospitalization_prob_mult_age_groups = 1 120 
+pregnancy_hospitalization_prob_mult_values = 1 1.0 
+
+# Chronic condition case fatality multipliers
+
+asthma_case_fatality_prob_mult_age_groups = 1 120 
+asthma_case_fatality_prob_mult_values = 1 1.0 
+COPD_case_fatality_prob_mult_age_groups = 1 120 
+COPD_case_fatality_prob_mult_values = 1 5.71 
+chronic_renal_disease_case_fatality_prob_mult_age_groups = 1 120 
+chronic_renal_disease_case_fatality_prob_mult_values = 1 1.0 
+diabetes_case_fatality_prob_mult_age_groups = 1 120 
+diabetes_case_fatality_prob_mult_values = 1 6.57 
+heart_disease_case_fatality_prob_mult_age_groups = 1 120 
+heart_disease_case_fatality_prob_mult_values = 1 9.43 
+hypertension_case_fatality_prob_mult_age_groups = 1 120 
+hypertension_case_fatality_prob_mult_values = 1 6 
+hypercholestrolemia_case_fatality_prob_mult_age_groups = 1 120 
+hypercholestrolemia_case_fatality_prob_mult_values = 1 1.0 
+pregnancy_case_fatality_prob_mult_age_groups = 1 120 
+pregnancy_case_fatality_prob_mult_values = 1 1.0 
+##########################################################
+#
+# DEFAULT VARIANTS PARAMETERS
+#
+##########################################################
+variantalpha_transmission_mode = respiratory 
+variantalpha_natural_history_model = basic 
+variantalpha_transmissibility = 0.631613874435425 
+variantalpha_probability_of_symptoms = 0.67 
+variantalpha_prob_symptoms_age_groups = 0 
+variantalpha_prob_symptoms_values = 0 
+variantalpha_susceptibility_by_age_rate = 1.54337326102462 
+variantalpha_susceptibility_by_age_offset = 0.320295091171441 
+variantalpha_susceptibility_by_age_cutoff = 10 
+variantalpha_susceptibility_by_age_high = 0.703431213649164 
+variantalpha_susceptibility_by_age_minage = 10 
+variantalpha_susceptibility_by_age_minvalue = 1 
+variantalpha_asymp_infectivity = 1 
+variantalpha_symptoms_distributions = lognormal 
+variantalpha_incubation_period_median = 1.9 
+variantalpha_incubation_period_dispersion = 1.51 
+variantalpha_symptoms_duration_median = 5.0 
+variantalpha_symptoms_duration_dispersion = 1.5 
+variantalpha_infectious_distributions = offset_from_symptoms 
+variantalpha_infectious_start_offset = 0 
+variantalpha_infectious_end_offset = 0 
+variantalpha_infectious_enable_cdf_offset_from_start_of_symptoms = 0 
+variantalpha_full_symptoms_start = 0.0 
+variantalpha_full_symptoms_end = 1.0 
+variantalpha_full_infectivity_start = 0.0 
+variantalpha_full_infectivity_end = 1.0 
+# clinical attack rate using the default variantalpha model in this
+variantalpha_immunity_loss_rate = 0.002739726 
+variantalpha_immunity_proportion_loss = 0.15 
+variantalpha_residual_immunity_age_groups = 0 
+variantalpha_residual_immunity_values = 0 
+variantalpha_infection_immunity_age_groups = 1 120 
+variantalpha_infection_immunity_values = 1 1.0 
+variantalpha_infectivity_threshold = 0.0 
+variantalpha_symptomaticity_threshold = 0.0 
+variantalpha_enable_case_fatality = 1 
+variantalpha_min_symptoms_for_case_fatality = 1.0 
+variantalpha_case_fatality_age_groups = 1 120 
+variantalpha_case_fatality_values = 1 1.0 
+variantalpha_case_fatality_prob_by_day = 4 0.0000715 0.0000715 0.0000715 0.0000715 
+# variantalpha_at_risk_age_groups = 7 2 5 19 25 50 65 120 
+# variantalpha_at_risk_values = 7 0.039 0.0883 0.1168 0.1235 0.1570 0.3056 0.4701 
+variantalpha_at_risk_age_groups = 0 
+variantalpha_at_risk_values = 0 
+#variantalpha_hospitalization_prob_age_groups = 7 2 5 19 25 50 65 120 
+#variantalpha_hospitalization_prob_values = 7 0.01 0.01 0.01 0.01 0.01 0.01 0.01 
+#variantalpha_outpatient_healthcare_prob_age_groups = 7 2 5 19 25 50 65 120 
+#variantalpha_outpatient_healthcare_prob_values = 7 0.03 0.03 0.03 0.03 0.03 0.03 0.03 
+variantalpha_min_symptoms_for_seek_healthcare = 1.0 
+#variantalpha_hospitalization_prob_age_groups = 0 
+#variantalpha_hospitalization_prob_values = 0 
+variantalpha_outpatient_healthcare_prob_age_groups = 0 
+variantalpha_outpatient_healthcare_prob_values = 0 
+variantalpha_evolution = 0 
+variantalpha_num_strains = 1 
+variantalpha_strain_data[0] = a:1 
+variantalpha_face_mask_transmission_efficacy = 0.73 
+variantalpha_face_mask_susceptibility_efficacy = 1 
+variantalpha_hand_washing_transmission_efficacy = 0.21 
+variantalpha_hand_washing_susceptibility_efficacy = 0.21 
+variantalpha_face_mask_plus_hand_washing_transmission_efficacy = 0.33 
+variantalpha_face_mask_plus_hand_washing_susceptibility_efficacy = 0.33 
+variantalpha_seasonality_multiplier_max = 1 
+variantalpha_seasonality_multiplier_min = 1 
+variantalpha_seasonality_multiplier_Ka = -180 
+# The file params.variantalpha_ramp includes a model of variantalpha in which
+#include $FRED_HOME/input_files/params.variantalpha_ramp
+
+
+##########################################################
+#
+# VARIANT DEFAULT PARS FOR COVID
+#
+##########################################################
+
+variantalpha_transmissibility = 0.631613874435425 
+variantalpha_cross_protection_prob = 0.95 
+
+variantalpha_prob_symptoms_age_groups = 9 9 19 29 39 49 59 69 79 120 
+variantalpha_prob_symptoms_values = 9 0.03890722 0.05291035 0.30108892 0.54568495 0.61624477 0.74832049 0.92803253 0.93991916 0.86418913 
+
+##variantalpha_prob_symptoms_age_groups = 8 10 20 30 40 50 60 70 120 
+##variantalpha_prob_symptoms_values = 8 0.29 0.21 0.27 0.33 0.4 0.49 0.63 0.69 
+
+enable_age_specific_susceptibility = 1 
+variantalpha_susceptibility_by_age_rate = 1.54337326102462 
+variantalpha_susceptibility_by_age_offset = 0.320295091171441 
+
+## Only works if susceptibility by age is enabled
+enable_age_specific_susceptibility_min = 0 
+variantalpha_susceptibility_by_age_minage = 10 
+variantalpha_susceptibility_by_age_minvalue = 1 
+
+variantalpha_asymp_infectivity = 1 
+
+variantalpha_symptoms_distributions = cdf 
+variantalpha_days_incubating = 20 0.0 0.000052702 0.013228307 0.105780556 0.287451511 0.489344450 0.659061444 0.782112347 0.864292281 0.916687866 0.949244409 0.969206796 0.981379769 0.988798803 0.993332569 0.996116366 0.997836124 0.998905962 0.999576482 1.0 
+
+variantalpha_days_symptomatic = 46 0.0 0.0 0.0 0.0 0.0 0.000000003 0.000000219 0.000004821 0.000051710 0.000332279 0.001461857 0.004822123 0.012717511 0.028102498 0.053888728 0.092111933 0.143313597 0.206356020 0.278675303 0.356818712 0.437063348 0.515950975 0.590649803 0.659126269 0.720157729 0.773237597 0.818424846 0.856179135 0.887208695 0.912345196 0.932450111 0.948350983 0.960802805 0.970468668 0.977914057 0.983609989 0.987941306 0.991217441 0.993683850 0.995533013 0.996914389 0.997943049 0.998706941 0.999272856 0.999691237 1.0 
+
+variantalpha_infectious_distributions = offset_from_start_of_symptoms 
+variantalpha_infectious_start_offset = -3.0 
+variantalpha_infectious_enable_cdf_offset_from_start_of_symptoms = 1 
+variantalpha_days_infectious = 17 0.0 0.000000064 0.000363758 0.010539872 0.065204975 0.193457196 0.378077421 0.571310336 0.733089707 0.847966224 0.919854729 0.960563168 0.981822020 0.992205141 0.996999103 0.999108981 1.0 
+
+
+## OLD IMPERIAL VALUES:
+variantalpha_case_fatality_age_groups = 9 9 19 29 39 49 59 69 79 120 
+variantalpha_case_fatality_values = 9 0.00028368846 0.00161506587 0.006550434 0.015952737405 0.032279973825 0.13804721832 0.452237148 1.0 1.0 
+variantalpha_case_fatality_prob_by_day = 44 0.000000699  0.000022105  0.000135218  0.000423240 0.000931554  0.001653892  0.002542291  0.003525355  0.004525750 0.005473656  0.006316463  0.007025469  0.007598500  0.008056716 0.008436388 0.008779308  0.009125521  0.009509787  0.009961144  0.010504197  0.011161035 0.011953154  0.012903217  0.014036639 0.015383151  0.016978495  0.018866477 0.021101630  0.023752903  0.026908923  0.030685822  0.035239167  0.040782827 0.047619823  0.056194981  0.067189253  0.081699088  0.101603666  0.130391576 0.175272689  0.253631817  0.419111524  0.941228471  1.000000000 
+
+
+### HOSPITALIZATION:
+variantalpha_hospitalization_distributions = cdf 
+variantalpha_prob_hospitalization_values = 9 0 0.00215199033207547 0.00634249498333333 0.0157489936145455 0.0203767881919355 0.0394755257546667 0.0567641557419355 0.0794978403138298 0.0664637625 
+variantalpha_prob_hospitalization_age_groups = 9 9 19 29 39 49 59 69 79 120 
+##variantalpha_days_hospitalization_delay = 14 0 0.03 0.081 0.181 0.296 0.43 0.588 0.714 0.827 0.904 0.948 0.976 0.993 1 
+variantalpha_days_hospitalization_delay = 14 0.000 0.042 0.129 0.242 0.406 0.574 0.720 0.830 0.906 0.959 0.979 0.989 0.995 1.0 
+variantalpha_days_hospitalization = 38 0 0.002 0.005 0.013 0.033 0.077 0.148 0.247 0.35 0.463 0.59 0.686 0.788 0.867 0.907 0.945 0.971 0.983 0.991 0.997 0.999 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 
+
+##########################################################
+# FACEMASK USAGE----------------
+##########################################################
+variantalpha_face_mask_transmission_efficacy = 0.73 
+variantalpha_face_mask_susceptibility_efficacy = 1 
+variantalpha_susceptibility_by_age_cutoff = 10 
+variantalpha_susceptibility_by_age_high = 0.703431213649164 
+
+##########################################################
+# END OF DEFAULTS!!!!!!
+##########################################################
+
+
+
+
+##########################################################
+#
+# VARIANTS SPECIFIC PARAMETERS FOR HIGH TRANSMISSION
+#
+##########################################################
+# Number of diseases circulating
+diseases = 8 
+enable_disease_cross_protection = 1 
+influenza_cross_protection_prob = 1 
+
+# Names of diseases
+disease_names = 8 influenza variantalpha variantgamma variantkappa variantdelta variantomicron variantomicronBAX variantomicronBQX 
+
+variantalpha_transmissibility = 0.631613874435425 
+variantalpha_cross_protection_prob = 0.95 
+
+##########################################################
+#
+# DEFAULT VARIANTS PARAMETERS
+#
+##########################################################
+variantgamma_transmission_mode = respiratory 
+variantgamma_natural_history_model = basic 
+variantgamma_transmissibility = 0.701465356349945 
+variantgamma_probability_of_symptoms = 0.67 
+variantgamma_prob_symptoms_age_groups = 8 10 20 30 40 50 60 70 120 
+variantgamma_prob_symptoms_values = 8 0.290000000 0.210000000 0.270000000 0.330000000 0.400000000 0.490000000 0.630000000 0.690000000 
+variantgamma_susceptibility_by_age_rate = 1.54337326102462 
+variantgamma_susceptibility_by_age_offset = 0.320295091171441 
+variantgamma_susceptibility_by_age_cutoff = 10 
+variantgamma_susceptibility_by_age_high = 0.703431213649164 
+variantgamma_susceptibility_by_age_minage = 10 
+variantgamma_susceptibility_by_age_minvalue = 1 
+variantgamma_asymp_infectivity = 1 
+variantgamma_symptoms_distributions = lognormal 
+variantgamma_incubation_period_median = 1.9 
+variantgamma_incubation_period_dispersion = 1.51 
+variantgamma_symptoms_duration_median = 5.0 
+variantgamma_symptoms_duration_dispersion = 1.5 
+variantgamma_infectious_distributions = offset_from_symptoms 
+variantgamma_infectious_start_offset = 0 
+variantgamma_infectious_end_offset = 0 
+variantgamma_infectious_enable_cdf_offset_from_start_of_symptoms = 0 
+variantgamma_full_symptoms_start = 0.0 
+variantgamma_full_symptoms_end = 1.0 
+variantgamma_full_infectivity_start = 0.0 
+variantgamma_full_infectivity_end = 1.0 
+# clinical attack rate using the default variantgamma model in this
+variantgamma_immunity_loss_rate = 0.002739726 
+variantgamma_immunity_proportion_loss = 0.15 
+variantgamma_residual_immunity_age_groups = 0 
+variantgamma_residual_immunity_values = 0 
+variantgamma_infection_immunity_age_groups = 1 120 
+variantgamma_infection_immunity_values = 1 1.0 
+variantgamma_infectivity_threshold = 0.0 
+variantgamma_symptomaticity_threshold = 0.0 
+variantgamma_enable_case_fatality = 1 
+variantgamma_min_symptoms_for_case_fatality = 1.0 
+variantgamma_case_fatality_age_groups = 9 9 19 29 39 49 59 69 79 120 
+variantgamma_case_fatality_values = 9 0.000444281 0.002649184 0.009167950 0.020515343 0.032330154 0.098270863 0.252143275 0.525153464 0.999999971 
+variantgamma_case_fatality_prob_by_day = 0 
+# variantgamma_at_risk_age_groups = 7 2 5 19 25 50 65 120 
+# variantgamma_at_risk_values = 7 0.039 0.0883 0.1168 0.1235 0.1570 0.3056 0.4701 
+variantgamma_at_risk_age_groups = 0 
+variantgamma_at_risk_values = 0 
+#variantgamma_hospitalization_prob_age_groups = 7 2 5 19 25 50 65 120 
+#variantgamma_hospitalization_prob_values = 7 0.01 0.01 0.01 0.01 0.01 0.01 0.01 
+#variantgamma_outpatient_healthcare_prob_age_groups = 7 2 5 19 25 50 65 120 
+#variantgamma_outpatient_healthcare_prob_values = 7 0.03 0.03 0.03 0.03 0.03 0.03 0.03 
+variantgamma_min_symptoms_for_seek_healthcare = 1.0 
+#variantgamma_hospitalization_prob_age_groups = 0 
+#variantgamma_hospitalization_prob_values = 0 
+variantgamma_outpatient_healthcare_prob_age_groups = 0 
+variantgamma_outpatient_healthcare_prob_values = 0 
+variantgamma_evolution = 0 
+variantgamma_num_strains = 1 
+variantgamma_strain_data[0] = a:1 
+variantgamma_face_mask_transmission_efficacy = 0.73 
+variantgamma_face_mask_susceptibility_efficacy = 1 
+variantgamma_hand_washing_transmission_efficacy = 0.21 
+variantgamma_hand_washing_susceptibility_efficacy = 0.21 
+variantgamma_face_mask_plus_hand_washing_transmission_efficacy = 0.33 
+variantgamma_face_mask_plus_hand_washing_susceptibility_efficacy = 0.33 
+variantgamma_seasonality_multiplier_max = 1 
+variantgamma_seasonality_multiplier_min = 1 
+variantgamma_seasonality_multiplier_Ka = -180 
+# The file params.variantgamma_ramp includes a model of variantgamma in which
+#include $FRED_HOME/input_files/params.variantgamma_ramp
+
+
+##########################################################
+#
+# VARIANT DEFAULT PARS FOR COVID
+#
+##########################################################
+
+variantgamma_transmissibility = 0.701465356349945 
+variantgamma_cross_protection_prob = 0.62538818359375 
+
+variantgamma_prob_symptoms_age_groups = 8 10 20 30 40 50 60 70 120 
+variantgamma_prob_symptoms_values = 8 0.290000000 0.210000000 0.270000000 0.330000000 0.400000000 0.490000000 0.630000000 0.690000000 
+
+##variantgamma_prob_symptoms_age_groups = 8 10 20 30 40 50 60 70 120 
+##variantgamma_prob_symptoms_values = 8 0.29 0.21 0.27 0.33 0.4 0.49 0.63 0.69 
+
+enable_age_specific_susceptibility = 1 
+variantgamma_susceptibility_by_age_rate = 1.54337326102462 
+variantgamma_susceptibility_by_age_offset = 0.320295091171441 
+
+## Only works if susceptibility by age is enabled
+enable_age_specific_susceptibility_min = 0 
+variantgamma_susceptibility_by_age_minage = 10 
+variantgamma_susceptibility_by_age_minvalue = 1 
+
+variantgamma_asymp_infectivity = 1 
+
+variantgamma_symptoms_distributions = cdf 
+variantgamma_days_incubating = 20 0.0 0.000052702 0.013228307 0.105780556 0.287451511 0.489344450 0.659061444 0.782112347 0.864292281 0.916687866 0.949244409 0.969206796 0.981379769 0.988798803 0.993332569 0.996116366 0.997836124 0.998905962 0.999576482 1.0 
+
+variantgamma_days_symptomatic = 46 0.000000000 0.000000000 0.000000000 0.000000000 0.000000000 0.000000003 0.000000219 0.000004821 0.000051710 0.000332279 0.001461857 0.004822123 0.012717511 0.028102498 0.053888728 0.092111933 0.143313597 0.206356020 0.278675303 0.356818712 0.437063348 0.515950975 0.590649803 0.659126269 0.720157729 0.773237597 0.818424846 0.856179135 0.887208695 0.912345196 0.932450111 0.948350983 0.960802805 0.970468668 0.977914057 0.983609989 0.987941306 0.991217441 0.993683850 0.995533013 0.996914389 0.997943049 0.998706941 0.999272856 0.999691237 1.000000000 
+
+variantgamma_infectious_distributions = offset_from_start_of_symptoms 
+variantgamma_infectious_start_offset = -3.0 
+variantgamma_infectious_enable_cdf_offset_from_start_of_symptoms = 1 
+variantgamma_days_infectious = 17 0.0 0.000000064 0.000363758 0.010539872 0.065204975 0.193457196 0.378077421 0.571310336 0.733089707 0.847966224 0.919854729 0.960563168 0.981822020 0.992205141 0.996999103 0.999108981 1.0 
+
+
+## OLD IMPERIAL VALUES:
+variantgamma_case_fatality_age_groups = 9 9 19 29 39 49 59 69 79 120 
+variantgamma_case_fatality_values = 9 0.000444281 0.002649184 0.009167950 0.020515343 0.032330154 0.098270863 0.252143275 0.525153464 0.999999971 
+variantgamma_case_fatality_prob_by_day = 0 
+
+
+### HOSPITALIZATION:
+variantgamma_hospitalization_distributions = cdf 
+variantgamma_prob_hospitalization_values = 9 0 0.00100092573584906 0.00294999766666667 0.00732511330909091 0.00947757590322581 0.0183607096533333 0.0264019329032258 0.0369757396808511 0.0309133779069767 
+variantgamma_prob_hospitalization_age_groups = 9 9 19 29 39 49 59 69 79 120 
+##variantgamma_days_hospitalization_delay = 14 0 0.03 0.081 0.181 0.296 0.43 0.588 0.714 0.827 0.904 0.948 0.976 0.993 1 
+variantgamma_days_hospitalization_delay = 14 0.000 0.042 0.129 0.242 0.406 0.574 0.720 0.830 0.906 0.959 0.979 0.989 0.995 1.0 
+##variantgamma_days_hospitalization = 38 0 0 0 0.003 0.012 0.03 0.051 0.113 0.178 0.263 0.371 0.469 0.575 0.686 0.776 0.848 0.899 0.939 0.959 0.978 0.992 0.994 0.997 0.999 0.999 0.999 1 1 1 1 1 1 1 1 1 1 1 1 
+variantgamma_days_hospitalization = 38 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 
+
+##########################################################
+# FACEMASK USAGE----------------
+##########################################################
+variantgamma_face_mask_transmission_efficacy = 0.73 
+variantgamma_face_mask_susceptibility_efficacy = 1 
+variantgamma_susceptibility_by_age_cutoff = 10 
+variantgamma_susceptibility_by_age_high = 0.703431213649164 
+
+##########################################################
+# END OF DEFAULTS!!!!!!
+##########################################################
+
+
+
+
+##########################################################
+#
+# VARIANTS SPECIFIC PARAMETERS FOR HIGH TRANSMISSION
+#
+##########################################################
+# Number of diseases circulating
+diseases = 8 
+enable_disease_cross_protection = 1 
+influenza_cross_protection_prob = 1 
+
+# Names of diseases
+disease_names = 8 influenza variantalpha variantgamma variantkappa variantdelta variantomicron variantomicronBAX variantomicronBQX 
+
+variantgamma_transmissibility = 0.701465356349945 
+variantgamma_cross_protection_prob = 0.62538818359375 
+
+##########################################################
+#
+# DEFAULT VARIANTS PARAMETERS
+#
+##########################################################
+variantkappa_transmission_mode = respiratory 
+variantkappa_natural_history_model = basic 
+variantkappa_transmissibility = 0.649007678031921 
+variantkappa_probability_of_symptoms = 0.67 
+variantkappa_prob_symptoms_age_groups = 8 10 20 30 40 50 60 70 120 
+variantkappa_prob_symptoms_values = 8 0.290000000 0.210000000 0.270000000 0.330000000 0.400000000 0.490000000 0.630000000 0.690000000 
+variantkappa_susceptibility_by_age_rate = 1.54337326102462 
+variantkappa_susceptibility_by_age_offset = 0.320295091171441 
+variantkappa_susceptibility_by_age_cutoff = 10 
+variantkappa_susceptibility_by_age_high = 0.703431213649164 
+variantkappa_susceptibility_by_age_minage = 10 
+variantkappa_susceptibility_by_age_minvalue = 1 
+variantkappa_asymp_infectivity = 1 
+variantkappa_symptoms_distributions = lognormal 
+variantkappa_incubation_period_median = 1.9 
+variantkappa_incubation_period_dispersion = 1.51 
+variantkappa_symptoms_duration_median = 5.0 
+variantkappa_symptoms_duration_dispersion = 1.5 
+variantkappa_infectious_distributions = offset_from_symptoms 
+variantkappa_infectious_start_offset = 0 
+variantkappa_infectious_end_offset = 0 
+variantkappa_infectious_enable_cdf_offset_from_start_of_symptoms = 0 
+variantkappa_full_symptoms_start = 0.0 
+variantkappa_full_symptoms_end = 1.0 
+variantkappa_full_infectivity_start = 0.0 
+variantkappa_full_infectivity_end = 1.0 
+# clinical attack rate using the default variantkappa model in this
+variantkappa_immunity_loss_rate = 0.002739726 
+variantkappa_immunity_proportion_loss = 0.15 
+variantkappa_residual_immunity_age_groups = 0 
+variantkappa_residual_immunity_values = 0 
+variantkappa_infection_immunity_age_groups = 1 120 
+variantkappa_infection_immunity_values = 1 1.0 
+variantkappa_infectivity_threshold = 0.0 
+variantkappa_symptomaticity_threshold = 0.0 
+variantkappa_enable_case_fatality = 1 
+variantkappa_min_symptoms_for_case_fatality = 1.0 
+variantkappa_case_fatality_age_groups = 9 9 19 29 39 49 59 69 79 120 
+variantkappa_case_fatality_values = 9 0.000416736 0.002485579 0.008608137 0.019286380 0.030429347 0.093091369 0.241908647 0.513904085 0.999999971 
+variantkappa_case_fatality_prob_by_day = 41 0.000001118 0.000035372 0.000216373 0.000677314 0.001491149 0.002648889 0.004075820 0.005660577 0.007282491 0.008832249 0.010226732 0.011419592 0.012405928 0.013218081 0.013913377 0.014559344 0.015222258 0.015961460 0.016828644 0.017870051 0.019129886 0.020654017 0.022493726 0.024709657 0.027376362 0.030588070 0.034466591 0.039172776 0.044923887 0.052021005 0.060894062 0.072179323 0.086860057 0.106539381 0.134015444 0.174634190 0.239990325 0.360621652 0.650282400 1.000000000 1.000000000 
+# variantkappa_at_risk_age_groups = 7 2 5 19 25 50 65 120 
+# variantkappa_at_risk_values = 7 0.039 0.0883 0.1168 0.1235 0.1570 0.3056 0.4701 
+variantkappa_at_risk_age_groups = 0 
+variantkappa_at_risk_values = 0 
+#variantkappa_hospitalization_prob_age_groups = 7 2 5 19 25 50 65 120 
+#variantkappa_hospitalization_prob_values = 7 0.01 0.01 0.01 0.01 0.01 0.01 0.01 
+#variantkappa_outpatient_healthcare_prob_age_groups = 7 2 5 19 25 50 65 120 
+#variantkappa_outpatient_healthcare_prob_values = 7 0.03 0.03 0.03 0.03 0.03 0.03 0.03 
+variantkappa_min_symptoms_for_seek_healthcare = 1.0 
+#variantkappa_hospitalization_prob_age_groups = 0 
+#variantkappa_hospitalization_prob_values = 0 
+variantkappa_outpatient_healthcare_prob_age_groups = 0 
+variantkappa_outpatient_healthcare_prob_values = 0 
+variantkappa_evolution = 0 
+variantkappa_num_strains = 1 
+variantkappa_strain_data[0] = a:1 
+variantkappa_face_mask_transmission_efficacy = 0.73 
+variantkappa_face_mask_susceptibility_efficacy = 1 
+variantkappa_hand_washing_transmission_efficacy = 0.21 
+variantkappa_hand_washing_susceptibility_efficacy = 0.21 
+variantkappa_face_mask_plus_hand_washing_transmission_efficacy = 0.33 
+variantkappa_face_mask_plus_hand_washing_susceptibility_efficacy = 0.33 
+variantkappa_seasonality_multiplier_max = 1 
+variantkappa_seasonality_multiplier_min = 1 
+variantkappa_seasonality_multiplier_Ka = -180 
+# The file params.variantkappa_ramp includes a model of variantkappa in which
+#include $FRED_HOME/input_files/params.variantkappa_ramp
+
+
+##########################################################
+#
+# VARIANT DEFAULT PARS FOR COVID
+#
+##########################################################
+
+variantkappa_transmissibility = 0.649007678031921 
+variantkappa_cross_protection_prob = 0.618837890625 
+
+variantkappa_prob_symptoms_age_groups = 8 10 20 30 40 50 60 70 120 
+variantkappa_prob_symptoms_values = 8 0.290000000 0.210000000 0.270000000 0.330000000 0.400000000 0.490000000 0.630000000 0.690000000 
+
+##variantkappa_prob_symptoms_age_groups = 8 10 20 30 40 50 60 70 120 
+##variantkappa_prob_symptoms_values = 8 0.29 0.21 0.27 0.33 0.4 0.49 0.63 0.69 
+
+enable_age_specific_susceptibility = 1 
+variantkappa_susceptibility_by_age_rate = 1.54337326102462 
+variantkappa_susceptibility_by_age_offset = 0.320295091171441 
+
+## Only works if susceptibility by age is enabled
+enable_age_specific_susceptibility_min = 0 
+variantkappa_susceptibility_by_age_minage = 10 
+variantkappa_susceptibility_by_age_minvalue = 1 
+
+variantkappa_asymp_infectivity = 1 
+
+variantkappa_symptoms_distributions = cdf 
+variantkappa_days_incubating = 20 0.0 0.000052702 0.013228307 0.105780556 0.287451511 0.489344450 0.659061444 0.782112347 0.864292281 0.916687866 0.949244409 0.969206796 0.981379769 0.988798803 0.993332569 0.996116366 0.997836124 0.998905962 0.999576482 1.0 
+
+variantkappa_infectious_distributions = offset_from_start_of_symptoms 
+variantkappa_infectious_start_offset = -3.0 
+variantkappa_infectious_enable_cdf_offset_from_start_of_symptoms = 1 
+variantkappa_days_infectious = 17 0.0 0.000000064 0.000363758 0.010539872 0.065204975 0.193457196 0.378077421 0.571310336 0.733089707 0.847966224 0.919854729 0.960563168 0.981822020 0.992205141 0.996999103 0.999108981 1.0 
+
+
+variantkappa_days_symptomatic = 46 0.000000000 0.000000000 0.000000000 0.000000000 0.000000000 0.000000003 0.000000219 0.000004821 0.000051710 0.000332279 0.001461857 0.004822123 0.012717511 0.028102498 0.053888728 0.092111933 0.143313597 0.206356020 0.278675303 0.356818712 0.437063348 0.515950975 0.590649803 0.659126269 0.720157729 0.773237597 0.818424846 0.856179135 0.887208695 0.912345196 0.932450111 0.948350983 0.960802805 0.970468668 0.977914057 0.983609989 0.987941306 0.991217441 0.993683850 0.995533013 0.996914389 0.997943049 0.998706941 0.999272856 0.999691237 1.000000000 
+variantkappa_prob_symptoms_age_groups = 8 10 20 30 40 50 60 70 120 
+variantkappa_prob_symptoms_values = 8 0.290000000 0.210000000 0.270000000 0.330000000 0.400000000 0.490000000 0.630000000 0.690000000 
+variantkappa_case_fatality_age_groups = 9 9 19 29 39 49 59 69 79 120 
+variantkappa_case_fatality_values = 9 0.000416736 0.002485579 0.008608137 0.019286380 0.030429347 0.093091369 0.241908647 0.513904085 0.999999971 
+variantkappa_case_fatality_prob_by_day = 41 0.000001118 0.000035372 0.000216373 0.000677314 0.001491149 0.002648889 0.004075820 0.005660577 0.007282491 0.008832249 0.010226732 0.011419592 0.012405928 0.013218081 0.013913377 0.014559344 0.015222258 0.015961460 0.016828644 0.017870051 0.019129886 0.020654017 0.022493726 0.024709657 0.027376362 0.030588070 0.034466591 0.039172776 0.044923887 0.052021005 0.060894062 0.072179323 0.086860057 0.106539381 0.134015444 0.174634190 0.239990325 0.360621652 0.650282400 1.000000000 1.000000000 
+
+
+### HOSPITALIZATION:
+variantkappa_hospitalization_distributions = cdf 
+variantkappa_prob_hospitalization_values = 9 0 0.00100092573584906 0.00294999766666667 0.00732511330909091 0.00947757590322581 0.0183607096533333 0.0264019329032258 0.0369757396808511 0.0309133779069767 
+variantkappa_prob_hospitalization_age_groups = 9 9 19 29 39 49 59 69 79 120 
+##variantkappa_days_hospitalization_delay = 14 0 0.03 0.081 0.181 0.296 0.43 0.588 0.714 0.827 0.904 0.948 0.976 0.993 1 
+variantkappa_days_hospitalization_delay = 14 0.000 0.042 0.129 0.242 0.406 0.574 0.720 0.830 0.906 0.959 0.979 0.989 0.995 1.0 
+##variantkappa_days_hospitalization = 38 0 0 0 0.003 0.012 0.03 0.051 0.113 0.178 0.263 0.371 0.469 0.575 0.686 0.776 0.848 0.899 0.939 0.959 0.978 0.992 0.994 0.997 0.999 0.999 0.999 1 1 1 1 1 1 1 1 1 1 1 1 
+variantkappa_days_hospitalization = 38 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 
+
+##########################################################
+# FACEMASK USAGE----------------
+##########################################################
+variantkappa_face_mask_transmission_efficacy = 0.73 
+variantkappa_face_mask_susceptibility_efficacy = 1 
+variantkappa_susceptibility_by_age_cutoff = 10 
+variantkappa_susceptibility_by_age_high = 0.703431213649164 
+
+##########################################################
+# END OF DEFAULTS!!!!!!
+##########################################################
+
+
+
+
+##########################################################
+#
+# VARIANTS SPECIFIC PARAMETERS FOR HIGH TRANSMISSION
+#
+##########################################################
+# Number of diseases circulating
+diseases = 8 
+enable_disease_cross_protection = 1 
+influenza_cross_protection_prob = 1 
+
+# Names of diseases
+disease_names = 8 influenza variantalpha variantgamma variantkappa variantdelta variantomicron variantomicronBAX variantomicronBQX 
+
+variantkappa_transmissibility = 0.649007678031921 
+variantkappa_cross_protection_prob = 0.618837890625 
+
+##########################################################
+#
+# DEFAULT VARIANTS PARAMETERS
+#
+##########################################################
+variantdelta_transmission_mode = respiratory 
+variantdelta_natural_history_model = basic 
+variantdelta_transmissibility = 1.36581693291664 
+variantdelta_probability_of_symptoms = 0.67 
+variantdelta_prob_symptoms_age_groups = 8 10 20 30 40 50 60 70 120 
+variantdelta_prob_symptoms_values = 8 0.290000000 0.210000000 0.270000000 0.330000000 0.400000000 0.490000000 0.630000000 0.690000000 
+variantdelta_susceptibility_by_age_rate = 1.54337326102462 
+variantdelta_susceptibility_by_age_offset = 0.320295091171441 
+variantdelta_susceptibility_by_age_cutoff = 10 
+variantdelta_susceptibility_by_age_high = 0.703431213649164 
+variantdelta_susceptibility_by_age_minage = 10 
+variantdelta_susceptibility_by_age_minvalue = 1 
+variantdelta_asymp_infectivity = 1 
+variantdelta_symptoms_distributions = lognormal 
+variantdelta_incubation_period_median = 1.9 
+variantdelta_incubation_period_dispersion = 1.51 
+variantdelta_symptoms_duration_median = 5.0 
+variantdelta_symptoms_duration_dispersion = 1.5 
+variantdelta_infectious_distributions = offset_from_symptoms 
+variantdelta_infectious_start_offset = 0 
+variantdelta_infectious_end_offset = 0 
+variantdelta_infectious_enable_cdf_offset_from_start_of_symptoms = 0 
+variantdelta_full_symptoms_start = 0.0 
+variantdelta_full_symptoms_end = 1.0 
+variantdelta_full_infectivity_start = 0.0 
+variantdelta_full_infectivity_end = 1.0 
+# clinical attack rate using the default variantdelta model in this
+variantdelta_immunity_loss_rate = 0.002739726 
+variantdelta_immunity_proportion_loss = 0.15 
+variantdelta_residual_immunity_age_groups = 0 
+variantdelta_residual_immunity_values = 0 
+variantdelta_infection_immunity_age_groups = 1 120 
+variantdelta_infection_immunity_values = 1 1.0 
+variantdelta_infectivity_threshold = 0.0 
+variantdelta_symptomaticity_threshold = 0.0 
+variantdelta_enable_case_fatality = 1 
+variantdelta_min_symptoms_for_case_fatality = 1.0 
+variantdelta_case_fatality_age_groups = 9 9 19 29 39 49 59 69 79 120 
+variantdelta_case_fatality_values = 9 0.000471045 0.002808101 0.009711810 0.021710051 0.034180165 0.103353760 0.262569896 0.538290145 0.999999971 
+variantdelta_case_fatality_prob_by_day = 45 0.000000021 0.000000663 0.000004053 0.000012683 0.000027904 0.000049497 0.000075962 0.000105075 0.000134431 0.000161873 0.000185806 0.000205394 0.000220632 0.000232211 0.000241251 0.000248999 0.000256610 0.000265043 0.000275055 0.000287240 0.000302083 0.000320008 0.000341423 0.000366746 0.000396432 0.000430984 0.000470981 0.000517084 0.000570065 0.000630828 0.000700455 0.000780256 0.000871861 0.000977358 0.001099508 0.001242112 0.001410624 0.001613250 0.001862992 0.002181771 0.002609502 0.003226795 0.004223119 0.006169701 1.000000000 
+# variantdelta_at_risk_age_groups = 7 2 5 19 25 50 65 120 
+# variantdelta_at_risk_values = 7 0.039 0.0883 0.1168 0.1235 0.1570 0.3056 0.4701 
+variantdelta_at_risk_age_groups = 0 
+variantdelta_at_risk_values = 0 
+#variantdelta_hospitalization_prob_age_groups = 7 2 5 19 25 50 65 120 
+#variantdelta_hospitalization_prob_values = 7 0.01 0.01 0.01 0.01 0.01 0.01 0.01 
+#variantdelta_outpatient_healthcare_prob_age_groups = 7 2 5 19 25 50 65 120 
+#variantdelta_outpatient_healthcare_prob_values = 7 0.03 0.03 0.03 0.03 0.03 0.03 0.03 
+variantdelta_min_symptoms_for_seek_healthcare = 1.0 
+#variantdelta_hospitalization_prob_age_groups = 0 
+#variantdelta_hospitalization_prob_values = 0 
+variantdelta_outpatient_healthcare_prob_age_groups = 0 
+variantdelta_outpatient_healthcare_prob_values = 0 
+variantdelta_evolution = 0 
+variantdelta_num_strains = 1 
+variantdelta_strain_data[0] = a:1 
+variantdelta_face_mask_transmission_efficacy = 0.73 
+variantdelta_face_mask_susceptibility_efficacy = 1 
+variantdelta_hand_washing_transmission_efficacy = 0.21 
+variantdelta_hand_washing_susceptibility_efficacy = 0.21 
+variantdelta_face_mask_plus_hand_washing_transmission_efficacy = 0.33 
+variantdelta_face_mask_plus_hand_washing_susceptibility_efficacy = 0.33 
+variantdelta_seasonality_multiplier_max = 1 
+variantdelta_seasonality_multiplier_min = 1 
+variantdelta_seasonality_multiplier_Ka = -180 
+# The file params.variantdelta_ramp includes a model of variantdelta in which
+#include $FRED_HOME/input_files/params.variantdelta_ramp
+
+
+##########################################################
+#
+# VARIANT DEFAULT PARS FOR COVID
+#
+##########################################################
+
+variantdelta_transmissibility = 1.36581693291664 
+variantdelta_cross_protection_prob = 0.925746178392876 
+
+variantdelta_prob_symptoms_age_groups = 8 10 20 30 40 50 60 70 120 
+variantdelta_prob_symptoms_values = 8 0.290000000 0.210000000 0.270000000 0.330000000 0.400000000 0.490000000 0.630000000 0.690000000 
+
+##variantdelta_prob_symptoms_age_groups = 8 10 20 30 40 50 60 70 120 
+##variantdelta_prob_symptoms_values = 8 0.29 0.21 0.27 0.33 0.4 0.49 0.63 0.69 
+
+enable_age_specific_susceptibility = 1 
+variantdelta_susceptibility_by_age_rate = 1.54337326102462 
+variantdelta_susceptibility_by_age_offset = 0.320295091171441 
+
+## Only works if susceptibility by age is enabled
+enable_age_specific_susceptibility_min = 0 
+variantdelta_susceptibility_by_age_minage = 10 
+variantdelta_susceptibility_by_age_minvalue = 1 
+
+variantdelta_asymp_infectivity = 1 
+
+variantdelta_symptoms_distributions = cdf 
+variantdelta_days_incubating = 20 0.0 0.000052702 0.013228307 0.105780556 0.287451511 0.489344450 0.659061444 0.782112347 0.864292281 0.916687866 0.949244409 0.969206796 0.981379769 0.988798803 0.993332569 0.996116366 0.997836124 0.998905962 0.999576482 1.0 
+
+variantdelta_infectious_distributions = offset_from_start_of_symptoms 
+variantdelta_infectious_start_offset = -3.0 
+variantdelta_infectious_enable_cdf_offset_from_start_of_symptoms = 1 
+variantdelta_days_infectious = 17 0.0 0.000000064 0.000363758 0.010539872 0.065204975 0.193457196 0.378077421 0.571310336 0.733089707 0.847966224 0.919854729 0.960563168 0.981822020 0.992205141 0.996999103 0.999108981 1.0 
+
+
+## OLD IMPERIAL VALUES:
+variantdelta_case_fatality_age_groups = 9 9 19 29 39 49 59 69 79 120 
+##variantdelta_case_fatality_values = 9 0.0001719324 0.0009788278 0.0039699600 0.0096683257 0.0195636205 0.0836649808 0.2740831200 0.6170298938 1.0 
+variantdelta_case_fatality_values = 9 0.000471045 0.002808101 0.009711810 0.021710051 0.034180165 0.103353760 0.262569896 0.538290145 0.999999971 
+variantdelta_case_fatality_prob_by_day = 45 0.000000021 0.000000663 0.000004053 0.000012683 0.000027904 0.000049497 0.000075962 0.000105075 0.000134431 0.000161873 0.000185806 0.000205394 0.000220632 0.000232211 0.000241251 0.000248999 0.000256610 0.000265043 0.000275055 0.000287240 0.000302083 0.000320008 0.000341423 0.000366746 0.000396432 0.000430984 0.000470981 0.000517084 0.000570065 0.000630828 0.000700455 0.000780256 0.000871861 0.000977358 0.001099508 0.001242112 0.001410624 0.001613250 0.001862992 0.002181771 0.002609502 0.003226795 0.004223119 0.006169701 1.000000000 
+
+variantdelta_days_symptomatic = 46 0.000000000 0.000000000 0.000000000 0.000000000 0.000000000 0.000000003 0.000000219 0.000004821 0.000051710 0.000332279 0.001461857 0.004822123 0.012717511 0.028102498 0.053888728 0.092111933 0.143313597 0.206356020 0.278675303 0.356818712 0.437063348 0.515950975 0.590649803 0.659126269 0.720157729 0.773237597 0.818424846 0.856179135 0.887208695 0.912345196 0.932450111 0.948350983 0.960802805 0.970468668 0.977914057 0.983609989 0.987941306 0.991217441 0.993683850 0.995533013 0.996914389 0.997943049 0.998706941 0.999272856 0.999691237 1.000000000 
+variantdelta_prob_symptoms_age_groups = 8 10 20 30 40 50 60 70 120 
+variantdelta_prob_symptoms_values = 8 0.290000000 0.210000000 0.270000000 0.330000000 0.400000000 0.490000000 0.630000000 0.690000000 
+variantdelta_case_fatality_age_groups = 9 9 19 29 39 49 59 69 79 120 
+variantdelta_case_fatality_values = 9 0.000471045 0.002808101 0.009711810 0.021710051 0.034180165 0.103353760 0.262569896 0.538290145 0.999999971 
+variantdelta_case_fatality_prob_by_day = 45 0.000000021 0.000000663 0.000004053 0.000012683 0.000027904 0.000049497 0.000075962 0.000105075 0.000134431 0.000161873 0.000185806 0.000205394 0.000220632 0.000232211 0.000241251 0.000248999 0.000256610 0.000265043 0.000275055 0.000287240 0.000302083 0.000320008 0.000341423 0.000366746 0.000396432 0.000430984 0.000470981 0.000517084 0.000570065 0.000630828 0.000700455 0.000780256 0.000871861 0.000977358 0.001099508 0.001242112 0.001410624 0.001613250 0.001862992 0.002181771 0.002609502 0.003226795 0.004223119 0.006169701 1.000000000 
+
+### HOSPITALIZATION:
+variantdelta_hospitalization_distributions = cdf 
+variantdelta_prob_hospitalization_values = 9 0 0.00215199033207547 0.00634249498333333 0.0157489936145455 0.0203767881919355 0.0394755257546667 0.0567641557419355 0.0794978403138298 0.0664637625 
+variantdelta_prob_hospitalization_age_groups = 9 9 19 29 39 49 59 69 79 120 
+variantdelta_days_hospitalization_delay = 14 0.000 0.042 0.129 0.242 0.406 0.574 0.720 0.830 0.906 0.959 0.979 0.989 0.995 1.0 
+variantdelta_days_hospitalization = 38 0 0.002 0.005 0.013 0.033 0.077 0.148 0.247 0.35 0.463 0.59 0.686 0.788 0.867 0.907 0.945 0.971 0.983 0.991 0.997 0.999 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 
+
+##########################################################
+# FACEMASK USAGE----------------
+##########################################################
+variantdelta_face_mask_transmission_efficacy = 0.73 
+variantdelta_face_mask_susceptibility_efficacy = 1 
+variantdelta_susceptibility_by_age_cutoff = 10 
+variantdelta_susceptibility_by_age_high = 0.703431213649164 
+
+##########################################################
+# END OF DEFAULTS!!!!!!
+##########################################################
+
+
+
+
+##########################################################
+#
+# VARIANTS SPECIFIC PARAMETERS FOR HIGH TRANSMISSION
+#
+##########################################################
+# Number of diseases circulating
+diseases = 8 
+enable_disease_cross_protection = 1 
+influenza_cross_protection_prob = 1 
+
+# Names of diseases
+disease_names = 8 influenza variantalpha variantgamma variantkappa variantdelta variantomicron variantomicronBAX variantomicronBQX 
+
+variantdelta_transmissibility = 1.36581693291664 
+variantdelta_cross_protection_prob = 0.925746178392876 
+
+##########################################################
+#
+# DEFAULT VARIANTS PARAMETERS
+#
+##########################################################
+variantomicron_transmission_mode = respiratory 
+variantomicron_natural_history_model = basic 
+variantomicron_transmissibility = 0.682908466458321 
+variantomicron_probability_of_symptoms = 0.67 
+variantomicron_prob_symptoms_age_groups = 8 10 20 30 40 50 60 70 120 
+variantomicron_prob_symptoms_values = 8 0.290000000 0.210000000 0.270000000 0.330000000 0.400000000 0.490000000 0.630000000 0.690000000 
+variantomicron_susceptibility_by_age_rate = 1.54337326102462 
+variantomicron_susceptibility_by_age_offset = 0.320295091171441 
+variantomicron_susceptibility_by_age_cutoff = 10 
+variantomicron_susceptibility_by_age_high = 0.703431213649164 
+variantomicron_susceptibility_by_age_minage = 10 
+variantomicron_susceptibility_by_age_minvalue = 1 
+variantomicron_asymp_infectivity = 1 
+variantomicron_symptoms_distributions = lognormal 
+variantomicron_incubation_period_median = 1.9 
+variantomicron_incubation_period_dispersion = 1.51 
+variantomicron_symptoms_duration_median = 5.0 
+variantomicron_symptoms_duration_dispersion = 1.5 
+variantomicron_infectious_distributions = offset_from_symptoms 
+variantomicron_infectious_start_offset = 0 
+variantomicron_infectious_end_offset = 0 
+variantomicron_infectious_enable_cdf_offset_from_start_of_symptoms = 0 
+variantomicron_full_symptoms_start = 0.0 
+variantomicron_full_symptoms_end = 1.0 
+variantomicron_full_infectivity_start = 0.0 
+variantomicron_full_infectivity_end = 1.0 
+# clinical attack rate using the default variantomicron model in this
+variantomicron_immunity_loss_rate = 0.002739726 
+variantomicron_immunity_proportion_loss = 0.15 
+variantomicron_residual_immunity_age_groups = 0 
+variantomicron_residual_immunity_values = 0 
+variantomicron_infection_immunity_age_groups = 1 120 
+variantomicron_infection_immunity_values = 1 1.0 
+variantomicron_infectivity_threshold = 0.0 
+variantomicron_symptomaticity_threshold = 0.0 
+variantomicron_enable_case_fatality = 1 
+variantomicron_min_symptoms_for_case_fatality = 1.0 
+variantomicron_case_fatality_age_groups = 9 9 19 29 39 49 59 69 79 120 
+variantomicron_case_fatality_values = 9 0.000468855 0.002795123 0.009667424 0.021612554 0.034029110 0.102937377 0.261698112 0.537137489 0.999999971 
+variantomicron_case_fatality_prob_by_day = 45 0.000000088 0.000002770 0.000016946 0.000053034 0.000116685 0.000206995 0.000317724 0.000439602 0.000562607 0.000677745 0.000778347 0.000860917 0.000925392 0.000974643 0.001013338 0.001046692 0.001079547 0.001115944 0.001159087 0.001211506 0.001275286 0.001352276 0.001444262 0.001553097 0.001680802 0.001829651 0.002002250 0.002201618 0.002431294 0.002695467 0.002999171 0.003348560 0.003751338 0.004217410 0.004759939 0.005397071 0.006154876 0.007072579 0.008212368 0.009679172 0.011664393 0.014555820 0.019269164 0.028582875 1.000000000 
+# variantomicron_at_risk_age_groups = 7 2 5 19 25 50 65 120 
+# variantomicron_at_risk_values = 7 0.039 0.0883 0.1168 0.1235 0.1570 0.3056 0.4701 
+variantomicron_at_risk_age_groups = 0 
+variantomicron_at_risk_values = 0 
+#variantomicron_hospitalization_prob_age_groups = 7 2 5 19 25 50 65 120 
+#variantomicron_hospitalization_prob_values = 7 0.01 0.01 0.01 0.01 0.01 0.01 0.01 
+#variantomicron_outpatient_healthcare_prob_age_groups = 7 2 5 19 25 50 65 120 
+#variantomicron_outpatient_healthcare_prob_values = 7 0.03 0.03 0.03 0.03 0.03 0.03 0.03 
+variantomicron_min_symptoms_for_seek_healthcare = 1.0 
+#variantomicron_hospitalization_prob_age_groups = 0 
+#variantomicron_hospitalization_prob_values = 0 
+variantomicron_outpatient_healthcare_prob_age_groups = 0 
+variantomicron_outpatient_healthcare_prob_values = 0 
+variantomicron_evolution = 0 
+variantomicron_num_strains = 1 
+variantomicron_strain_data[0] = a:1 
+variantomicron_face_mask_transmission_efficacy = 0.73 
+variantomicron_face_mask_susceptibility_efficacy = 1 
+variantomicron_hand_washing_transmission_efficacy = 0.21 
+variantomicron_hand_washing_susceptibility_efficacy = 0.21 
+variantomicron_face_mask_plus_hand_washing_transmission_efficacy = 0.33 
+variantomicron_face_mask_plus_hand_washing_susceptibility_efficacy = 0.33 
+variantomicron_seasonality_multiplier_max = 1 
+variantomicron_seasonality_multiplier_min = 1 
+variantomicron_seasonality_multiplier_Ka = -180 
+# The file params.variantomicron_ramp includes a model of variantomicron in which
+#include $FRED_HOME/input_files/params.variantomicron_ramp
+
+
+##########################################################
+#
+# VARIANT DEFAULT PARS FOR COVID
+#
+##########################################################
+
+variantomicron_transmissibility = 0.682908466458321 
+variantomicron_cross_protection_prob = 0.3 
+
+variantomicron_prob_symptoms_age_groups = 8 10 20 30 40 50 60 70 120 
+variantomicron_prob_symptoms_values = 8 0.290000000 0.210000000 0.270000000 0.330000000 0.400000000 0.490000000 0.630000000 0.690000000 
+
+##variantomicron_prob_symptoms_age_groups = 8 10 20 30 40 50 60 70 120 
+##variantomicron_prob_symptoms_values = 8 0.29 0.21 0.27 0.33 0.4 0.49 0.63 0.69 
+
+enable_age_specific_susceptibility = 1 
+variantomicron_susceptibility_by_age_rate = 1.54337326102462 
+variantomicron_susceptibility_by_age_offset = 0.320295091171441 
+
+## Only works if susceptibility by age is enabled
+enable_age_specific_susceptibility_min = 0 
+variantomicron_susceptibility_by_age_minage = 10 
+variantomicron_susceptibility_by_age_minvalue = 1 
+
+variantomicron_asymp_infectivity = 1 
+
+variantomicron_symptoms_distributions = cdf 
+variantomicron_days_incubating = 20 0.0 0.000052702 0.013228307 0.105780556 0.287451511 0.489344450 0.659061444 0.782112347 0.864292281 0.916687866 0.949244409 0.969206796 0.981379769 0.988798803 0.993332569 0.996116366 0.997836124 0.998905962 0.999576482 1.0 
+
+variantomicron_infectious_distributions = offset_from_start_of_symptoms 
+variantomicron_infectious_start_offset = -3.0 
+variantomicron_infectious_enable_cdf_offset_from_start_of_symptoms = 1 
+variantomicron_days_infectious = 17 0.0 0.000000064 0.000363758 0.010539872 0.065204975 0.193457196 0.378077421 0.571310336 0.733089707 0.847966224 0.919854729 0.960563168 0.981822020 0.992205141 0.996999103 0.999108981 1.0 
+
+
+variantomicron_days_symptomatic = 46 0.000000000 0.000000000 0.000000000 0.000000000 0.000000000 0.000000003 0.000000219 0.000004821 0.000051710 0.000332279 0.001461857 0.004822123 0.012717511 0.028102498 0.053888728 0.092111933 0.143313597 0.206356020 0.278675303 0.356818712 0.437063348 0.515950975 0.590649803 0.659126269 0.720157729 0.773237597 0.818424846 0.856179135 0.887208695 0.912345196 0.932450111 0.948350983 0.960802805 0.970468668 0.977914057 0.983609989 0.987941306 0.991217441 0.993683850 0.995533013 0.996914389 0.997943049 0.998706941 0.999272856 0.999691237 1.000000000 
+variantomicron_prob_symptoms_age_groups = 8 10 20 30 40 50 60 70 120 
+variantomicron_prob_symptoms_values = 8 0.290000000 0.210000000 0.270000000 0.330000000 0.400000000 0.490000000 0.630000000 0.690000000 
+variantomicron_case_fatality_age_groups = 9 9 19 29 39 49 59 69 79 120 
+variantomicron_case_fatality_values = 9 0.000468855 0.002795123 0.009667424 0.021612554 0.034029110 0.102937377 0.261698112 0.537137489 0.999999971 
+variantomicron_case_fatality_prob_by_day = 45 0.000000088 0.000002770 0.000016946 0.000053034 0.000116685 0.000206995 0.000317724 0.000439602 0.000562607 0.000677745 0.000778347 0.000860917 0.000925392 0.000974643 0.001013338 0.001046692 0.001079547 0.001115944 0.001159087 0.001211506 0.001275286 0.001352276 0.001444262 0.001553097 0.001680802 0.001829651 0.002002250 0.002201618 0.002431294 0.002695467 0.002999171 0.003348560 0.003751338 0.004217410 0.004759939 0.005397071 0.006154876 0.007072579 0.008212368 0.009679172 0.011664393 0.014555820 0.019269164 0.028582875 1.000000000 
+
+
+### HOSPITALIZATION:
+variantomicron_hospitalization_distributions = cdf 
+variantomicron_prob_hospitalization_values = 9 0 0.00215199033207547 0.00634249498333333 0.0157489936145455 0.0203767881919355 0.0394755257546667 0.0567641557419355 0.0794978403138298 0.0664637625 
+variantomicron_prob_hospitalization_age_groups = 9 9 19 29 39 49 59 69 79 120 
+variantomicron_days_hospitalization_delay = 14 0.000 0.042 0.129 0.242 0.406 0.574 0.720 0.830 0.906 0.959 0.979 0.989 0.995 1.0 
+variantomicron_days_hospitalization = 38 0 0.002 0.005 0.013 0.033 0.077 0.148 0.247 0.35 0.463 0.59 0.686 0.788 0.867 0.907 0.945 0.971 0.983 0.991 0.997 0.999 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 
+
+##########################################################
+# FACEMASK USAGE----------------
+##########################################################
+variantomicron_face_mask_transmission_efficacy = 0.73 
+variantomicron_face_mask_susceptibility_efficacy = 1 
+variantomicron_susceptibility_by_age_cutoff = 10 
+variantomicron_susceptibility_by_age_high = 0.703431213649164 
+
+##########################################################
+# END OF DEFAULTS!!!!!!
+##########################################################
+
+
+
+
+##########################################################
+#
+# VARIANTS SPECIFIC PARAMETERS FOR HIGH TRANSMISSION
+#
+##########################################################
+# Number of diseases circulating
+diseases = 8 
+enable_disease_cross_protection = 1 
+influenza_cross_protection_prob = 1 
+
+# Names of diseases
+disease_names = 8 influenza variantalpha variantgamma variantkappa variantdelta variantomicron variantomicronBAX variantomicronBQX 
+
+variantomicron_transmissibility = 0.682908466458321 
+variantomicron_cross_protection_prob = 0.3 
+
+##########################################################
+#
+# DEFAULT VARIANTS PARAMETERS
+#
+##########################################################
+variantomicronBAX_transmission_mode = respiratory 
+variantomicronBAX_natural_history_model = basic 
+variantomicronBAX_transmissibility = 0.580472196489573 
+variantomicronBAX_probability_of_symptoms = 0.67 
+variantomicronBAX_prob_symptoms_age_groups = 8 10 20 30 40 50 60 70 120 
+variantomicronBAX_prob_symptoms_values = 8 0.290000000 0.210000000 0.270000000 0.330000000 0.400000000 0.490000000 0.630000000 0.690000000 
+variantomicronBAX_susceptibility_by_age_rate = 1.54337326102462 
+variantomicronBAX_susceptibility_by_age_offset = 0.320295091171441 
+variantomicronBAX_susceptibility_by_age_cutoff = 10 
+variantomicronBAX_susceptibility_by_age_high = 0.703431213649164 
+variantomicronBAX_susceptibility_by_age_minage = 10 
+variantomicronBAX_susceptibility_by_age_minvalue = 1 
+variantomicronBAX_asymp_infectivity = 1 
+variantomicronBAX_symptoms_distributions = lognormal 
+variantomicronBAX_incubation_period_median = 1.9 
+variantomicronBAX_incubation_period_dispersion = 1.51 
+variantomicronBAX_symptoms_duration_median = 5.0 
+variantomicronBAX_symptoms_duration_dispersion = 1.5 
+variantomicronBAX_infectious_distributions = offset_from_symptoms 
+variantomicronBAX_infectious_start_offset = 0 
+variantomicronBAX_infectious_end_offset = 0 
+variantomicronBAX_infectious_enable_cdf_offset_from_start_of_symptoms = 0 
+variantomicronBAX_full_symptoms_start = 0.0 
+variantomicronBAX_full_symptoms_end = 1.0 
+variantomicronBAX_full_infectivity_start = 0.0 
+variantomicronBAX_full_infectivity_end = 1.0 
+# clinical attack rate using the default variantomicronBAX model in this
+variantomicronBAX_immunity_loss_rate = 0.002739726 
+variantomicronBAX_immunity_proportion_loss = 0.15 
+variantomicronBAX_residual_immunity_age_groups = 0 
+variantomicronBAX_residual_immunity_values = 0 
+variantomicronBAX_infection_immunity_age_groups = 1 120 
+variantomicronBAX_infection_immunity_values = 1 1.0 
+variantomicronBAX_infectivity_threshold = 0.0 
+variantomicronBAX_symptomaticity_threshold = 0.0 
+variantomicronBAX_enable_case_fatality = 1 
+variantomicronBAX_min_symptoms_for_case_fatality = 1.0 
+variantomicronBAX_case_fatality_age_groups = 9 9 19 29 39 49 59 69 79 120 
+variantomicronBAX_case_fatality_values = 9 0.000470019 0.002802015 0.009690993 0.021664333 0.034109339 0.103158575 0.262161234 0.537749599 0.999999971 
+variantomicronBAX_case_fatality_prob_by_day = 45 0.000000053 0.000001666 0.000010191 0.000031894 0.000070172 0.000124477 0.000191048 0.000264301 0.000338195 0.000407316 0.000467650 0.000517098 0.000555634 0.000584989 0.000607977 0.000627734 0.000647166 0.000668696 0.000694237 0.000725296 0.000763108 0.000808763 0.000863308 0.000927824 0.001003487 0.001091613 0.001193707 0.001311505 0.001447032 0.001602679 0.001781304 0.001986391 0.002222284 0.002494555 0.002810593 0.003180570 0.003619090 0.004148118 0.004802468 0.005640839 0.006770181 0.008406776 0.011059975 0.016269607 1.000000000 
+# variantomicronBAX_at_risk_age_groups = 7 2 5 19 25 50 65 120 
+# variantomicronBAX_at_risk_values = 7 0.039 0.0883 0.1168 0.1235 0.1570 0.3056 0.4701 
+variantomicronBAX_at_risk_age_groups = 0 
+variantomicronBAX_at_risk_values = 0 
+#variantomicronBAX_hospitalization_prob_age_groups = 7 2 5 19 25 50 65 120 
+#variantomicronBAX_hospitalization_prob_values = 7 0.01 0.01 0.01 0.01 0.01 0.01 0.01 
+#variantomicronBAX_outpatient_healthcare_prob_age_groups = 7 2 5 19 25 50 65 120 
+#variantomicronBAX_outpatient_healthcare_prob_values = 7 0.03 0.03 0.03 0.03 0.03 0.03 0.03 
+variantomicronBAX_min_symptoms_for_seek_healthcare = 1.0 
+#variantomicronBAX_hospitalization_prob_age_groups = 0 
+#variantomicronBAX_hospitalization_prob_values = 0 
+variantomicronBAX_outpatient_healthcare_prob_age_groups = 0 
+variantomicronBAX_outpatient_healthcare_prob_values = 0 
+variantomicronBAX_evolution = 0 
+variantomicronBAX_num_strains = 1 
+variantomicronBAX_strain_data[0] = a:1 
+variantomicronBAX_face_mask_transmission_efficacy = 0.73 
+variantomicronBAX_face_mask_susceptibility_efficacy = 1 
+variantomicronBAX_hand_washing_transmission_efficacy = 0.21 
+variantomicronBAX_hand_washing_susceptibility_efficacy = 0.21 
+variantomicronBAX_face_mask_plus_hand_washing_transmission_efficacy = 0.33 
+variantomicronBAX_face_mask_plus_hand_washing_susceptibility_efficacy = 0.33 
+variantomicronBAX_seasonality_multiplier_max = 1 
+variantomicronBAX_seasonality_multiplier_min = 1 
+variantomicronBAX_seasonality_multiplier_Ka = -180 
+# The file params.variantomicronBAX_ramp includes a model of variantomicronBAX in which
+#include $FRED_HOME/input_files/params.variantomicronBAX_ramp
+
+
+##########################################################
+#
+# VARIANT DEFAULT PARS FOR COVID
+#
+##########################################################
+
+variantomicronBAX_transmissibility = 0.580472196489573 
+variantomicronBAX_cross_protection_prob = 0.42 
+
+variantomicronBAX_prob_symptoms_age_groups = 8 10 20 30 40 50 60 70 120 
+variantomicronBAX_prob_symptoms_values = 8 0.290000000 0.210000000 0.270000000 0.330000000 0.400000000 0.490000000 0.630000000 0.690000000 
+
+##variantomicronBAX_prob_symptoms_age_groups = 8 10 20 30 40 50 60 70 120 
+##variantomicronBAX_prob_symptoms_values = 8 0.29 0.21 0.27 0.33 0.4 0.49 0.63 0.69 
+
+enable_age_specific_susceptibility = 1 
+variantomicronBAX_susceptibility_by_age_rate = 1.54337326102462 
+variantomicronBAX_susceptibility_by_age_offset = 0.320295091171441 
+
+## Only works if susceptibility by age is enabled
+enable_age_specific_susceptibility_min = 0 
+variantomicronBAX_susceptibility_by_age_minage = 10 
+variantomicronBAX_susceptibility_by_age_minvalue = 1 
+
+variantomicronBAX_asymp_infectivity = 1 
+
+variantomicronBAX_symptoms_distributions = cdf 
+variantomicronBAX_days_incubating = 20 0.0 0.000052702 0.013228307 0.105780556 0.287451511 0.489344450 0.659061444 0.782112347 0.864292281 0.916687866 0.949244409 0.969206796 0.981379769 0.988798803 0.993332569 0.996116366 0.997836124 0.998905962 0.999576482 1.0 
+
+variantomicronBAX_infectious_distributions = offset_from_start_of_symptoms 
+variantomicronBAX_infectious_start_offset = -3.0 
+variantomicronBAX_infectious_enable_cdf_offset_from_start_of_symptoms = 1 
+variantomicronBAX_days_infectious = 17 0.0 0.000000064 0.000363758 0.010539872 0.065204975 0.193457196 0.378077421 0.571310336 0.733089707 0.847966224 0.919854729 0.960563168 0.981822020 0.992205141 0.996999103 0.999108981 1.0 
+
+
+variantomicronBAX_days_symptomatic = 46 0.000000000 0.000000000 0.000000000 0.000000000 0.000000000 0.000000003 0.000000219 0.000004821 0.000051710 0.000332279 0.001461857 0.004822123 0.012717511 0.028102498 0.053888728 0.092111933 0.143313597 0.206356020 0.278675303 0.356818712 0.437063348 0.515950975 0.590649803 0.659126269 0.720157729 0.773237597 0.818424846 0.856179135 0.887208695 0.912345196 0.932450111 0.948350983 0.960802805 0.970468668 0.977914057 0.983609989 0.987941306 0.991217441 0.993683850 0.995533013 0.996914389 0.997943049 0.998706941 0.999272856 0.999691237 1.000000000 
+variantomicronBAX_prob_symptoms_age_groups = 8 10 20 30 40 50 60 70 120 
+variantomicronBAX_prob_symptoms_values = 8 0.290000000 0.210000000 0.270000000 0.330000000 0.400000000 0.490000000 0.630000000 0.690000000 
+variantomicronBAX_case_fatality_age_groups = 9 9 19 29 39 49 59 69 79 120 
+variantomicronBAX_case_fatality_values = 9 0.000470019 0.002802015 0.009690993 0.021664333 0.034109339 0.103158575 0.262161234 0.537749599 0.999999971 
+variantomicronBAX_case_fatality_prob_by_day = 45 0.000000053 0.000001666 0.000010191 0.000031894 0.000070172 0.000124477 0.000191048 0.000264301 0.000338195 0.000407316 0.000467650 0.000517098 0.000555634 0.000584989 0.000607977 0.000627734 0.000647166 0.000668696 0.000694237 0.000725296 0.000763108 0.000808763 0.000863308 0.000927824 0.001003487 0.001091613 0.001193707 0.001311505 0.001447032 0.001602679 0.001781304 0.001986391 0.002222284 0.002494555 0.002810593 0.003180570 0.003619090 0.004148118 0.004802468 0.005640839 0.006770181 0.008406776 0.011059975 0.016269607 1.000000000 
+
+
+### HOSPITALIZATION:
+variantomicronBAX_hospitalization_distributions = cdf 
+variantomicronBAX_prob_hospitalization_values = 9 0 0.00215199033207547 0.00634249498333333 0.0157489936145455 0.0203767881919355 0.0394755257546667 0.0567641557419355 0.0794978403138298 0.0664637625 
+variantomicronBAX_prob_hospitalization_age_groups = 9 9 19 29 39 49 59 69 79 120 
+variantomicronBAX_days_hospitalization_delay = 14 0.000 0.042 0.129 0.242 0.406 0.574 0.720 0.830 0.906 0.959 0.979 0.989 0.995 1.0 
+variantomicronBAX_days_hospitalization = 38 0 0.002 0.005 0.013 0.033 0.077 0.148 0.247 0.35 0.463 0.59 0.686 0.788 0.867 0.907 0.945 0.971 0.983 0.991 0.997 0.999 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 
+
+##########################################################
+# FACEMASK USAGE----------------
+##########################################################
+variantomicronBAX_face_mask_transmission_efficacy = 0.73 
+variantomicronBAX_face_mask_susceptibility_efficacy = 1 
+variantomicronBAX_susceptibility_by_age_cutoff = 10 
+variantomicronBAX_susceptibility_by_age_high = 0.703431213649164 
+
+##########################################################
+# END OF DEFAULTS!!!!!!
+##########################################################
+
+
+
+
+##########################################################
+#
+# VARIANTS SPECIFIC PARAMETERS FOR HIGH TRANSMISSION
+#
+##########################################################
+# Number of diseases circulating
+diseases = 8 
+enable_disease_cross_protection = 1 
+influenza_cross_protection_prob = 1 
+
+# Names of diseases
+disease_names = 8 influenza variantalpha variantgamma variantkappa variantdelta variantomicron variantomicronBAX variantomicronBQX 
+
+variantomicronBAX_transmissibility = 0.580472196489573 
+variantomicronBAX_cross_protection_prob = 0.42 
+
+##########################################################
+#
+# DEFAULT VARIANTS PARAMETERS
+#
+##########################################################
+variantomicronBQX_transmission_mode = respiratory 
+variantomicronBQX_natural_history_model = basic 
+variantomicronBQX_transmissibility = 0.819490159749985 
+variantomicronBQX_probability_of_symptoms = 0.67 
+variantomicronBQX_prob_symptoms_age_groups = 8 10 20 30 40 50 60 70 120 
+variantomicronBQX_prob_symptoms_values = 8 0.290000000 0.210000000 0.270000000 0.330000000 0.400000000 0.490000000 0.630000000 0.690000000 
+variantomicronBQX_susceptibility_by_age_rate = 1.54337326102462 
+variantomicronBQX_susceptibility_by_age_offset = 0.320295091171441 
+variantomicronBQX_susceptibility_by_age_cutoff = 10 
+variantomicronBQX_susceptibility_by_age_high = 0.703431213649164 
+variantomicronBQX_susceptibility_by_age_minage = 10 
+variantomicronBQX_susceptibility_by_age_minvalue = 1 
+variantomicronBQX_asymp_infectivity = 1 
+variantomicronBQX_symptoms_distributions = lognormal 
+variantomicronBQX_incubation_period_median = 1.9 
+variantomicronBQX_incubation_period_dispersion = 1.51 
+variantomicronBQX_symptoms_duration_median = 5.0 
+variantomicronBQX_symptoms_duration_dispersion = 1.5 
+variantomicronBQX_infectious_distributions = offset_from_symptoms 
+variantomicronBQX_infectious_start_offset = 0 
+variantomicronBQX_infectious_end_offset = 0 
+variantomicronBQX_infectious_enable_cdf_offset_from_start_of_symptoms = 0 
+variantomicronBQX_full_symptoms_start = 0.0 
+variantomicronBQX_full_symptoms_end = 1.0 
+variantomicronBQX_full_infectivity_start = 0.0 
+variantomicronBQX_full_infectivity_end = 1.0 
+# clinical attack rate using the default variantomicronBQX model in this
+variantomicronBQX_immunity_loss_rate = 0.002739726 
+variantomicronBQX_immunity_proportion_loss = 0.15 
+variantomicronBQX_residual_immunity_age_groups = 0 
+variantomicronBQX_residual_immunity_values = 0 
+variantomicronBQX_infection_immunity_age_groups = 1 120 
+variantomicronBQX_infection_immunity_values = 1 1.0 
+variantomicronBQX_infectivity_threshold = 0.0 
+variantomicronBQX_symptomaticity_threshold = 0.0 
+variantomicronBQX_enable_case_fatality = 1 
+variantomicronBQX_min_symptoms_for_case_fatality = 1.0 
+variantomicronBQX_case_fatality_age_groups = 9 9 19 29 39 49 59 69 79 120 
+variantomicronBQX_case_fatality_values = 9 0.000470868 0.002807069 0.009708280 0.021702303 0.034168164 0.103320692 0.262500659 0.538198547 0.999999971 
+variantomicronBQX_case_fatality_prob_by_day = 45 0.000000026 0.000000834 0.000005104 0.000015975 0.000035147 0.000062344 0.000095680 0.000132353 0.000169334 0.000203909 0.000234065 0.000258755 0.000277966 0.000292570 0.000303978 0.000313761 0.000323372 0.000334022 0.000346664 0.000362047 0.000380783 0.000403410 0.000430442 0.000462410 0.000499886 0.000543512 0.000594018 0.000652245 0.000719172 0.000795948 0.000883945 0.000984831 0.001100680 0.001234146 0.001388747 0.001569319 0.001782806 0.002039653 0.002356412 0.002760986 0.003304189 0.004088662 0.005355730 0.007833283 1.000000000 
+# variantomicronBQX_at_risk_age_groups = 7 2 5 19 25 50 65 120 
+# variantomicronBQX_at_risk_values = 7 0.039 0.0883 0.1168 0.1235 0.1570 0.3056 0.4701 
+variantomicronBQX_at_risk_age_groups = 0 
+variantomicronBQX_at_risk_values = 0 
+#variantomicronBQX_hospitalization_prob_age_groups = 7 2 5 19 25 50 65 120 
+#variantomicronBQX_hospitalization_prob_values = 7 0.01 0.01 0.01 0.01 0.01 0.01 0.01 
+#variantomicronBQX_outpatient_healthcare_prob_age_groups = 7 2 5 19 25 50 65 120 
+#variantomicronBQX_outpatient_healthcare_prob_values = 7 0.03 0.03 0.03 0.03 0.03 0.03 0.03 
+variantomicronBQX_min_symptoms_for_seek_healthcare = 1.0 
+#variantomicronBQX_hospitalization_prob_age_groups = 0 
+#variantomicronBQX_hospitalization_prob_values = 0 
+variantomicronBQX_outpatient_healthcare_prob_age_groups = 0 
+variantomicronBQX_outpatient_healthcare_prob_values = 0 
+variantomicronBQX_evolution = 0 
+variantomicronBQX_num_strains = 1 
+variantomicronBQX_strain_data[0] = a:1 
+variantomicronBQX_face_mask_transmission_efficacy = 0.73 
+variantomicronBQX_face_mask_susceptibility_efficacy = 1 
+variantomicronBQX_hand_washing_transmission_efficacy = 0.21 
+variantomicronBQX_hand_washing_susceptibility_efficacy = 0.21 
+variantomicronBQX_face_mask_plus_hand_washing_transmission_efficacy = 0.33 
+variantomicronBQX_face_mask_plus_hand_washing_susceptibility_efficacy = 0.33 
+variantomicronBQX_seasonality_multiplier_max = 1 
+variantomicronBQX_seasonality_multiplier_min = 1 
+variantomicronBQX_seasonality_multiplier_Ka = -180 
+# The file params.variantomicronBQX_ramp includes a model of variantomicronBQX in which
+#include $FRED_HOME/input_files/params.variantomicronBQX_ramp
+
+
+##########################################################
+#
+# VARIANT DEFAULT PARS FOR COVID
+#
+##########################################################
+
+variantomicronBQX_transmissibility = 0.819490159749985 
+variantomicronBQX_cross_protection_prob = 0.1 
+
+variantomicronBQX_prob_symptoms_age_groups = 8 10 20 30 40 50 60 70 120 
+variantomicronBQX_prob_symptoms_values = 8 0.290000000 0.210000000 0.270000000 0.330000000 0.400000000 0.490000000 0.630000000 0.690000000 
+
+##variantomicronBQX_prob_symptoms_age_groups = 8 10 20 30 40 50 60 70 120 
+##variantomicronBQX_prob_symptoms_values = 8 0.29 0.21 0.27 0.33 0.4 0.49 0.63 0.69 
+
+enable_age_specific_susceptibility = 1 
+variantomicronBQX_susceptibility_by_age_rate = 1.54337326102462 
+variantomicronBQX_susceptibility_by_age_offset = 0.320295091171441 
+
+## Only works if susceptibility by age is enabled
+enable_age_specific_susceptibility_min = 0 
+variantomicronBQX_susceptibility_by_age_minage = 10 
+variantomicronBQX_susceptibility_by_age_minvalue = 1 
+
+variantomicronBQX_asymp_infectivity = 1 
+
+variantomicronBQX_symptoms_distributions = cdf 
+variantomicronBQX_days_incubating = 20 0.0 0.000052702 0.013228307 0.105780556 0.287451511 0.489344450 0.659061444 0.782112347 0.864292281 0.916687866 0.949244409 0.969206796 0.981379769 0.988798803 0.993332569 0.996116366 0.997836124 0.998905962 0.999576482 1.0 
+
+variantomicronBQX_infectious_distributions = offset_from_start_of_symptoms 
+variantomicronBQX_infectious_start_offset = -3.0 
+variantomicronBQX_infectious_enable_cdf_offset_from_start_of_symptoms = 1 
+variantomicronBQX_days_infectious = 17 0.0 0.000000064 0.000363758 0.010539872 0.065204975 0.193457196 0.378077421 0.571310336 0.733089707 0.847966224 0.919854729 0.960563168 0.981822020 0.992205141 0.996999103 0.999108981 1.0 
+
+
+variantomicronBQX_days_symptomatic = 46 0.000000000 0.000000000 0.000000000 0.000000000 0.000000000 0.000000003 0.000000219 0.000004821 0.000051710 0.000332279 0.001461857 0.004822123 0.012717511 0.028102498 0.053888728 0.092111933 0.143313597 0.206356020 0.278675303 0.356818712 0.437063348 0.515950975 0.590649803 0.659126269 0.720157729 0.773237597 0.818424846 0.856179135 0.887208695 0.912345196 0.932450111 0.948350983 0.960802805 0.970468668 0.977914057 0.983609989 0.987941306 0.991217441 0.993683850 0.995533013 0.996914389 0.997943049 0.998706941 0.999272856 0.999691237 1.000000000 
+variantomicronBQX_prob_symptoms_age_groups = 8 10 20 30 40 50 60 70 120 
+variantomicronBQX_prob_symptoms_values = 8 0.290000000 0.210000000 0.270000000 0.330000000 0.400000000 0.490000000 0.630000000 0.690000000 
+variantomicronBQX_case_fatality_age_groups = 9 9 19 29 39 49 59 69 79 120 
+variantomicronBQX_case_fatality_values = 9 0.000470868 0.002807069 0.009708280 0.021702303 0.034168164 0.103320692 0.262500659 0.538198547 0.999999971 
+variantomicronBQX_case_fatality_prob_by_day = 45 0.000000026 0.000000834 0.000005104 0.000015975 0.000035147 0.000062344 0.000095680 0.000132353 0.000169334 0.000203909 0.000234065 0.000258755 0.000277966 0.000292570 0.000303978 0.000313761 0.000323372 0.000334022 0.000346664 0.000362047 0.000380783 0.000403410 0.000430442 0.000462410 0.000499886 0.000543512 0.000594018 0.000652245 0.000719172 0.000795948 0.000883945 0.000984831 0.001100680 0.001234146 0.001388747 0.001569319 0.001782806 0.002039653 0.002356412 0.002760986 0.003304189 0.004088662 0.005355730 0.007833283 1.000000000 
+
+
+### HOSPITALIZATION:
+variantomicronBQX_hospitalization_distributions = cdf 
+variantomicronBQX_prob_hospitalization_values = 9 0 0.00215199033207547 0.00634249498333333 0.0157489936145455 0.0203767881919355 0.0394755257546667 0.0567641557419355 0.0794978403138298 0.0664637625 
+variantomicronBQX_prob_hospitalization_age_groups = 9 9 19 29 39 49 59 69 79 120 
+variantomicronBQX_days_hospitalization_delay = 14 0.000 0.042 0.129 0.242 0.406 0.574 0.720 0.830 0.906 0.959 0.979 0.989 0.995 1.0 
+variantomicronBQX_days_hospitalization = 38 0 0.002 0.005 0.013 0.033 0.077 0.148 0.247 0.35 0.463 0.59 0.686 0.788 0.867 0.907 0.945 0.971 0.983 0.991 0.997 0.999 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 
+
+##########################################################
+# FACEMASK USAGE----------------
+##########################################################
+variantomicronBQX_face_mask_transmission_efficacy = 0.73 
+variantomicronBQX_face_mask_susceptibility_efficacy = 1 
+variantomicronBQX_susceptibility_by_age_cutoff = 10 
+variantomicronBQX_susceptibility_by_age_high = 0.703431213649164 
+
+##########################################################
+# END OF DEFAULTS!!!!!!
+##########################################################
+
+
+
+
+##########################################################
+#
+# VARIANTS SPECIFIC PARAMETERS FOR HIGH TRANSMISSION
+#
+##########################################################
+# Number of diseases circulating
+diseases = 8 
+enable_disease_cross_protection = 1 
+influenza_cross_protection_prob = 1 
+
+# Names of diseases
+disease_names = 8 influenza variantalpha variantgamma variantkappa variantdelta variantomicron variantomicronBAX variantomicronBQX 
+
+variantomicronBQX_transmissibility = 0.819490159749985 
+variantomicronBQX_cross_protection_prob = 0.1 
+
+########################################################
+## VACCINATION
+#########################################################
+enable_vaccination = 1 
+number_of_vaccines = 6 
+vaccine_tracefile = none 
+vaccine_prioritize_acip = 0 
+vaccine_prioritize_by_age = 0 
+vaccine_priority_age_low = 3 
+vaccine_priority_age_high = 100 
+vaccine_dose_priority = 4 
+vaccine_priority_only = 1 
+vaccinate_symptomatics = 1 
+refresh_vaccine_queues_daily = 0 
+vaccine_acceptance_probability = 0.9 
+vaccination_capacity_file = /home/deo/Documents/jobs/AGORA/FRED_Implementation/scratch/FRED_11001_projections_asymp_1.00_fm_0.73_ksus_10.00_var_1_vax_070_mov_omicron_lineages_BQX/vaccination_daily_capacity_timeseries.txt 
+enable_vaccine_stock_timeseries = 1 
+vaccine_stock_timeseries_file = /home/deo/Documents/jobs/AGORA/FRED_Implementation/scratch/FRED_11001_projections_asymp_1.00_fm_0.73_ksus_10.00_var_1_vax_070_mov_omicron_lineages_BQX/vaccination_stock_timeseries.txt 
+
+## Vaccine priority definition
+enable_vaccination_phases = 1 
+vaccination_phases_names = 18 essentialworkers ltc age age age age teachers age age age age age age age age age age age  
+vaccination_phases_age_low = 18 18 18 80 70 60 55 18 50 45 40 35 30 25 20 15 12 10 3 
+vaccination_phases_age_high = 18 120 120 120 79 69 59 120 54 49 44 39 34 29 24 19 14 11 9 
+vaccination_phases_discrete_timing = 18 414 419 419 446 469 511 511 518 531 549 560 569 576 591 598 605 613 660 
+vaccination_phases_id = 18 1 2 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 
+vaccination_phases_pop_prob = 18 0.0001 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 
+
+
+## VACCINE NAME: AstraZeneca
+vaccine_number_of_doses[0] = 3 
+vaccine_total_avail[0] = 20000000 
+vaccine_additional_per_day[0] = 100000 
+vaccine_starting_day[0] = 0 
+vaccine_efficacy_duration_age_groups[0] = 1 120 
+vaccine_efficacy_duration_values[0] = 1 153 
+vaccine_strains[0] = 0 1 2 3 4 5 
+vaccine_enable_differential_efficacy[0] = 1 
+vaccine_disease_efficacy_modifier[0] = 7 1.00 1.00 1.00 1.00 0.81 0.23 0.23 
+vaccine_disease_efficacy_symptoms_modifier[0] = 7 1.00 1.00 1.00 1.00 0.66 0.11 0.11 
+vaccine_disease_efficacy_hospitalization_modifier[0] = 7 1.00 1.00 1.00 1.00 1.60 1.32 1.32 
+
+
+vaccine_next_dosage_day[0][0] = 84 
+vaccine_dose_efficacy_age_groups[0][0] = 1 100 
+vaccine_dose_efficacy_values[0][0] = 1 0.4900 
+vaccine_dose_efficacy_symptoms_age_groups[0][0] = 1 100 
+vaccine_dose_efficacy_symptoms_values[0][0] = 1 0.4118 
+vaccine_dose_efficacy_hospitalization_age_groups[0][0] = 1 100 
+vaccine_dose_efficacy_hospitalization_values[0][0] = 1 0.5000 
+vaccine_dose_efficacy_delay_age_groups[0][0] = 1 100 
+vaccine_dose_efficacy_delay_values[0][0] = 1 21 
+vaccine_next_dose_mix_match[0][0] = 0 
+
+
+vaccine_next_dosage_day[0][1] = 180 
+vaccine_dose_efficacy_age_groups[0][1] = 1 100 
+vaccine_dose_efficacy_values[0][1] = 1 0.5600 
+vaccine_dose_efficacy_symptoms_age_groups[0][1] = 1 100 
+vaccine_dose_efficacy_symptoms_values[0][1] = 1 0.5455 
+vaccine_dose_efficacy_hospitalization_age_groups[0][1] = 1 100 
+vaccine_dose_efficacy_hospitalization_values[0][1] = 1 0.5000 
+vaccine_dose_efficacy_delay_age_groups[0][1] = 1 100 
+vaccine_dose_efficacy_delay_values[0][1] = 1 15 
+vaccine_next_dose_mix_match[0][1] = 1 
+
+
+vaccine_next_dosage_day[0][2] = 180 
+vaccine_dose_efficacy_age_groups[0][2] = 1 100 
+vaccine_dose_efficacy_values[0][2] = 1 0.6440 
+vaccine_dose_efficacy_symptoms_age_groups[0][2] = 1 100 
+vaccine_dose_efficacy_symptoms_values[0][2] = 1 0.7753 
+vaccine_dose_efficacy_hospitalization_age_groups[0][2] = 1 100 
+vaccine_dose_efficacy_hospitalization_values[0][2] = 1 0.8750 
+vaccine_dose_efficacy_delay_age_groups[0][2] = 1 100 
+vaccine_dose_efficacy_delay_values[0][2] = 1 7 
+vaccine_next_dose_mix_match[0][2] = 1 
+
+
+## VACCINE NAME: Sinovac
+vaccine_number_of_doses[1] = 3 
+vaccine_total_avail[1] = 20000000 
+vaccine_additional_per_day[1] = 100000 
+vaccine_starting_day[1] = 0 
+vaccine_efficacy_duration_age_groups[1] = 1 120 
+vaccine_efficacy_duration_values[1] = 1 103 
+vaccine_strains[1] = 0 1 2 3 4 5 
+vaccine_enable_differential_efficacy[1] = 1 
+vaccine_disease_efficacy_modifier[1] = 7 1.00 1.00 1.00 1.00 1.16 0.23 0.23 
+vaccine_disease_efficacy_symptoms_modifier[1] = 7 1.00 1.00 1.00 1.00 1.27 0.16 0.16 
+vaccine_disease_efficacy_hospitalization_modifier[1] = 7 1.00 1.00 1.00 1.00 0.94 0.88 0.88 
+
+
+vaccine_next_dosage_day[1][0] = 28 
+vaccine_dose_efficacy_age_groups[1][0] = 1 100 
+vaccine_dose_efficacy_values[1][0] = 1 0.4060 
+vaccine_dose_efficacy_symptoms_age_groups[1][0] = 1 100 
+vaccine_dose_efficacy_symptoms_values[1][0] = 1 0.2929 
+vaccine_dose_efficacy_hospitalization_age_groups[1][0] = 1 100 
+vaccine_dose_efficacy_hospitalization_values[1][0] = 1 0.0000 
+vaccine_dose_efficacy_delay_age_groups[1][0] = 1 100 
+vaccine_dose_efficacy_delay_values[1][0] = 1 15 
+vaccine_next_dose_mix_match[1][0] = 0 
+
+
+vaccine_next_dosage_day[1][1] = 180 
+vaccine_dose_efficacy_age_groups[1][1] = 1 100 
+vaccine_dose_efficacy_values[1][1] = 1 0.3570 
+vaccine_dose_efficacy_symptoms_age_groups[1][1] = 1 100 
+vaccine_dose_efficacy_symptoms_values[1][1] = 1 0.2379 
+vaccine_dose_efficacy_hospitalization_age_groups[1][1] = 1 100 
+vaccine_dose_efficacy_hospitalization_values[1][1] = 1 0.7551 
+vaccine_dose_efficacy_delay_age_groups[1][1] = 1 100 
+vaccine_dose_efficacy_delay_values[1][1] = 1 15 
+vaccine_next_dose_mix_match[1][1] = 1 
+
+
+vaccine_next_dosage_day[1][2] = 180 
+vaccine_dose_efficacy_age_groups[1][2] = 1 100 
+vaccine_dose_efficacy_values[1][2] = 1 0.5600 
+vaccine_dose_efficacy_symptoms_age_groups[1][2] = 1 100 
+vaccine_dose_efficacy_symptoms_values[1][2] = 1 0.5455 
+vaccine_dose_efficacy_hospitalization_age_groups[1][2] = 1 100 
+vaccine_dose_efficacy_hospitalization_values[1][2] = 1 0.4000 
+vaccine_dose_efficacy_delay_age_groups[1][2] = 1 100 
+vaccine_dose_efficacy_delay_values[1][2] = 1 7 
+vaccine_next_dose_mix_match[1][2] = 1 
+
+
+## VACCINE NAME: Pfizer
+vaccine_number_of_doses[2] = 3 
+vaccine_total_avail[2] = 20000000 
+vaccine_additional_per_day[2] = 100000 
+vaccine_starting_day[2] = 0 
+vaccine_efficacy_duration_age_groups[2] = 1 120 
+vaccine_efficacy_duration_values[2] = 1 230 
+vaccine_strains[2] = 0 1 2 3 4 5 
+vaccine_enable_differential_efficacy[2] = 1 
+vaccine_disease_efficacy_modifier[2] = 7 1.00 1.00 1.00 1.00 0.90 0.20 0.20 
+vaccine_disease_efficacy_symptoms_modifier[2] = 7 1.00 1.00 1.00 1.00 0.77 0.08 0.08 
+vaccine_disease_efficacy_hospitalization_modifier[2] = 7 1.00 1.00 1.00 1.00 1.58 1.41 1.41 
+
+
+vaccine_next_dosage_day[2][0] = 21 
+vaccine_dose_efficacy_age_groups[2][0] = 1 100 
+vaccine_dose_efficacy_values[2][0] = 1 0.4900 
+vaccine_dose_efficacy_symptoms_age_groups[2][0] = 1 100 
+vaccine_dose_efficacy_symptoms_values[2][0] = 1 0.4118 
+vaccine_dose_efficacy_hospitalization_age_groups[2][0] = 1 100 
+vaccine_dose_efficacy_hospitalization_values[2][0] = 1 0.5000 
+vaccine_dose_efficacy_delay_age_groups[2][0] = 1 100 
+vaccine_dose_efficacy_delay_values[2][0] = 1 11 
+vaccine_next_dose_mix_match[2][0] = 0 
+
+
+vaccine_next_dosage_day[2][1] = 180 
+vaccine_dose_efficacy_age_groups[2][1] = 1 100 
+vaccine_dose_efficacy_values[2][1] = 1 0.6300 
+vaccine_dose_efficacy_symptoms_age_groups[2][1] = 1 100 
+vaccine_dose_efficacy_symptoms_values[2][1] = 1 0.7297 
+vaccine_dose_efficacy_hospitalization_age_groups[2][1] = 1 100 
+vaccine_dose_efficacy_hospitalization_values[2][1] = 1 0.5000 
+vaccine_dose_efficacy_delay_age_groups[2][1] = 1 100 
+vaccine_dose_efficacy_delay_values[2][1] = 1 7 
+vaccine_next_dose_mix_match[2][1] = 1 
+
+
+vaccine_next_dosage_day[2][2] = 180 
+vaccine_dose_efficacy_age_groups[2][2] = 1 100 
+vaccine_dose_efficacy_values[2][2] = 1 0.6440 
+vaccine_dose_efficacy_symptoms_age_groups[2][2] = 1 100 
+vaccine_dose_efficacy_symptoms_values[2][2] = 1 0.7753 
+vaccine_dose_efficacy_hospitalization_age_groups[2][2] = 1 100 
+vaccine_dose_efficacy_hospitalization_values[2][2] = 1 0.8750 
+vaccine_dose_efficacy_delay_age_groups[2][2] = 1 100 
+vaccine_dose_efficacy_delay_values[2][2] = 1 7 
+vaccine_next_dose_mix_match[2][2] = 1 
+
+
+## VACCINE NAME: Moderna
+vaccine_number_of_doses[3] = 3 
+vaccine_total_avail[3] = 20000000 
+vaccine_additional_per_day[3] = 100000 
+vaccine_starting_day[3] = 0 
+vaccine_efficacy_duration_age_groups[3] = 1 120 
+vaccine_efficacy_duration_values[3] = 1 228 
+vaccine_strains[3] = 0 1 2 3 4 5 
+vaccine_enable_differential_efficacy[3] = 1 
+vaccine_disease_efficacy_modifier[3] = 7 1.00 1.00 1.00 1.00 0.90 0.22 0.22 
+vaccine_disease_efficacy_symptoms_modifier[3] = 7 1.00 1.00 1.00 1.00 0.77 0.10 0.10 
+vaccine_disease_efficacy_hospitalization_modifier[3] = 7 1.00 1.00 1.00 1.00 1.58 1.40 1.40 
+
+
+vaccine_next_dosage_day[3][0] = 28 
+vaccine_dose_efficacy_age_groups[3][0] = 1 100 
+vaccine_dose_efficacy_values[3][0] = 1 0.4900 
+vaccine_dose_efficacy_symptoms_age_groups[3][0] = 1 100 
+vaccine_dose_efficacy_symptoms_values[3][0] = 1 0.4118 
+vaccine_dose_efficacy_hospitalization_age_groups[3][0] = 1 100 
+vaccine_dose_efficacy_hospitalization_values[3][0] = 1 0.5000 
+vaccine_dose_efficacy_delay_age_groups[3][0] = 1 100 
+vaccine_dose_efficacy_delay_values[3][0] = 1 14 
+vaccine_next_dose_mix_match[3][0] = 0 
+
+
+vaccine_next_dosage_day[3][1] = 180 
+vaccine_dose_efficacy_age_groups[3][1] = 1 100 
+vaccine_dose_efficacy_values[3][1] = 1 0.6300 
+vaccine_dose_efficacy_symptoms_age_groups[3][1] = 1 100 
+vaccine_dose_efficacy_symptoms_values[3][1] = 1 0.7297 
+vaccine_dose_efficacy_hospitalization_age_groups[3][1] = 1 100 
+vaccine_dose_efficacy_hospitalization_values[3][1] = 1 0.5000 
+vaccine_dose_efficacy_delay_age_groups[3][1] = 1 100 
+vaccine_dose_efficacy_delay_values[3][1] = 1 14 
+vaccine_next_dose_mix_match[3][1] = 1 
+
+
+vaccine_next_dosage_day[3][2] = 180 
+vaccine_dose_efficacy_age_groups[3][2] = 1 100 
+vaccine_dose_efficacy_values[3][2] = 1 0.6440 
+vaccine_dose_efficacy_symptoms_age_groups[3][2] = 1 100 
+vaccine_dose_efficacy_symptoms_values[3][2] = 1 0.7753 
+vaccine_dose_efficacy_hospitalization_age_groups[3][2] = 1 100 
+vaccine_dose_efficacy_hospitalization_values[3][2] = 1 0.8750 
+vaccine_dose_efficacy_delay_age_groups[3][2] = 1 100 
+vaccine_dose_efficacy_delay_values[3][2] = 1 7 
+vaccine_next_dose_mix_match[3][2] = 1 
+
+
+## VACCINE NAME: Janssen
+vaccine_number_of_doses[4] = 2 
+vaccine_total_avail[4] = 20000000 
+vaccine_additional_per_day[4] = 100000 
+vaccine_starting_day[4] = 0 
+vaccine_efficacy_duration_age_groups[4] = 1 120 
+vaccine_efficacy_duration_values[4] = 1 101 
+vaccine_strains[4] = 0 1 2 3 4 5 
+vaccine_enable_differential_efficacy[4] = 1 
+vaccine_disease_efficacy_modifier[4] = 7 1.00 1.00 1.00 1.00 0.87 0.37 0.37 
+vaccine_disease_efficacy_symptoms_modifier[4] = 7 1.00 1.00 1.00 1.00 0.77 0.24 0.24 
+vaccine_disease_efficacy_hospitalization_modifier[4] = 7 1.00 1.00 1.00 1.00 1.06 0.54 0.54 
+
+
+vaccine_next_dosage_day[4][0] = 180 
+vaccine_dose_efficacy_age_groups[4][0] = 1 100 
+vaccine_dose_efficacy_values[4][0] = 1 0.4690 
+vaccine_dose_efficacy_symptoms_age_groups[4][0] = 1 100 
+vaccine_dose_efficacy_symptoms_values[4][0] = 1 0.3785 
+vaccine_dose_efficacy_hospitalization_age_groups[4][0] = 1 100 
+vaccine_dose_efficacy_hospitalization_values[4][0] = 1 0.7879 
+vaccine_dose_efficacy_delay_age_groups[4][0] = 1 100 
+vaccine_dose_efficacy_delay_values[4][0] = 1 14 
+vaccine_next_dose_mix_match[4][0] = 1 
+
+
+vaccine_next_dosage_day[4][1] = 180 
+vaccine_dose_efficacy_age_groups[4][1] = 1 100 
+vaccine_dose_efficacy_values[4][1] = 1 0.4690 
+vaccine_dose_efficacy_symptoms_age_groups[4][1] = 1 100 
+vaccine_dose_efficacy_symptoms_values[4][1] = 1 0.3785 
+vaccine_dose_efficacy_hospitalization_age_groups[4][1] = 1 100 
+vaccine_dose_efficacy_hospitalization_values[4][1] = 1 0.7879 
+vaccine_dose_efficacy_delay_age_groups[4][1] = 1 100 
+vaccine_dose_efficacy_delay_values[4][1] = 1 7 
+vaccine_next_dose_mix_match[4][1] = 1 
+
+
+## VACCINE NAME: PfizerLong
+vaccine_number_of_doses[5] = 3 
+vaccine_total_avail[5] = 20000000 
+vaccine_additional_per_day[5] = 100000 
+vaccine_starting_day[5] = 0 
+vaccine_efficacy_duration_age_groups[5] = 1 120 
+vaccine_efficacy_duration_values[5] = 1 229 
+vaccine_strains[5] = 0 1 2 3 4 5 
+vaccine_enable_differential_efficacy[5] = 1 
+vaccine_disease_efficacy_modifier[5] = 7 1.00 1.00 1.00 1.00 0.90 0.20 0.20 
+vaccine_disease_efficacy_symptoms_modifier[5] = 7 1.00 1.00 1.00 1.00 0.77 0.08 0.08 
+vaccine_disease_efficacy_hospitalization_modifier[5] = 7 1.00 1.00 1.00 1.00 1.58 1.41 1.41 
+
+
+vaccine_next_dosage_day[5][0] = 84 
+vaccine_dose_efficacy_age_groups[5][0] = 1 100 
+vaccine_dose_efficacy_values[5][0] = 1 0.4900 
+vaccine_dose_efficacy_symptoms_age_groups[5][0] = 1 100 
+vaccine_dose_efficacy_symptoms_values[5][0] = 1 0.4118 
+vaccine_dose_efficacy_hospitalization_age_groups[5][0] = 1 100 
+vaccine_dose_efficacy_hospitalization_values[5][0] = 1 0.5000 
+vaccine_dose_efficacy_delay_age_groups[5][0] = 1 100 
+vaccine_dose_efficacy_delay_values[5][0] = 1 11 
+vaccine_next_dose_mix_match[5][0] = 0 
+
+
+vaccine_next_dosage_day[5][1] = 180 
+vaccine_dose_efficacy_age_groups[5][1] = 1 100 
+vaccine_dose_efficacy_values[5][1] = 1 0.6300 
+vaccine_dose_efficacy_symptoms_age_groups[5][1] = 1 100 
+vaccine_dose_efficacy_symptoms_values[5][1] = 1 0.7297 
+vaccine_dose_efficacy_hospitalization_age_groups[5][1] = 1 100 
+vaccine_dose_efficacy_hospitalization_values[5][1] = 1 0.5000 
+vaccine_dose_efficacy_delay_age_groups[5][1] = 1 100 
+vaccine_dose_efficacy_delay_values[5][1] = 1 7 
+vaccine_next_dose_mix_match[5][1] = 1 
+
+
+vaccine_next_dosage_day[5][2] = 180 
+vaccine_dose_efficacy_age_groups[5][2] = 1 100 
+vaccine_dose_efficacy_values[5][2] = 1 0.6440 
+vaccine_dose_efficacy_symptoms_age_groups[5][2] = 1 100 
+vaccine_dose_efficacy_symptoms_values[5][2] = 1 0.7753 
+vaccine_dose_efficacy_hospitalization_age_groups[5][2] = 1 100 
+vaccine_dose_efficacy_hospitalization_values[5][2] = 1 0.8750 
+vaccine_dose_efficacy_delay_age_groups[5][2] = 1 100 
+vaccine_dose_efficacy_delay_values[5][2] = 1 7 
+vaccine_next_dose_mix_match[5][2] = 1 
+enable_shelter_in_place = 1 
+enable_shelter_in_place_timeseries = 1 
+shelter_in_place_delay_mean = 79 
+school_closure_policy = global_schedule 
+school_closure_day = 14 
+school_closure_duration = 466 
+enable_community_contact_timeseries = 1 
+enable_hospitalization_duration_timeseries = 0 
+hospitalization_duration_timeseries_file = /home/deo/Documents/jobs/AGORA/FRED_Implementation/scratch/FRED_11001_projections_asymp_1.00_fm_0.73_ksus_10.00_var_1_vax_070_mov_omicron_lineages_BQX/COL_hosp_duration_time.txt 
+seed = 1008201769 
+primary_cases_file = /home/deo/Documents/jobs/AGORA/FRED_Implementation/scratch/FRED_11001_projections_asymp_1.00_fm_0.73_ksus_10.00_var_1_vax_070_mov_omicron_lineages_BQX/initial_cases_plus_omicron_lineage_11001_4.txt 
+shelter_in_place_file = /home/deo/Documents/jobs/AGORA/FRED_Implementation/scratch/FRED_11001_projections_asymp_1.00_fm_0.73_ksus_10.00_var_1_vax_070_mov_omicron_lineages_BQX/shelter_timeseries_11001_4.txt 
+shelter_in_place_compliance = 0.6187255859375 
+influenza_susceptibility_by_age_cutoff = 10 
+influenza_susceptibility_by_age_high = 0.703431213649164 
+nursing_home_incidence_importations_factor = 0.1207080078125 
+face_mask_timeseries_file = /home/deo/Documents/jobs/AGORA/FRED_Implementation/scratch/FRED_11001_projections_asymp_1.00_fm_0.73_ksus_10.00_var_1_vax_070_mov_omicron_lineages_BQX/facemask_compliance_11001_4.txt 
+enable_school_reduced_capacity = 0 
+school_reduced_capacity = 0.35 
+school_reduced_capacity_day = 480 
+school_contacts = 0.6295 
+classroom_contacts = 1.259 
+neighborhood_contacts = 0.886606552734375 
+holiday_contact_rate = 1 
+workplace_contacts = 0.070271455078125 
+household_contacts = 0.1402 
+office_contacts = 0.14054291015625 
+school_global_schedule_file = /home/deo/Documents/jobs/AGORA/FRED_Implementation/scratch/FRED_11001_projections_asymp_1.00_fm_0.73_ksus_10.00_var_1_vax_070_mov_omicron_lineages_BQX/school_schedule_closed_11001.txt 
+enable_holiday_contacts = 0 
+community_contact_timeseries_file = /home/deo/Documents/jobs/AGORA/FRED_Implementation/scratch/FRED_11001_projections_asymp_1.00_fm_0.73_ksus_10.00_var_1_vax_070_mov_omicron_lineages_BQX/community_timeseries_4.txt 
+holiday_start = 11-16 
+holiday_end = 01-07 
+vaccination_phases_enable_discrete_timing = 1 
+report_place_of_infection = 1 
+shelter_in_place_students = 0 
+epidemic_offset = 0 
+min_age_face_masks = 8 
+start_date = 2020-01-01 
+synthetic_population_id = colombia_11001
