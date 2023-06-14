@@ -11,18 +11,23 @@ library(lubridate)
 library(tidyverse)
 library(fredtools)
 
-####################################
-## FRED set cluster enviromental variables
-####################################
+####################################################
+## local variables
+####################################################
+repo_name = 'fred_colombia_implementation'
 AGORA_path = '/home/deo/Documents/jobs/AGORA'
-setwd(sprintf('%s/FRED_Implementation/FRED_run', AGORA_path))
+
+####################################################
+## FRED set cluster enviromental variables
+####################################################
+setwd(sprintf('%s/%s/fred_run_stages/submit_simulations', AGORA_path, repo_name))
 FRED_results_path = sprintf('%s/FRED_results', AGORA_path)
 
 Sys.setenv(FRED_HOME=sprintf('%s/FRED', AGORA_path))
 Sys.setenv(FRED_RESULTS=FRED_results_path)
 #Sys.setenv(scratch_dir=sprintf('%s/Colombia_implementation/scratch', AGORA_path))
-Sys.setenv(scratch_dir=sprintf('%s/FRED_Implementation/scratch', AGORA_path))
-Sys.setenv(PATH='/bin/:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/usr/local/bin:/usr/local/sbin')
+Sys.setenv(scratch_dir=sprintf('%s/%s/scratch', AGORA_path, repo_name))
+Sys.setenv(PATH=sprintf('/bin/:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/usr/local/bin:/usr/local/sbin:%s/FRED/bin', AGORA_path))
 
 ##==============================================#
 ## load dirs -------------
@@ -52,7 +57,8 @@ write_cmd_function <- function(scalars_in, tmpfile){
                         scalars_in$job_id,
                         scalars_in$reps
   )
-  fileConn<-file(sprintf("run_files/%s",tmpfile))
+  system('/bin/mkdir -p ../run_files')
+  fileConn<-file(sprintf("../run_files/%s",tmpfile))
   writeLines(job_cmd_str, fileConn)
   close(fileConn)
 }
@@ -278,13 +284,13 @@ if(file.exists(output.dir)){
 }
 system(paste('/bin/mkdir -p ', output.dir, sep = ''))
 
-file.copy('../scripts/post_process_fred_projection_lineages_BQX.R',output.dir)
-# file.copy('../input_files/params_covid.txt','./input_files/params_covid.txt', overwrite = T)
-# file.copy('../input_files/11001_schools_open_gps.csv','./input_files/11001_schools_open_gps.csv', overwrite = T)
-file.copy("./input_files/infection_hospitalization_risk.csv", output.dir)
-file.copy("./input_files/infection_hospitalization_risk_5.csv", output.dir)
-file.copy('./input_files/Localidad_Unidad_Catastral.csv',output.dir, overwrite = T)
-file.copy('./input_files/COL_hosp_duration_time.txt',output.dir,overwrite = T)
+file.copy('../../scripts/post_process_fred_projection_lineages_BQX.R',output.dir)
+# file.copy('../../input_files/params_covid.txt','../../input_files/params_covid.txt', overwrite = T)
+# file.copy('../../input_files/11001_schools_open_gps.csv','../../input_files/11001_schools_open_gps.csv', overwrite = T)
+file.copy("../../input_files/infection_hospitalization_risk.csv", output.dir)
+file.copy("../../input_files/infection_hospitalization_risk_5.csv", output.dir)
+file.copy('../../input_files/Localidad_Unidad_Catastral.csv',output.dir, overwrite = T)
+file.copy('../../input_files/COL_hosp_duration_time.txt',output.dir,overwrite = T)
 
 ##==============================================#
 ## Sweep fixed parameters-------------------
@@ -305,7 +311,7 @@ advance_seeding = 'exposed'
 school_vacation_end = as.Date('2021-04-25')
 
 ## Shelter in place
-interventions_st_df = read_csv('./input_files/interventions_Colombia.csv')
+interventions_st_df = read_csv('../../input_files/interventions_Colombia.csv')
 enable_shelter_in_place_in = 1
 
 enable_shelter_in_place_timeseries_in = 1
@@ -325,7 +331,7 @@ school_closure_duration_in = as.integer(school_vacation_end - interventions_st_d
 enable_nursing_homes_importations_in = 1
 
 ## Age specific susceptibility
-susceptibility_params = read_csv('./input_files/age_susceptibility_fit.csv')
+susceptibility_params = read_csv('../../input_files/age_susceptibility_fit.csv')
 enable_age_specific_susceptibility_in = 1
 influenza_susceptibility_by_age_rate_in = susceptibility_params$rate_in[1]
 influenza_susceptibility_by_age_cutoff_in = susceptibility_params$cutoff[1]
@@ -365,9 +371,9 @@ neighborhood_same_age_bias_in = 0.1
 ##==============================================#
 state_code_in = state_code
 ## 1. Read parameters with LL
-calibration_simdir = sprintf('FRED_%.0f_calibration_asymp_%.2f_fm_%.2f_ksus_%.2f_var_%.0f_vax_%03d_mov_old_files',state_code, asymp_infectivity_in,face_mask_transmission_efficacy_in,kids_susceptibility_age_in, variants_in, vaccination_in)
+calibration_simdir = sprintf('FRED_%.0f_calibration_asymp_%.2f_fm_%.2f_ksus_%.2f_var_%.0f_vax_%03d_mov',state_code, asymp_infectivity_in,face_mask_transmission_efficacy_in,kids_susceptibility_age_in, variants_in, vaccination_in)
 
-calibration_dir = file.path(getwd(), 'post_process/output','CALIBRATION',sprintf("%s_%s", calibration_simdir, "out"))
+calibration_dir = file.path(getwd(), '../../output','CALIBRATION',sprintf("%s_%s", calibration_simdir, "out"))
 params_df = read_csv(file.path(calibration_dir, 'FRED_parameters_out.csv'))
 fred_sweep_df = read_csv(file.path(calibration_dir, 'fred_output.csv'))
 params_sweep_ll = params_df %>%
@@ -533,7 +539,7 @@ scalars_sobol_df = bind_cols(scalars_sobol_df, get_ifr_param_string(scalars_sobo
 ## Initial conditions-------------------
 ##==============================================#
 ## initial_inf_file = sprintf('input_files/%d_imports_alternative.csv', state_code)
-initial_inf_file = sprintf('input_files/%d_imports_combined.csv', state_code)
+initial_inf_file = sprintf('../../input_files/%d_imports_combined.csv', state_code)
 primary_cases_file_in = file.path(output.dir, sprintf('initial_cases_%d_%d.txt',state_code,1:reps))
 #primary_cases_verylatedelta_file_in = file.path(output.dir, sprintf('initial_cases_verylatedelta_%d_%d.txt',state_code,1:reps))
 #primary_cases_latedelta_file_in = file.path(output.dir, sprintf('initial_cases_latedelta_%d_%d.txt',state_code,1:reps))
@@ -547,7 +553,7 @@ primary_cases_normal_omicron_lineage_file_in = file.path(output.dir, sprintf('in
 initial_df = read_csv(initial_inf_file)
 initial_df$day = as.numeric(difftime(initial_df$Date, as.Date(start_date), units='days'))
 
-variants_imp_file = 'input_files/COL_variant_imports.csv'
+variants_imp_file = '../../input_files/COL_variant_imports.csv'
 variants_imp_df = read_csv(variants_imp_file)
 
 ## Sample 'reps' from the initial conditions
@@ -759,11 +765,11 @@ shelter_time_lockdown_file = file.path(output.dir, sprintf('shelter_timeseries_l
 data_mov_day = as.integer(as.Date(fit_date) - as.Date(start_date))
 
 ## Moving away from google's data to Grandata census-tract specific
-## shelter_timeseries_df = read_csv('./input_files/interventions_covid_timevarying_shelter.csv')
-shelter_timeseries_df = read_csv('./input_files/11001_mobility_trends.csv')
+## shelter_timeseries_df = read_csv('../../input_files/interventions_covid_timevarying_shelter.csv')
+shelter_timeseries_df = read_csv('../../input_files/11001_mobility_trends.csv')
 shelter_timeseries_df$day = as.numeric(difftime(shelter_timeseries_df$date, as.Date(start_date), units='days'))
 
-shelter_timeseries_lockdown_df = read_csv('./input_files/11001_mobility_trends_lockdown.csv')
+shelter_timeseries_lockdown_df = read_csv('../../input_files/11001_mobility_trends_lockdown.csv')
 shelter_timeseries_lockdown_df$day = as.numeric(difftime(shelter_timeseries_lockdown_df$date, as.Date(start_date), units='days'))
 
 #for(nn in indx_sampled){
@@ -824,9 +830,9 @@ for(nn in 1:reps){
 ## holiday increase-------------------
 ##==============================================#
 if(variants_in == 0){
-  community_timeseries_df = read_csv('./input_files/interventions_covid_timevarying_community.csv')
+  community_timeseries_df = read_csv('../../input_files/interventions_covid_timevarying_community.csv')
 }else{
-  community_timeseries_df = read_csv('./input_files/interventions_covid_timevarying_community_baseline.csv')
+  community_timeseries_df = read_csv('../../input_files/interventions_covid_timevarying_community_baseline.csv')
 }
 community_timeseries_file = file.path(output.dir, sprintf("community_timeseries_%d.txt", 1:reps))
 community_timeseries_high_file = file.path(output.dir, sprintf("community_timeseries_high_%d.txt", 1:reps))
@@ -909,9 +915,9 @@ vaccine_stock_file = file.path(output.dir, "vaccination_stock_timeseries.txt")
 vaccine_daily_high_capacity_file = file.path(output.dir, "vaccination_daily_high_capacity_timeseries.txt")
 vaccine_stock_high_capacity_file = file.path(output.dir, "vaccination_stock_timeseries_high.txt")
 
-vaccine_stock_df = read.csv('./input_files/11001_vaccine_stock_timeseries.csv')
+vaccine_stock_df = read.csv('../../input_files/11001_vaccine_stock_timeseries.csv')
 vaccine_stock_df$day = as.numeric(as.Date(vaccine_stock_df$Date) - as.Date(start_date))
-vaccine_daily_df = read.csv('./input_files/11001_vaccine_capacity_timeseries.csv')
+vaccine_daily_df = read.csv('../../input_files/11001_vaccine_capacity_timeseries.csv')
 vaccine_daily_df$day = as.numeric(as.Date(vaccine_daily_df$Date) - as.Date(start_date))
 
 vaccine_stock_high_df = vaccine_stock_df
@@ -949,10 +955,10 @@ close(fileConn)
 ##==============================================#
 facemask_compliance_file = file.path(output.dir, sprintf('facemask_compliance_%d_%d.txt',state_code,1:reps))
 facemask_compliance_off_file = file.path(output.dir, sprintf('facemask_compliance_%d_%d.txt',state_code,1:reps))
-facemask_community_df  =  read_csv('./input_files/facemask_timeseries_compliance_community.csv')  %>%
+facemask_community_df  =  read_csv('../../input_files/facemask_timeseries_compliance_community.csv')  %>%
   mutate(state_name = tolower(state_name))
 
-facemask_timeseries_df = read_csv('./input_files/facemask_timeseries_compliance.csv') %>%
+facemask_timeseries_df = read_csv('../../input_files/facemask_timeseries_compliance.csv') %>%
   dplyr::select(-Day)
 facemask_timeseries_df$day = as.numeric(difftime(facemask_timeseries_df$Date, as.Date(start_date), units='days'))
 facemask_community_df$day = as.numeric(difftime(facemask_community_df$Date, as.Date(start_date), units='days'))
@@ -1040,10 +1046,10 @@ for(nn in 1:reps){
 ##==============================================#
 ## School closure-------------------
 ##==============================================#
-schools_open_list = read_csv('./input_files/11001_schools_open_gps.csv')
+schools_open_list = read_csv('../../input_files/11001_schools_open_gps.csv')
 schools_open_list$PropOpen[schools_open_list$PropOpen > 1] = 1.0
 current_open_date = as.Date('2020-10-15')
-localidad_esc = read_csv('./input_files/Localidad_Unidad_Catastral.csv')
+localidad_esc = read_csv('../../input_files/Localidad_Unidad_Catastral.csv')
 localidad_list = 1:19
 
 school_schedule_closed_file = file.path(output.dir, sprintf('school_schedule_closed_%d.txt',state_code))
@@ -1052,7 +1058,7 @@ school_schedule_open_all_file = file.path(output.dir, sprintf('school_schedule_o
 ## Parse updated list of schools reopened
 ## Process school reopen files and transform into Unidad Catastral capacity
 sim_start_date = as.Date(start_date)
-school_reopen_list_file = './input_files/11001_schools_open_gps_2021.csv'
+school_reopen_list_file = '../../input_files/11001_schools_open_gps_2021.csv'
 school_reopen_df = read_csv(school_reopen_list_file) %>%
   group_by(Grade, zipcode, start_date, end_date) %>%
   summarize(Capacity = ifelse(InPerson<Total_students, InPerson/Total_students, 1.0)) %>%
@@ -1741,22 +1747,22 @@ scalars = scalars_intervention %>%
 ##===============================================##
 ## Write the parameters to files---------------
 ##===============================================##
-#defaults_params = './input_files/params_covid.txt'
-defaults_covid_params = './input_files/params_covid.txt'
-defaults_alpha_params = './input_files/params_covid_alpha.txt'
-defaults_gamma_params = './input_files/params_covid_gamma.txt'
-defaults_kappa_params = './input_files/params_covid_kappa.txt'
-defaults_delta_params = './input_files/params_covid_delta.txt'
-defaults_omicron_params = './input_files/params_covid_omicron.txt'
-defaults_omicronBAX_params = './input_files/params_covid_omicronBAX.txt'
-defaults_omicronBQX_params = './input_files/params_covid_omicronBQX.txt'
-defaults_vaccine_params = './input_files/params_covid_vaccine.txt'
+#defaults_params = '../../input_files/params_covid.txt'
+defaults_covid_params = '../../input_files/params_covid.txt'
+defaults_alpha_params = '../../input_files/params_covid_alpha.txt'
+defaults_gamma_params = '../../input_files/params_covid_gamma.txt'
+defaults_kappa_params = '../../input_files/params_covid_kappa.txt'
+defaults_delta_params = '../../input_files/params_covid_delta.txt'
+defaults_omicron_params = '../../input_files/params_covid_omicron.txt'
+defaults_omicronBAX_params = '../../input_files/params_covid_omicronBAX.txt'
+defaults_omicronBQX_params = '../../input_files/params_covid_omicronBQX.txt'
+defaults_vaccine_params = '../../input_files/params_covid_vaccine.txt'
 
 if(variants_in >= 1){
   if(vaccination_in > 0){
-    defaults_vaccine_params = sprintf('./input_files/params_covid_vaccine_%d.txt', vaccination_in)
+    defaults_vaccine_params = sprintf('../../input_files/params_covid_vaccine_%d.txt', vaccination_in)
   }
-  defaults_params = './input_files/params_covid_combined.txt'
+  defaults_params = '../../input_files/params_covid_combined.txt'
   system(sprintf("/bin/cat %s %s %s %s %s %s %s %s %s > %s",
                  defaults_covid_params,
                  defaults_alpha_params, 
@@ -1865,23 +1871,12 @@ write_submission_array_slurm = function(experiment_supername_in,
   FUN(scalars, tmp_cmd_file)    
   n = nrow(scalars)
   submission_template = "#!/bin/bash
-#SBATCH --job-name=JOBNAME
-#SBATCH --array=1-JOBSQUEUE
-#SBATCH --nodes=1
-#SBATCH --cpus-per-task=JOBCORES
-#SBATCH --time=9:00:00                        # Time limit hrs:min:sec
-#SBATCH --output=errors_job_%j.log            # Standard output and error log
-
-#module load R/3.5.0
-#cd $SLURM_WORKDIR
-
 export FRED_HOME=FREDHOMESTR
 export FRED_RESULTS=FREDRESULTSSTR
-export PATH=${FRED_HOME}/bin:/shared/home/Azure-ASIS/anaconda3/bin:$PATH
-export LD_LIBRARY_PATH=/shared/home/Azure-ASIS/packages/lib:/shared/home/Azure-ASIS/anaconda3/lib
+export PATH=${FRED_HOME}/bin:$PATH
 
 file='TMPCMDFILE'
-cmd=`head -n ${SLURM_ARRAY_TASK_ID} $file | tail -n 1`
+cmd=`head -n 1 $file | tail -n 1`
 cd EXPERIMENTDIR
 eval $cmd
 "    
@@ -1898,9 +1893,11 @@ eval $cmd
     str_replace_all(pattern="TMPCMDFILE", replacement = tmp_cmd_file) %>%
     str_replace_all(pattern="JOBCORES", replacement = as.character(cores_in))
   
-  submission_file = sprintf("run_files/%s-%s.sh",experiment_supername_in,experiment_name_in)
+  submission_file = sprintf("../run_files/%s-%s.sh",experiment_supername_in,experiment_name_in)
   file.connection = file(submission_file)
   write(submission_str,file.connection)
+  system(sprintf("/bin/chmod a+x ../run_files/%s-%s.sh",experiment_supername_in,experiment_name_in))
+  
   close(file.connection)
   return(submission_file)
 }
