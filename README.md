@@ -28,11 +28,17 @@ git clone https://github.com/AGORA-COL/fred_colombia_implementation.git
 cd fred_colombia_implementation
 ```
 
-3. Run the makefile:
+3. Run the FRED setup:
 ```bash
 make setup
 ```
 This will setup FRED from https://github.com/confunguido/FRED
+
+4. Download the synthetic populations:
+```bash
+make download files="colombia_11001 colombia_1100101 ..."
+```
+You can select which populations to download and use.
 
 ## Outputs
 
