@@ -9,16 +9,22 @@ library(tidyverse)
 library(fredtools)
 library(readr)
 
-####################################
-## FRED set cluster enviromental variables
-####################################
+####################################################
+## local variables
+####################################################
+repo_name = 'fred_colombia_implementation'
 AGORA_path = '/home/deo/Documents/jobs/AGORA'
+
+####################################################
+## FRED set cluster enviromental variables
+####################################################
+setwd(sprintf('%s/%s/fred_run_stages', AGORA_path, repo_name))
 FRED_results_path = sprintf('%s/FRED_results', AGORA_path)
 
 Sys.setenv(FRED_HOME=sprintf('%s/FRED', AGORA_path))
 Sys.setenv(FRED_RESULTS=FRED_results_path)
 #Sys.setenv(scratch_dir=sprintf('%s/Colombia_implementation/scratch', AGORA_path))
-Sys.setenv(scratch_dir=sprintf('%s/FRED_Implementation/scratch', AGORA_path))
+Sys.setenv(scratch_dir=sprintf('%s/%s/scratch', AGORA_path, repo_name))
 Sys.setenv(PATH=sprintf('/bin/:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/usr/local/bin:/usr/local/sbin:%s/FRED/bin', AGORA_path))
 
 ##==============================================#
