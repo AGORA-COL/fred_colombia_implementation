@@ -8,6 +8,8 @@ setup:
 	else \
 		cd .. || (echo "Failed to change directory" && exit 1); \
 		git clone https://github.com/confunguido/FRED || (echo "Failed to clone repository" && exit 1); \
+		# Copy the input files to the FRED/src directory
+		cp -R ./input_files/FRED_compile_files/* FRED/src/ || (echo "Failed to copy files" && exit 1); \
 		cd FRED/src || (echo "Failed to change into repository directory" && exit 1); \
 		make || (echo "Make command failed" && exit 1); \
 		echo "Remember to add the synthetic populations"; \
