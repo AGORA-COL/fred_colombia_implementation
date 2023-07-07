@@ -1,6 +1,7 @@
 setup:
 	@mkdir -p output
 	@mkdir -p scratch
+	@mkdir -p fred_run_stages/run_files
 	@echo "Checking FRED..."
 	@if [ -d "../FRED" ]; then \
 		echo "FRED directory found, skipping clone and make. Remember to add the synthetic populations"; \
