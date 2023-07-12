@@ -15,7 +15,7 @@ library(fredtools)
 ## local variables
 ####################################################
 repo_name = 'fred_colombia_implementation'
-AGORA_path = '/home/deo/Documents/jobs/AGORA'
+AGORA_path = '~/AGORA'
 
 ####################################################
 ## FRED set cluster enviromental variables
@@ -375,7 +375,7 @@ calibration_simdir = sprintf('FRED_%.0f_calibration_asymp_%.2f_fm_%.2f_ksus_%.2f
 
 calibration_dir = file.path(getwd(), '../../output','CALIBRATION',sprintf("%s_%s", calibration_simdir, "out"))
 params_df = read_csv(file.path(calibration_dir, 'FRED_parameters_out.csv'))
-fred_sweep_df = read_csv(file.path(calibration_dir, 'fred_output.csv'))
+#fred_sweep_df = read_csv(file.path(calibration_dir, 'fred_output.csv'))
 params_sweep_ll = params_df %>%
   filter(state_code == state_code_in) %>%
   mutate(LL_total = LL)
@@ -1859,11 +1859,110 @@ write.csv(report_scalars, file.path(output.dir, 'FRED_parameters.csv'), row.name
 ## Write Slurm job function---------------
 ##===============================================##
 write_submission_array_slurm = function(experiment_supername_in,
+                                  experiment_name_in,
+                                  experiment_dir_in,
+                                  params_base,
+                                  job_base,
+                                  reps, scalars, FUN, cores_in=1, walltime_in = "0:45:00",
+                                  fred_home_dir_in="~/Coronavirus/FRED", fred_results_in="~/Coronavirus/FRED_RESULTS"){
+    print('submit array')    
+    jobname = sprintf("%s-%s",experiment_supername_in, experiment_name_in)
+    tmp_cmd_file = sprintf('tmp_execute_cmd_%s.txt',jobname)
+    FUN(scalars, tmp_cmd_file)    
+    n = nrow(scalars)
+    submission_template = "#!/bin/bash
+#SBATCH --job-name=JOBNAME
+#SBATCH --array=1-JOBSQUEUE
+#SBATCH --nodes=1
+#SBATCH --cpus-per-task=JOBCORES
+#SBATCH --time=9:00:00                        # Time limit hrs:min:sec
+#SBATCH --output=errors_job_%j.log            # Standard output and error log
+
+#module load R/3.5.0
+#cd $SLURM_WORKDIR
+
+export FRED_HOME=FREDHOMESTR
+export FRED_RESULTS=FREDRESULTSSTR
+export PATH=${FRED_HOME}/bin:$PATH
+
+file='TMPCMDFILE'
+cmd=`head -n ${SLURM_ARRAY_TASK_ID} $file | tail -n 1`
+cd EXPERIMENTDIR
+eval $cmd
+"    
+    submission_str = submission_template %>%
+        str_replace_all(pattern="JOBNAME", replacement = jobname) %>%
+        str_replace_all(pattern="EXPERIMENTDIR", replacement = experiment_dir_in) %>%
+        str_replace_all(pattern="FREDHOMESTR", replacement = fred_home_dir_in) %>%
+        str_replace_all(pattern="FREDRESULTSSTR", replacement = fred_results_in) %>%
+        str_replace_all(pattern="JOBWALLTIME", replacement = walltime_in) %>%
+        str_replace_all(pattern="JOBSQUEUE", replacement = as.character(n)) %>%
+        str_replace_all(pattern="PARAMSBASE", replacement = params_base) %>%
+        str_replace_all(pattern="JOBBASE", replacement = job_base) %>%
+        str_replace_all(pattern="REPS", replacement = as.character(reps)) %>%
+        str_replace_all(pattern="TMPCMDFILE", replacement = tmp_cmd_file) %>%
+        str_replace_all(pattern="JOBCORES", replacement = as.character(cores_in))
+        
+    submission_file = sprintf("../run_files/%s-%s.sh",experiment_supername_in,experiment_name_in)
+    file.connection = file(submission_file)
+    write(submission_str,file.connection)
+    system(sprintf("/bin/chmod a+x ../run_files/%s-%s.sh",experiment_supername_in,experiment_name_in))
+    close(file.connection)
+    return(submission_file)
+}
+
+write_submission_array_htcondor = function(experiment_supername_in,
+                                           experiment_name_in,
+                                           experiment_dir_in,
+                                           params_base,
+                                           job_base,
+                                           reps, scalars, FUN, cores_in=1, walltime_in = "0:45:00",
+                                           fred_home_dir_in="~/Coronavirus/FRED", fred_results_in="~/Coronavirus/FRED_RESULTS"){
+    print('submit array')    
+    jobname = sprintf("%s-%s",experiment_supername_in, experiment_name_in)
+    tmp_cmd_file = sprintf('tmp_execute_cmd_%s.txt',jobname)
+    FUN(scalars, tmp_cmd_file)    
+    n = nrow(scalars)
+    submission_template = "
+universe                = vanilla
+executable              = /usr/bin/env
+arguments               = bash -c 'source /etc/profile; eval `head -n $(Process) TMPCMDFILE | tail -n 1`'
+error                   = err.$(Process)
+output                  = out.$(Process)
+log                     = log.$(Process)
+request_cpus            = JOBCORES
+request_memory          = 30 GB
+request_disk            = 10 GB
++JobFlavour             = \"testmatch\"
+getenv                  = True
+environment             = \"FRED_HOME=FREDHOMESTR;FRED_RESULTS=FREDRESULTSSTR;PATH=${FRED_HOME}/bin:${PATH};\"
+queue JOBSQUEUE
+"   
+    submission_str = submission_template %>%
+        str_replace_all(pattern="JOBNAME", replacement = jobname) %>%
+        str_replace_all(pattern="EXPERIMENTDIR", replacement = experiment_dir_in) %>%
+        str_replace_all(pattern="FREDHOMESTR", replacement = fred_home_dir_in) %>%
+        str_replace_all(pattern="FREDRESULTSSTR", replacement = fred_results_in) %>%
+        str_replace_all(pattern="JOBWALLTIME", replacement = walltime_in) %>%
+        str_replace_all(pattern="JOBSQUEUE", replacement = as.character(n)) %>%
+        str_replace_all(pattern="PARAMSBASE", replacement = params_base) %>%
+        str_replace_all(pattern="JOBBASE", replacement = job_base) %>%
+        str_replace_all(pattern="REPS", replacement = as.character(reps)) %>%
+        str_replace_all(pattern="TMPCMDFILE", replacement = tmp_cmd_file) %>%
+        str_replace_all(pattern="JOBCORES", replacement = as.character(cores_in))
+        
+    submission_file = sprintf("../run_files/%s-%s.condor",experiment_supername_in,experiment_name_in)
+    file.connection = file(submission_file)
+    write(submission_str,file.connection)
+    system(sprintf("/bin/chmod a+x ../run_files/%s-%s.condor",experiment_supername_in,experiment_name_in))
+    close(file.connection)
+    return(submission_file)
+}
+
+write_submission_array_local = function(experiment_supername_in,
                                         experiment_name_in,
                                         experiment_dir_in,
-                                        params_base,
-                                        job_base,
-                                        reps, scalars, FUN, cores_in=1, walltime_in = "0:45:00",
+                                        simulation_id, scalars, FUN,
                                         fred_home_dir_in="~/Coronavirus/FRED", fred_results_in="~/Coronavirus/FRED_RESULTS"){
   print('submit array')    
   jobname = sprintf("%s-%s",experiment_supername_in, experiment_name_in)
@@ -1876,22 +1975,16 @@ export FRED_RESULTS=FREDRESULTSSTR
 export PATH=${FRED_HOME}/bin:$PATH
 
 file='TMPCMDFILE'
-cmd=`head -n 1 $file | tail -n 1`
+cmd=`head -n {ARRAY_TASK_ID} $file | tail -n 1`
 cd EXPERIMENTDIR
 eval $cmd
 "    
   submission_str = submission_template %>%
-    str_replace_all(pattern="JOBNAME", replacement = jobname) %>%
     str_replace_all(pattern="EXPERIMENTDIR", replacement = experiment_dir_in) %>%
+    str_replace_all(pattern="ARRAY_TASK_ID", replacement = simulation_id) %>%
     str_replace_all(pattern="FREDHOMESTR", replacement = fred_home_dir_in) %>%
     str_replace_all(pattern="FREDRESULTSSTR", replacement = fred_results_in) %>%
-    str_replace_all(pattern="JOBWALLTIME", replacement = walltime_in) %>%
-    str_replace_all(pattern="JOBSQUEUE", replacement = as.character(n)) %>%
-    str_replace_all(pattern="PARAMSBASE", replacement = params_base) %>%
-    str_replace_all(pattern="JOBBASE", replacement = job_base) %>%
-    str_replace_all(pattern="REPS", replacement = as.character(reps)) %>%
     str_replace_all(pattern="TMPCMDFILE", replacement = tmp_cmd_file) %>%
-    str_replace_all(pattern="JOBCORES", replacement = as.character(cores_in))
   
   submission_file = sprintf("../run_files/%s-%s.sh",experiment_supername_in,experiment_name_in)
   file.connection = file(submission_file)
@@ -1950,6 +2043,29 @@ submit_jobs = function(experiment_supername_in,
         FUN = FUN, 
         cores_in = cores_in, 
         walltime_in=walltime_in,
+        fred_home_dir_in=fred_home_dir_in, 
+        fred_results_in=fred_results_in)
+    }else if(subsys == "HTCONDOR"){
+      submission_file = write_submission_array_slurm(
+        experiment_supername_in = experiment_supername_in,
+        experiment_name_in = experiment_name_in,
+        experiment_dir_in = experiment_dir_in,
+        params_base = params_base,
+        job_base = job_base,
+        reps = reps, scalars = scalars, 
+        FUN = FUN, 
+        cores_in = cores_in, 
+        walltime_in=walltime_in,
+        fred_home_dir_in=fred_home_dir_in, 
+        fred_results_in=fred_results_in)
+    }else if(subsys == "local"){
+      submission_file = write_submission_array_local(
+        experiment_supername_in = experiment_supername_in,
+        experiment_name_in = experiment_name_in,
+        experiment_dir_in = experiment_dir_in,
+        job_base = job_base,
+        simulation_id = 1, scalars = scalars, 
+        FUN = FUN, 
         fred_home_dir_in=fred_home_dir_in, 
         fred_results_in=fred_results_in)
     }
