@@ -17,11 +17,12 @@ setup:
 	@echo "Checking R version..."
 	@R --version | grep 'R version' | cut -d ' ' -f 3 | { read version; if [ "$${version%%.*}" -ge 4 ]; then echo "R version 4 or above is installed"; else echo "R version 4 or above is required"; exit 1; fi; }
 	@$(MAKE) install_packages
+	@./parse_errors.sh errors.log
 
 install_packages:
 	@echo "Installing necessary R packages..."
-	@Rscript -e 'list_of_packages <- c("pomp", "tidyverse", "readr", "devtools", "doParallel"); for(package in list_of_packages){ if(!package %in% installed.packages()){ install.packages(package, repos = "https://cran.r-project.org") }}'
-	@Rscript -e 'devtools::install_github("confunguido/fredtools")'
+	@Rscript -e 'list_of_packages <- c("pomp", "devtools"); for(package in list_of_packages){ if(!package %in% installed.packages()){ install.packages(package, repos = "https://cran.r-project.org") }}' 2>>errors.log || true
+	@Rscript -e 'devtools::install_github("confunguido/fredtools")' 2>>errors.log || true
     
 PATH_TO_EXTRACT := ../FRED/populations/
 download:
