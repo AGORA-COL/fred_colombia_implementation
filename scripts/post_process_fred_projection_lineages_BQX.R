@@ -12,13 +12,13 @@ library(readr)
 ####################################################
 ## local variables
 ####################################################
-repo_name = 'fred_colombia_implementation'
-AGORA_path = '/home/deo/Documents/jobs/AGORA'
+repo_name = './'
+AGORA_path = '../'
 
 ####################################################
 ## FRED set cluster enviromental variables
 ####################################################
-setwd(sprintf('%s/%s/fred_run_stages', AGORA_path, repo_name))
+#setwd(sprintf('%s/%s/fred_run_stages', AGORA_path, repo_name))
 FRED_results_path = sprintf('%s/FRED_results', AGORA_path)
 
 Sys.setenv(FRED_HOME=sprintf('%s/FRED', AGORA_path))
