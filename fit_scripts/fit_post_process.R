@@ -2,10 +2,16 @@
 ## Plot model fit for Bogotá
 ## Author: Guido España
 ## 2020
-##===============================#
-## Setup-------------
-##===============================#
-setwd('/shared/home/Azure-ASIS/FRED_Implementation/fit_scripts')
+####################################################
+## local variables
+####################################################
+repo_name = 'fred_colombia_implementation'
+AGORA_path = '/mnt/disco_aux/trace/apps'
+
+####################################################
+## FRED set cluster enviromental variables
+####################################################
+setwd(sprintf('%s/%s/fit_scripts', AGORA_path, repo_name))
 
 set.seed(123456)
 library(dplyr)
