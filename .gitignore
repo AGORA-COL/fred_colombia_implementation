@@ -3,3 +3,9 @@
 **/output/
 **/run_files/
 **/*.log
+**/data/
+**/facebook_mobility_trends/
+**/facebook_open_data/
+**/dominance_data/
+**/gadm_data/
+**/mobility_trends/
