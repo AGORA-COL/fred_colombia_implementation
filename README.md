@@ -40,6 +40,13 @@ make download files="colombia_11001 colombia_1100101 ..."
 ```
 You can select which populations to download and use.
 
+## Input files
+
+Here are listed the input files used in each simulation. Click at the link to access a visualization of the data.
+
+[Dominance plot per department](https://dvelozad.github.io/fred_widgets/timeseries_plot.html)
+
+
 ## Outputs
 
 The program will output a series of data tables showing the progression of the disease, such as number of infected, number of recovered, number of deceased individuals, Hospitalizations, and ICU usage over time. 
