@@ -36,9 +36,22 @@ chunk_size <- 50
 ####################################################
 ## local variables
 ####################################################
-workers = c("worker4", "worker5", "worker7", "worker8", "worker9", "worker13")
+workers = c("hpc02-w000.javeriana.edu.co",
+            "hpc02-w002.javeriana.edu.co", 
+            "hpc02-w003.javeriana.edu.co", 
+            "hpc02-w004.javeriana.edu.co", 
+            "hpc02-w005.javeriana.edu.co", 
+            "hpc02-w006.javeriana.edu.co", 
+            "hpc02-w007.javeriana.edu.co", 
+            "hpc02-w008.javeriana.edu.co", 
+            "hpc02-w009.javeriana.edu.co", 
+            "hpc02-w010.javeriana.edu.co", 
+            "hpc02-w011.javeriana.edu.co", 
+            "hpc02-w012.javeriana.edu.co", 
+            "hpc02-w013.javeriana.edu.co")
+
 repo_name = 'fred_colombia_implementation'
-AGORA_path = '/mnt/disco_aux/trace/apps'
+AGORA_path = '/zine/HPC02S1/ex-dveloza/AGORA/apps'
 
 worker_list <- paste(workers, collapse = '","')
 
@@ -243,7 +256,7 @@ write_cmd_function <- function(scalars_in, tmpfile, output_path='../run_files'){
 ## Set STATE-------------------
 ##==============================================#
 calibration_label                   = 'cal_test_1'
-state_code                          = 11001
+state_code                          = 44
 reps                                = 2000
 reps_per_job                        = 1
 fit_date                            = as.Date('2021-03-26')
@@ -1344,7 +1357,7 @@ write_condor_sh_execution_file <- function(experiment_label_in,
                                            jobs_queue, 
                                            tmp_cmd_file,
                                            worker         = "worker4",
-                                           local_apps_dir = AGORA_path, 
+                                           local_apps_dir = sprintf("%s/../", AGORA_path), 
                                            output_path    = "../run_files/") {
                                             
   sh_files = c() 

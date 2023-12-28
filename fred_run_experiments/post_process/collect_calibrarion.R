@@ -17,7 +17,7 @@ library(DirichletReg)
 ## local variables
 ####################################################
 repo_name = 'fred_colombia_implementation'
-AGORA_path = '/mnt/disco_aux/trace/apps'
+AGORA_path = '/zine/HPC02S1/ex-dveloza/AGORA/apps'
 
 ####################################################
 ## FRED set cluster enviromental variables
@@ -28,7 +28,7 @@ FRED_results_path = sprintf('%s/FRED_results', AGORA_path)
 Sys.setenv(FRED_HOME=sprintf('%s/FRED', AGORA_path))
 Sys.setenv(FRED_RESULTS=FRED_results_path)
 Sys.setenv(scratch_dir=sprintf('%s/%s/scratch', AGORA_path, repo_name))
-Sys.setenv(PATH=sprintf('/bin/:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/usr/local/bin:/usr/local/sbin:%s/FRED/bin', AGORA_path))
+Sys.setenv(PATH=sprintf('/zine/HPC02S1/ex-dveloza/mambaforge/bin:/bin/:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/usr/local/bin:/usr/local/sbin:%s/FRED/bin', AGORA_path))
 
 ##==============================================#
 ## load dirs -------------
@@ -78,8 +78,13 @@ get_loglikelihood_dominance <- function(data_in, model_in){
 
     model_mat = as.matrix(as.data.frame(dplyr::select(data_ll, Date, Variant, Dominance_model) %>% spread(key = Variant, value = Dominance_model) %>% dplyr::select(-Date)))
     model_mat[model_mat <= 0] = 0.000000000000001
+
+    # Replace NaN values across all columns
+    model_mat[is.na(model_mat)] <- 0.0000000000001
+
     data_mat = as.matrix(as.data.frame(dplyr::select(data_ll, Date, Variant, Dominance_data) %>% spread(key = Variant, value = Dominance_data) %>% dplyr::select(-Date)))
     data_mat[data_mat <= 0] = 0.000000000000001
+
     nll = -ddirichlet(data_mat, model_mat, log = T, sum.up = T)
     ## if(is.na(nll)){
     ##     browser()
@@ -139,7 +144,8 @@ process_job_data <- function(job_id, process_age = FALSE, age_data = data.frame(
     job_df = read.csv(text = fred_csv_st, stringsAsFactors = FALSE)
 
     print(sprintf("Processing job %s", job_id))
-    
+
+   
     ##========================================#
     ## Age stuff-------------
     ##========================================#
@@ -175,6 +181,12 @@ process_job_data <- function(job_id, process_age = FALSE, age_data = data.frame(
     if('CF_4_mean' %in% colnames(job_df)){
         tmp_data$CF_total = tmp_data$CF_4_mean + tmp_data$CF_total
     }
+    if('CF_5_mean' %in% colnames(job_df)){
+        tmp_data$CF_total = tmp_data$CF_5_mean + tmp_data$CF_total
+    }
+    if('CF_6_mean' %in% colnames(job_df)){
+        tmp_data$CF_total = tmp_data$CF_6_mean + tmp_data$CF_total
+    }
     if(!('Chosp_mean' %in% colnames(job_df))){
         job_df$Chosp_mean = NA
     }
@@ -191,6 +203,12 @@ process_job_data <- function(job_id, process_age = FALSE, age_data = data.frame(
     }
     if('Chosp_4_mean' %in% colnames(job_df)){
         tmp_data$Chosp_total = tmp_data$Chosp_mean + tmp_data$Chosp_4_mean
+    }
+    if('Chosp_5_mean' %in% colnames(job_df)){
+        tmp_data$Chosp_total = tmp_data$Chosp_mean + tmp_data$Chosp_5_mean
+    }
+    if('Chosp_6_mean' %in% colnames(job_df)){
+        tmp_data$Chosp_total = tmp_data$Chosp_mean + tmp_data$Chosp_6_mean
     }
     tmp_data_dic = tmp_data %>% 
         filter(Date < as.Date('2021-02-01'))
@@ -229,7 +247,20 @@ process_job_data <- function(job_id, process_age = FALSE, age_data = data.frame(
             tmp_LL_df$LL_AR = tmp_LL_AR
         }
 
-        if('CF_1_mean' %in% colnames(job_df)){                
+        if('CF_6_mean' %in% colnames(job_df)){                
+            tmp_job = filter(job_df, Date %in% dominance_data$Date) %>%
+                mutate(DomAlpha = C_1_mean / (C_1_mean + C_mean + C_2_mean + C_3_mean + C_4_mean + C_5_mean + C_6_mean),
+                       DomGamma = C_2_mean / (C_1_mean + C_mean + C_2_mean + C_3_mean + C_4_mean + C_5_mean + C_6_mean), 
+                       DomKappa = C_3_mean / (C_1_mean + C_mean + C_2_mean + C_3_mean + C_4_mean + C_5_mean + C_6_mean), 
+                       DomDelta = C_4_mean / (C_1_mean + C_mean + C_2_mean + C_3_mean + C_4_mean + C_5_mean + C_6_mean),
+                       DomOmicron = C_5_mean / (C_1_mean + C_mean + C_2_mean + C_3_mean + C_4_mean + C_5_mean + C_6_mean),
+                       DomOmicronBAX = C_6_mean / (C_1_mean + C_mean + C_2_mean + C_3_mean + C_4_mean + C_5_mean + C_6_mean)) %>%
+                dplyr::select(Date, starts_with('Dom')) %>%
+                gather(key = Variant, value = Dominance, -Date) %>%
+                mutate(Variant = str_replace(Variant,'Dom',''))
+
+            tmp_LL_dom =  get_loglikelihood_dominance(dominance_data, tmp_job)
+            tmp_LL_df$LL_dom = tmp_LL_dom} else if('CF_1_mean' %in% colnames(job_df)){                
             tmp_job = filter(job_df, Date %in% dominance_data$Date) %>%
                 mutate(DomAlpha = C_1_mean / (C_1_mean + C_mean + C_2_mean + C_3_mean + C_4_mean),
                        DomGamma = C_2_mean / (C_1_mean + C_mean + C_2_mean + C_3_mean + C_4_mean), 
@@ -299,6 +330,12 @@ process_job_data <- function(job_id, process_age = FALSE, age_data = data.frame(
     if('CF_4_mean' %in% colnames(job_df)){
         cols_output = c(cols_output, 'CF_4_mean',  "C_4_mean",  "Chosp_4_mean")                  
     }
+    if('CF_5_mean' %in% colnames(job_df)){
+        cols_output = c(cols_output, 'CF_5_mean',  "C_5_mean",  "Chosp_5_mean")                  
+    }
+    if('CF_6_mean' %in% colnames(job_df)){
+        cols_output = c(cols_output, 'CF_6_mean',  "C_6_mean",  "Chosp_6_mean")                  
+    }
     return(list(job_df = job_df[,cols_output],
                 extra_params_df = tmp_LL_df))
 }
@@ -306,7 +343,7 @@ process_job_data <- function(job_id, process_age = FALSE, age_data = data.frame(
 ##========================================#
 ## Inputs --------------------
 ##========================================#
-calibration_label = 'cal_test_1'
+calibration_label = 'calibra_test_4'
 state_input = 11001
 data_days_rm = 4
 variants_in = 1
@@ -343,7 +380,8 @@ if(length(args) >= 1){
 incidence_file      = 'COL_covid_death_data.csv'
 age_incidence_file  = 'Age_COL_covid_data.csv'
 uci_incidence_file  = 'BOG_UCI_timeseries.csv'
-variance_dom_file   = 'Bogota_Covid_Variants_Dominance.csv'
+variance_dom_file   = 'dominance_data/11_dominance_data.csv'
+#variance_dom_file   = 'Bogota_Covid_Variants_Dominance.csv'
 
 if(!file.exists(file.path('../../input_files',incidence_file))){
     stop("Incidence data not found")
@@ -391,7 +429,9 @@ Bog_dom_data = read_csv(file.path('../../input_files', variance_dom_file)) %>%
     rename(Date = date)
 
 col_variants = 1:5
-variants_list = c('Alpha', 'Gamma', 'Kappa', 'Delta')
+variants_list = c('Alpha', 'Gamma', 'Kappa', 'Delta') #, 'Omicron', 'OmicronBAX'
+
+Bog_dom_data <- Bog_dom_data %>% dplyr::select('Date','week','Alpha', 'Gamma', 'Kappa', 'Lambda','Others')
 
 dominance_data = Bog_dom_data %>% gather(key = Variant, value = Dominance, -Date, -week) %>%
     left_join(data.frame(Color = col_variants[1:length(variants_list)], Variant = variants_list), by = 'Variant') %>%
@@ -425,5 +465,5 @@ epi_data_out = read_csv(file.path('../../input_files', incidence_file)) %>%
     filter(MunCode %in% interventions_df$State) %>%
     filter(Date < (max(Date, na.rm = T) - data_days_rm))
 
-write_csv(epi_data_out, file.path(output_dir,incidence_file))
-write_csv(BOG_age_data, file.path(output_dir,age_incidence_file))
+write.csv(epi_data_out, file.path(output_dir,incidence_file))
+write.csv(BOG_age_data, file.path(output_dir,age_incidence_file))

@@ -1,0 +1,7 @@
+Vaccine,ID,Persona,E_inf_1d_m,E_inf_1d_l,E_inf_1d_u,E_inf_2d_m,E_inf_2d_l,E_inf_2d_u,E_symp_1d_m,E_symp_1d_l,E_symp_1d_u,E_symp_2d_m,E_symp_2d_l,E_symp_2d_u,E_sevd_1d_m,E_sevd_1d_l,E_sevd_1d_u,E_sevd_2d_m,E_sevd_2d_l,E_sevd_2d_u,E_death_1d_m,E_death_1d_l,E_death_1d_u,E_death_2d_m,E_death_2d_l,E_death_2d_u
+AstraZeneca,0,Juliana,,,,,,,,,,0.76,0.68,0.82,,,,1,,1,,,,,,
+Sinovac,1,Juliana,,,,,,,0.1613,0.143,17.92,0.6696,0.6528,0.6855,0.427,0.3708,0.4782,0.8855,0.8446,0.9156,0.4023,0.3263,0.4697,0.8044,0.7316,0.8575
+Pfizer,2,Juliana,,,,,,,,,,0.913,0.89,0.932,,,,0.953,0.71,0.999,,,,,,
+Moderna,3,Zulma,,,,,,,,,,0.941,0.893,0.968,1,,,,,,,,,,,
+Janssen,4,Zulma,,,,,,,0.699,0.59,0.734,,,,0.931,0.727,0.992,,,,1,,,,,
+Sputnik,5,Zulma,,,,,,,0.876,0.811,0.918,0.911,0.838,0.951,1,0.944,1,,,,,,,,,

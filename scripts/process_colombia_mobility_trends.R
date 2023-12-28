@@ -21,18 +21,26 @@ library(RColorBrewer)
 library(osmplotr)
 library(RCurl)
 library(data.table)
-options(digits = 22,scipen = 999)
-
 library(stringi)
 library(stringr)
 library(scales)
+options(digits = 22,scipen = 999)
 
-
+##===============================================================#
+## files paths -------------
+##===============================================================#
 metadata_file <- "/zine/HPC02S1/ex-dveloza/AGORA/apps/synthetic_populations/data/param_files/colombia_municipios_metadata.json"
-json_data = rjson::fromJSON(
-                                file = metadata_file,
-                                simplify = F)
+municipios_shp <- '/zine/HPC02S1/ex-dveloza/AGORA/apps/synthetic_populations/data/raw_data/geodata/Colombia_shp/Municipios.shp'
+population_data_file <- '/zine/HPC02S1/ex-dveloza/AGORA/apps/synthetic_populations/data/processed_data/popdata/colombia_population_data_municp.csv'
+facebook_data_file_0 <- '/zine/HPC02S1/ex-dveloza/AGORA/apps/fred_colombia_implementation/input_files/facebook_open_data/movement-range-data-2020-03-01--2020-12-31.txt'
+facebook_data_file <- '/zine/HPC02S1/ex-dveloza/AGORA/apps/fred_colombia_implementation/input_files/facebook_open_data/movement-range-2022-05-22.txt'
+gadm_file <- '/zine/HPC02S1/ex-dveloza/AGORA/apps/fred_colombia_implementation/input_files/gadm_data/gadm41_COL_2.shp'
 
+##===============================================================#
+## Get municipalities metadata-------------
+##===============================================================#
+json_data = rjson::fromJSON( file = metadata_file,
+                             simplify = F)
 
 # Initialize an empty data frame to store the results
 colombia_municipalities_info <- data.frame(
@@ -79,20 +87,22 @@ colombia_municipalities_info <- colombia_municipalities_info %>%
 ## Read shp data-------------
 ##===============================================================#
 ## Maybe only download shp data if it's not downloaded yet')
-mun_shp = rgdal::readOGR('/zine/HPC02S1/ex-dveloza/AGORA/apps/synthetic_populations/data/raw_data/geodata/Colombia_shp/Municipios.shp')
-population_mun = read_csv('/zine/HPC02S1/ex-dveloza/AGORA/apps/synthetic_populations/data/processed_data/popdata/colombia_population_data_municp.csv')
+mun_shp = rgdal::readOGR(municipios_shp)
+gadm_shp = rgdal::readOGR(gadm_file)
+population_mun = read_csv(population_data_file)
 
 ##===============================================================#
 ## Read data-------------
 ##===============================================================#
-date_seq = seq(from = as.Date('2020-03-02'), to = as.Date('2021-01-17'), by = 1)
-
-file_facebook_data <- '/zine/HPC02S1/ex-dveloza/AGORA/apps/fred_colombia_implementation/input_files/facebook_open_data/movement-range-2022-05-22.txt'
-file_gadm <- '/zine/HPC02S1/ex-dveloza/AGORA/apps/fred_colombia_implementation/input_files/gadm_data/gadm41_COL_2.shp'
-
-facebook_data <- read.csv(file_facebook_data, sep = '\t') %>% 
-                                filter(country == 'COL') %>% 
+facebook_data_0 <- read.csv(facebook_data_file_0, sep = '\t') %>% 
+                                dplyr::filter(country == 'COL') %>% 
                                 mutate(polygon_name = toupper(polygon_name))
+
+facebook_data <- read.csv(facebook_data_file, sep = '\t') %>% 
+                                dplyr::filter(country == 'COL') %>% 
+                                mutate(polygon_name = toupper(polygon_name))
+
+facebook_data <- bind_rows(facebook_data_0, facebook_data)
 
 facebook_data$num_dpto <- as.numeric(str_extract(facebook_data$polygon_id, "(?<=\\.)\\d+"))
 facebook_data$num_mun  <- as.numeric(str_extract(facebook_data$polygon_id, "(?<=\\.)\\d+(?=_1)"))
@@ -116,9 +126,6 @@ facebook_data <- facebook_data %>%
       TRUE ~ polygon_name
     )
   )
-
-
-gadm_shp = rgdal::readOGR(file_gadm)
 
 gadm_dpto_data <- gadm_shp@data %>% dplyr::select(GID_2, NAME_1, NAME_2) %>%
                 mutate(num_dpto_gadm = as.numeric(str_extract(GID_2, "(?<=\\.)\\d+"))) %>%
@@ -162,18 +169,27 @@ facebook_data <- facebook_data %>%
 
 
 facebook_data_divipola_code <- left_join(facebook_data, colombia_municipalities_info, by = c("polygon_name" = "mun_name", "num_dpto" = "num_dpto_gadm"))
-# write_csv(facebook_data_divipola_code, '../input_files/COL_mobility_trends_facebook.csv')
+write_csv(facebook_data_divipola_code, '../input_files/COL_mobility_trends_facebook.csv')
 
 ##===============================================================#
 ## Combine shape files-------------
 ##===============================================================#
+population_mun <- population_mun %>% dplyr::filter(Code != "00", Code != Zone, Year == '2018', Gender == 'Total')
 
-population_mun <- population_mun %>% filter(Code != "00", Code != Zone, Year == '2018', Gender == 'Total')
+agg_population_mun <- population_mun %>%
+    dplyr::filter(Year == '2018', Gender == 'Total') %>%
+    group_by(Code, Zone) %>%
+    summarize(mun_population = sum(Pop), .groups = 'drop') %>% mutate(Zone = as.numeric(Zone), Code = as.numeric(Code))
+
+agg_population_dept <- agg_population_mun %>%
+    group_by(Code) %>%
+    summarize(dept_population = sum(mun_population), .groups = 'drop')
+
 dept_list <- unique(population_mun$Code)
 for(dept_code in dept_list){
     cat(crayon::red(sprintf("\nCurrent department : %s\n", dept_code)))
 
-    dept_population <- population_mun %>% filter(Code == dept_code)
+    dept_population <- population_mun %>% dplyr::filter(Code == dept_code) %>% mutate(Zone = as.numeric(Zone))
     total_population <- sum(dept_population$Pop)
     mun_list <- unique(dept_population$Zone)
 
@@ -182,29 +198,21 @@ for(dept_code in dept_list){
     # Loop through each unique date in the facebook_data_divipola_code dataframe
     unique_dates <- unique(facebook_data_divipola_code$ds)
     for(date in unique_dates){
-        # Get the mobility data for the current department and date
         dept_mobility <- facebook_data_divipola_code %>% 
-                    filter(department_code == as.numeric(dept_code) & ds == date)
+                    dplyr::filter(department_code == as.numeric(dept_code) & ds == date)
         
-        # Identify the municipalities with and without mobility data
         mun_with_data <- unique(dept_mobility$divipola_code)
         mun_without_data <- setdiff(as.numeric(mun_list), as.numeric(mun_with_data))
         
-        # If there are municipalities without data, estimate their mobility trend
         if(length(mun_without_data) > 0){
-            # Sum up the trends of municipalities with data, weighted by their population
             weighted_sum <- sum(dept_mobility$all_day_bing_tiles_visited_relative_change * 
-                                    dept_population %>% filter(as.numeric(Zone) %in% mun_with_data) %>% pull(Pop))
+                                    dept_population %>% dplyr::filter(as.numeric(Zone) %in% mun_with_data) %>% pull(Pop))
             
-            # Get the total population of municipalities with data
-            total_pop_with_data <- sum(dept_population %>% filter(as.numeric(Zone) %in% mun_with_data) %>% pull(Pop))
-            
-            # Calculate the average trend for the department
+            total_pop_with_data <- sum(dept_population %>% dplyr::filter(as.numeric(Zone) %in% mun_with_data) %>% pull(Pop))
             avg_trend <- weighted_sum / total_pop_with_data
             
-            # Create a data frame for the municipalities without data
             mun_without_data_df <- dept_population %>% 
-                filter(as.numeric(Zone) %in% mun_without_data) %>%
+                dplyr::filter(as.numeric(Zone) %in% mun_without_data) %>%
                 mutate(
                 department_code = as.numeric(dept_code),
                 divipola_code = as.numeric(Zone),
@@ -221,39 +229,50 @@ for(dept_code in dept_list){
     }
 
     dept_mobility <- bind_rows(dept_all_days_list)
-    write_csv(dept_mobility, sprintf('/zine/HPC02S1/ex-dveloza/AGORA/apps/fred_colombia_implementation/input_files/%s_facebook_mobility_trends.csv', dept_code))
-}
 
+    # Joining with the population_mun to add the population per "municipio" and department
+    dept_mobility <- dept_mobility %>%
+                      left_join(agg_population_mun, by = c("department_code" = "Code", "divipola_code" = "Zone")) %>%
+                      left_join(agg_population_dept, by = c("department_code" = "Code")) %>%
+                      rename("date" = "ds",
+                             "shelter_trend" = "all_day_bing_tiles_visited_relative_change",
+                             "Pop" = "mun_population",
+                             "Pop_dpto" = "dept_population")
+
+
+    write_csv(dept_mobility, sprintf('../input_files/%s_facebook_mobility_trends.csv', dept_code))
+}
 
 ##===============================================================#
 ## Plot trends by locality-------------
 ##===============================================================#
-my_colors = brewer.pal(6,"RdYlBu")
-my_colors = colorRampPalette(my_colors)(13)
-mov_brk <- cut(as.numeric(dept_mobility$all_day_bing_tiles_visited_relative_change), breaks = c(-1,-0.5,-0.2,0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,2.0), include.lowest = T, right = F)
-my_colors = my_colors[as.numeric(mov_brk)]
-
-dept_mobility$ds <- as.Date(dept_mobility$ds)
+dept_mobility$date <- as.Date(dept_mobility$date)
 
 # Normalizing the values
 max_values <- dept_mobility %>%
   group_by(divipola_code) %>%
-  summarize(max_value = max(all_day_bing_tiles_visited_relative_change, na.rm = TRUE))
+  summarize(max_value = max(shelter_trend, na.rm = TRUE))
 
 dept_mobility <- dept_mobility %>%
   left_join(max_values, by = "divipola_code") %>%
-  mutate(normalized_values = all_day_bing_tiles_visited_relative_change / max_value)
+  mutate(normalized_values = shelter_trend / max_value)
+
+my_colors = brewer.pal(6,"RdYlBu")
+my_colors = colorRampPalette(my_colors)(13)
+mov_brk <- cut(as.numeric(dept_mobility$shelter_trend), breaks = c(-1,-0.5,-0.2,0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,2.0), include.lowest = T, right = F)
+my_colors = my_colors[as.numeric(mov_brk)]
+
 
 # Using ggplot2 for the visualization
-p <- ggplot(dept_mobility, aes(x = ds, y = normalized_values, color = as.factor(divipola_code))) +
+p <- ggplot(dept_mobility, aes(x = date, y = normalized_values, color = as.factor(divipola_code))) +
   geom_line() +
   scale_color_manual(values = my_colors) +
   labs(title = "Normalized Mobility Trend by Region", 
        x = "Date", 
        y = "Normalized Mobility Trend", 
        color = "Region Code") +
-  theme_minimal() +
-  theme(legend.position = "bottom")
+  theme_minimal()# +
+  # theme(legend.position = "bottom")
 
 ggsave(filename = "mobility_plot.png", plot = p, width = 10, height = 6, dpi = 300)
 
@@ -265,7 +284,7 @@ ggsave(filename = "mobility_plot.png", plot = p, width = 10, height = 6, dpi = 3
 # For simplicity, let's take the latest mobility data for each region
 latest_mobility <- dept_mobility %>%
   group_by(divipola_code) %>%
-  arrange(desc(ds)) %>%
+  arrange(desc(date)) %>%
   slice(1)
 
 mun_shp_sf <- st_as_sf(mun_shp)
@@ -308,7 +327,7 @@ for(dd in 1:length(date_seq)){
     filename <- file.path(img.dir, sprintf("mobility_trends_%06d.png", dd - 1))
     png(filename, width = 1024, height = 800)
     
-    tmp_df <- merged_data_all_dates %>% filter(ds == date_seq[dd])
+    tmp_df <- merged_data_all_dates %>% dplyr::filter(ds == date_seq[dd])
     
     # Adapted ggplot code with fixed color scale
     q <- ggplot(data = tmp_df) +

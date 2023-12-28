@@ -9,26 +9,6 @@ library(tidyverse)
 library(fredtools)
 library(readr)
 
-####################################################
-## local variables
-####################################################
-repo_name = './'
-AGORA_path = '../'
-
-####################################################
-## FRED set cluster enviromental variables
-####################################################
-# setwd(sprintf('%s/%s/fred_run_stages', AGORA_path, repo_name))
-FRED_results_path = sprintf('%s/FRED_results', AGORA_path)
-
-Sys.setenv(FRED_HOME=sprintf('%s/FRED', AGORA_path))
-Sys.setenv(FRED_RESULTS=FRED_results_path)
-Sys.setenv(scratch_dir=sprintf('%s/%s/scratch', AGORA_path, repo_name))
-Sys.setenv(PATH=sprintf('/bin/:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/usr/local/bin:/usr/local/sbin:%s/FRED/bin', AGORA_path))
-
-##==============================================#
-## load dirs -------------
-##==============================================#
 fred_results_dir = file.path(getwd(), "FRED_RESULTS")
 Sys.setenv(FRED_RESULTS=fred_results_dir)
 

@@ -1,0 +1,241 @@
+#########################################################
+## VACCINATION
+#########################################################
+enable_vaccination = 1
+number_of_vaccines = 6
+vaccine_tracefile = none
+vaccine_prioritize_acip = 0
+vaccine_prioritize_by_age = 0
+vaccine_priority_age_low = 16
+vaccine_priority_age_high = 100
+vaccine_dose_priority = 4
+vaccine_priority_only = 1
+vaccinate_symptomatics = 1
+refresh_vaccine_queues_daily = 0
+vaccine_acceptance_probability = 0.9
+
+vaccination_capacity_file = vaccine_capacity_bogota_file.txt
+enable_vaccine_stock_timeseries = 1
+vaccine_stock_timeseries_file = vaccine_stock_bogota_file.txt
+
+## Vaccine priority definition
+enable_vaccination_phases = 1
+vaccination_phases_names = 12 age ltc essentialworkers age essentialworkers comorbidity teachers age age age age age
+vaccination_phases_age_low = 12 80 16 16 60 16 16 16 50 40 30 20 16
+vaccination_phases_age_high = 12 120 120 120 79 59 59 59 59 49 39 29 19
+vaccination_phases_id = 12 1 1 1 2 2 3 3 4 5 6 7 8
+vaccination_phases_pop_prob = 12 0.0 0.0 0.0001 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0
+
+## ASTRAZENECA================================
+## Sample Definition of Vaccine 0: AstraZeneca
+vaccine_number_of_doses[0] = 2
+vaccine_total_avail[0] = 20000000
+vaccine_additional_per_day[0] = 100000
+vaccine_starting_day[0] = 0
+vaccine_efficacy_duration_age_groups[0] = 1 120
+vaccine_efficacy_duration_values[0] = 1 99999
+
+#### Vaccine #0 Dose #0
+vaccine_next_dosage_day[0][0] = 14
+vaccine_dose_efficacy_age_groups[0][0] = 1 100
+vaccine_dose_efficacy_values[0][0] = 1 0.16
+vaccine_dose_efficacy_symptoms_age_groups[0][0] = 1 100
+vaccine_dose_efficacy_symptoms_values[0][0] = 1 0.0
+vaccine_dose_efficacy_hospitalization_age_groups[0][0] = 1 100
+vaccine_dose_efficacy_hospitalization_values[0][0] = 1 0.32
+vaccine_dose_efficacy_delay_age_groups[0][0] = 1 100
+vaccine_dose_efficacy_delay_values[0][0] = 1 14
+vaccine_strains[0] = 0 1 2 3 4
+
+#### Vaccine #0 Dose #1
+vaccine_next_dosage_day[0][1] = 0
+vaccine_dose_efficacy_age_groups[0][1] = 1 100
+vaccine_dose_efficacy_values[0][1] = 1 0.76
+vaccine_dose_efficacy_symptoms_age_groups[0][1] = 1 100
+vaccine_dose_efficacy_symptoms_values[0][1] = 1 0.0
+vaccine_dose_efficacy_hospitalization_age_groups[0][1] = 1 100
+vaccine_dose_efficacy_hospitalization_values[0][1] = 1 0.0
+vaccine_dose_efficacy_delay_age_groups[0][1] = 1 100
+vaccine_dose_efficacy_delay_values[0][1] = 1 14
+
+## SINOVAC================================
+## Sample Definition of Vaccine 1: Sinovac
+vaccine_number_of_doses[1] = 2
+vaccine_total_avail[1] = 20000000
+vaccine_additional_per_day[1] = 100000
+vaccine_starting_day[1] = 0
+vaccine_efficacy_duration_age_groups[1] = 1 120
+vaccine_efficacy_duration_values[1] = 1 99999
+
+#### Vaccine #1 Dose #0
+vaccine_next_dosage_day[1][0] = 28
+vaccine_dose_efficacy_age_groups[1][0] = 1 100
+vaccine_dose_efficacy_values[1][0] = 1 0.1613
+vaccine_dose_efficacy_symptoms_age_groups[1][0] = 1 100
+vaccine_dose_efficacy_symptoms_values[1][0] = 1 0.0
+vaccine_dose_efficacy_hospitalization_age_groups[1][0] = 1 100
+vaccine_dose_efficacy_hospitalization_values[1][0] = 1 0.317
+vaccine_dose_efficacy_delay_age_groups[1][0] = 1 100
+vaccine_dose_efficacy_delay_values[1][0] = 1 14
+vaccine_strains[1] = 0 1 2 3 4
+
+#### Vaccine #1 Dose #1
+vaccine_next_dosage_day[1][1] = 0
+vaccine_dose_efficacy_age_groups[1][1] = 1 100
+vaccine_dose_efficacy_values[1][1] = 1 0.669
+vaccine_dose_efficacy_symptoms_age_groups[1][1] = 1 100
+vaccine_dose_efficacy_symptoms_values[1][1] = 1 0.0
+vaccine_dose_efficacy_hospitalization_age_groups[1][1] = 1 100
+vaccine_dose_efficacy_hospitalization_values[1][1] = 1 0.346
+vaccine_dose_efficacy_delay_age_groups[1][1] = 1 100
+vaccine_dose_efficacy_delay_values[1][1] = 1 14
+
+## PFIZER================================
+## Sample Definition of Vaccine 2: Pfizer
+vaccine_number_of_doses[2] = 2
+vaccine_total_avail[2] = 20000000
+vaccine_additional_per_day[2] = 100000
+vaccine_starting_day[2] = 0
+vaccine_efficacy_duration_age_groups[2] = 1 120
+vaccine_efficacy_duration_values[2] = 1 99999
+
+#### Vaccine #2 Dose #0
+vaccine_next_dosage_day[2][0] = 21
+vaccine_dose_efficacy_age_groups[2][0] = 1 100
+vaccine_dose_efficacy_values[2][0] = 1 0.3
+vaccine_dose_efficacy_symptoms_age_groups[2][0] = 1 100
+vaccine_dose_efficacy_symptoms_values[2][0] = 1 0.0
+vaccine_dose_efficacy_hospitalization_age_groups[2][0] = 1 100
+vaccine_dose_efficacy_hospitalization_values[2][0] = 1 0.59
+vaccine_dose_efficacy_delay_age_groups[2][0] = 1 100
+vaccine_dose_efficacy_delay_values[2][0] = 1 14
+vaccine_strains[2] = 0 1 2 3 4
+
+#### Vaccine #2 Dose #1
+vaccine_next_dosage_day[2][1] = 0
+vaccine_dose_efficacy_age_groups[2][1] = 1 100
+vaccine_dose_efficacy_values[2][1] = 1 0.913
+vaccine_dose_efficacy_symptoms_age_groups[2][1] = 1 100
+vaccine_dose_efficacy_symptoms_values[2][1] = 1 0.0
+vaccine_dose_efficacy_hospitalization_age_groups[2][1] = 1 100
+vaccine_dose_efficacy_hospitalization_values[2][1] = 1 0.54
+vaccine_dose_efficacy_delay_age_groups[2][1] = 1 100
+vaccine_dose_efficacy_delay_values[2][1] = 1 14
+
+## MODERNA================================
+## Sample Definition of Vaccine 3: Moderna
+vaccine_number_of_doses[3] = 2
+vaccine_total_avail[3] = 20000000
+vaccine_additional_per_day[3] = 100000
+vaccine_starting_day[3] = 0
+vaccine_efficacy_duration_age_groups[3] = 1 120
+vaccine_efficacy_duration_values[3] = 1 99999
+
+#### Vaccine #3 Dose #0
+vaccine_next_dosage_day[3][0] = 21
+vaccine_dose_efficacy_age_groups[3][0] = 1 100
+vaccine_dose_efficacy_values[3][0] = 1 0.61
+vaccine_dose_efficacy_symptoms_age_groups[3][0] = 1 100
+vaccine_dose_efficacy_symptoms_values[3][0] = 1 0.0
+vaccine_dose_efficacy_hospitalization_age_groups[3][0] = 1 100
+vaccine_dose_efficacy_hospitalization_values[3][0] = 1 0.0
+vaccine_dose_efficacy_delay_age_groups[3][0] = 1 100
+vaccine_dose_efficacy_delay_values[3][0] = 1 14
+vaccine_strains[3] = 0 1 2 3 4
+
+#### Vaccine #3 Dose #1
+vaccine_next_dosage_day[3][1] = 0
+vaccine_dose_efficacy_age_groups[3][1] = 1 100
+vaccine_dose_efficacy_values[3][1] = 1 0.941
+vaccine_dose_efficacy_symptoms_age_groups[3][1] = 1 100
+vaccine_dose_efficacy_symptoms_values[3][1] = 1 0.0
+vaccine_dose_efficacy_hospitalization_age_groups[3][1] = 1 100
+vaccine_dose_efficacy_hospitalization_values[3][1] = 1 1.0
+vaccine_dose_efficacy_delay_age_groups[3][1] = 1 100
+vaccine_dose_efficacy_delay_values[3][1] = 1 14
+
+## JANSSEN================================
+## Sample Definition of Vaccine 4: Jannsen
+vaccine_number_of_doses[4] = 1
+vaccine_total_avail[4] = 20000000
+vaccine_additional_per_day[4] = 100000
+vaccine_starting_day[4] = 0
+vaccine_efficacy_duration_age_groups[4] = 1 120
+vaccine_efficacy_duration_values[4] = 1 99999
+
+#### Vaccine #4 Dose #0
+vaccine_next_dosage_day[4][0] = 0
+vaccine_dose_efficacy_age_groups[4][0] = 1 100
+vaccine_dose_efficacy_values[4][0] = 1 0.699
+vaccine_dose_efficacy_symptoms_age_groups[4][0] = 1 100
+vaccine_dose_efficacy_symptoms_values[4][0] = 1 0.0
+vaccine_dose_efficacy_hospitalization_age_groups[4][0] = 1 100
+vaccine_dose_efficacy_hospitalization_values[4][0] = 1 0.77
+vaccine_dose_efficacy_delay_age_groups[4][0] = 1 100
+vaccine_dose_efficacy_delay_values[4][0] = 1 28
+vaccine_strains[4] = 0 1 2 3 4
+
+
+## SPUTNIK================================
+## Sample Definition of Vaccine 5: Sputnik
+vaccine_number_of_doses[5] = 2
+vaccine_total_avail[5] = 20000000
+vaccine_additional_per_day[5] = 100000
+vaccine_starting_day[5] = 0
+vaccine_efficacy_duration_age_groups[5] = 1 120
+vaccine_efficacy_duration_values[5] = 1 99999
+
+#### Vaccine #5 Dose #0
+vaccine_next_dosage_day[5][0] = 21
+vaccine_dose_efficacy_age_groups[5][0] = 1 100
+vaccine_dose_efficacy_values[5][0] = 1 0.87
+vaccine_dose_efficacy_symptoms_age_groups[5][0] = 1 100
+vaccine_dose_efficacy_symptoms_values[5][0] = 1 0.0
+vaccine_dose_efficacy_hospitalization_age_groups[5][0] = 1 100
+vaccine_dose_efficacy_hospitalization_values[5][0] = 1 1.0
+vaccine_dose_efficacy_delay_age_groups[5][0] = 1 100
+vaccine_dose_efficacy_delay_values[5][0] = 1 14
+vaccine_strains[5] = 0 1 2 3 4
+
+#### Vaccine #5 Dose #1
+vaccine_next_dosage_day[5][1] = 0
+vaccine_dose_efficacy_age_groups[5][1] = 1 100
+vaccine_dose_efficacy_values[5][1] = 1 0.911
+vaccine_dose_efficacy_symptoms_age_groups[5][1] = 1 100
+vaccine_dose_efficacy_symptoms_values[5][1] = 1 0.0
+vaccine_dose_efficacy_hospitalization_age_groups[5][1] = 1 100
+vaccine_dose_efficacy_hospitalization_values[5][1] = 1 1.0
+vaccine_dose_efficacy_delay_age_groups[5][1] = 1 100
+vaccine_dose_efficacy_delay_values[5][1] = 1 14
+
+## PFIZER LONG================================
+## Sample Definition of Vaccine 7: Pfizerlong
+vaccine_number_of_doses[6] = 2
+vaccine_total_avail[6] = 20000000
+vaccine_additional_per_day[6] = 100000
+vaccine_starting_day[6] = 0
+vaccine_efficacy_duration_age_groups[6] = 1 120
+vaccine_efficacy_duration_values[6] = 1 99999
+
+#### Vaccine #6 Dose #0
+vaccine_next_dosage_day[6][0] = 84
+vaccine_dose_efficacy_age_groups[6][0] = 1 100
+vaccine_dose_efficacy_values[6][0] = 1 0.3
+vaccine_dose_efficacy_symptoms_age_groups[6][0] = 1 100
+vaccine_dose_efficacy_symptoms_values[6][0] = 1 0.0
+vaccine_dose_efficacy_hospitalization_age_groups[6][0] = 1 100
+vaccine_dose_efficacy_hospitalization_values[6][0] = 1 0.59
+vaccine_dose_efficacy_delay_age_groups[6][0] = 1 100
+vaccine_dose_efficacy_delay_values[6][0] = 1 14
+vaccine_strains[6] = 0 1 2 3 4
+
+#### Vaccine #6 Dose #1
+vaccine_next_dosage_day[6][1] = 0
+vaccine_dose_efficacy_age_groups[6][1] = 1 100
+vaccine_dose_efficacy_values[6][1] = 1 0.913
+vaccine_dose_efficacy_symptoms_age_groups[6][1] = 1 100
+vaccine_dose_efficacy_symptoms_values[6][1] = 1 0.0
+vaccine_dose_efficacy_hospitalization_age_groups[6][1] = 1 100
+vaccine_dose_efficacy_hospitalization_values[6][1] = 1 0.54
+vaccine_dose_efficacy_delay_age_groups[6][1] = 1 100
+vaccine_dose_efficacy_delay_values[6][1] = 1 14
