@@ -48,7 +48,7 @@ Here are listed the input files used in each simulation. Click at the link to ac
 
 [Beds usage plot per department](https://dvelozad.github.io/fred_widgets/bed_utilization_plot.html)
 
-[Shelter in place input plot per department](https://dvelozad.github.io/fred_widgets/shelter_in_place_plot.html)
+[Shelter and mobility input plot per department](https://dvelozad.github.io/fred_widgets/mobility_shelter_trends.html)
 
 
 ## Outputs
