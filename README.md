@@ -44,7 +44,7 @@ You can select which populations to download and use.
 
 Here are listed the input files used in each simulation. Click at the link to access a visualization of the data.
 
-[Dominance plot per department](https://dvelozad.github.io/fred_widgets/timeseries_plot.html)
+[Dominance plot per department](https://dvelozad.github.io/fred_widgets/dominance_widget.html)
 
 [Beds usage plot per department](https://dvelozad.github.io/fred_widgets/bed_utilization_plot.html)
 
