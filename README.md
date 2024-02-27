@@ -50,6 +50,8 @@ Here are listed the input files used in each simulation. Click at the link to ac
 
 [Shelter and mobility input plot per department](https://dvelozad.github.io/fred_widgets/mobility_shelter_trends.html)
 
+[Contacts input plot per department](https://dvelozad.github.io/fred_widgets/mobility_contacts_trends.html)
+
 
 ## Outputs
 
