@@ -51,7 +51,7 @@ workers = c("hpc02-w000.javeriana.edu.co",
             "hpc02-w013.javeriana.edu.co")
 
 repo_name = 'fred_colombia_implementation'
-AGORA_path = '/zine/HPC02S1/ex-dveloza/AGORA/apps'
+AGORA_path = '/home/deo/Documents/projects/jobs/puj'
 
 worker_list <- paste(workers, collapse = '","')
 
@@ -255,15 +255,15 @@ write_cmd_function <- function(scalars_in, tmpfile, output_path='../run_files'){
 ##==============================================#
 ## Set STATE-------------------
 ##==============================================#
-calibration_label                   = 'calibra_test_4'
-state_code                          = 11001
-reps                                = 2
+calibration_label                   = 'production'
+state_code                          = 27
+reps                                = 10
 reps_per_job                        = 1
-fit_date                            = as.Date('2023-12-31')
+fit_date                            = as.Date('2021-12-01')
 asymp_infectivity_in                = 1.0
 face_mask_transmission_efficacy_in  = 0.73
 kids_susceptibility_age_in          = 10
-variants_in                         = 2
+variants_in                         = 0
 vaccination_in                      = 70
 subm_jobs                           = FALSE
 args                                = (commandArgs(TRUE))
@@ -308,11 +308,13 @@ if(file.exists(output.dir)){
 }
 system(paste('mkdir -p ', output.dir,sep = ''))
 
+
 file.copy('../../scripts/post_process_fred_calibration_var_0.R',output.dir)
 file.copy('../../scripts/post_process_fred_calibration_var_1.R',output.dir)
 file.copy('../../scripts/post_process_fred_calibration_var_2.R',output.dir)
-file.copy("../../input_files/infection_hospitalization_risk.csv", output.dir)
-file.copy("../../input_files/infection_hospitalization_risk_5.csv", output.dir)
+file.copy("../../fred_input_files/hospitalization/infection_hospitalization_risk.csv", output.dir)
+file.copy("../../fred_input_files/hospitalization/infection_hospitalization_risk_5.csv", output.dir)
+file.copy("../../fred_input_files/geoinfo_municipios_colombia.csv", output.dir)
 # file.copy('../input_files/params_covid.txt','./input_files/params_covid.txt', overwrite = T)
 # file.copy('../input_files/params_covid_variants.txt','./input_files/params_covid_variants.txt', overwrite = T)
 # file.copy('../input_files/params_covid_alpha.txt','./input_files/params_covid_alpha.txt', overwrite = T)
@@ -330,10 +332,9 @@ file.copy("../../input_files/infection_hospitalization_risk_5.csv", output.dir)
 # file.copy('../input_files/BOG_covid_death_data.csv','./input_files/BOG_covid_death_data.csv', overwrite = T)
 # file.copy('../input_files/BOG_UCI_timeseries.csv','./input_files/BOG_UCI_timeseries.csv', overwrite = T)
 # file.copy('../input_files/Age_BOG_covid_data.csv','./input_files/Age_BOG_covid_data.csv', overwrite = T)
-# ##file.copy('../input_files/11001_mobility_trends.csv','./input_files/11001_mobility_trends.csv', overwrite = T)
+# file.copy('../input_files/11001_mobility_trends.csv','./input_files/11001_mobility_trends.csv', overwrite = T)
 # file.copy('../input_files/facemask_timeseries_compliance.csv','./input_files/facemask_timeseries_compliance.csv', overwrite = T)
-# file.copy('../input_files/Localidad_Unidad_Catastral.csv','./input_files/Localidad_Unidad_Catastral.csv', overwrite = T)
-file.copy('../../input_files/Localidad_Unidad_Catastral.csv',output.dir, overwrite = T)
+# file.copy('../../input_files/Localidad_Unidad_Catastral.csv',output.dir, overwrite = T)
 # file.copy('../input_files/Pars-variants.xlsx','./input_files/Pars-variants.xlsx', overwrite = T)
 
 # file.copy(list.files(path='../input_files',pattern='11001_schools_open_gps.*.csv',full.names=T),'./input_files/', overwrite = T)
@@ -361,9 +362,9 @@ school_vacation_end = as.Date('2021-01-25')
 current_open_date = as.Date('2020-10-15')
 
 ## Shelter in place
-interventions_st_df = read_csv('../../input_files/interventions_Colombia.csv')
-interventions_st_df$Shelter_in_place <- as.Date(interventions_st_df$Shelter_in_place, format = "%m/%d/%y")
-interventions_st_df$School_closure <- as.Date(interventions_st_df$School_closure, format = "%m/%d/%y")
+interventions_st_df = read_csv('../../fred_input_files/interventions/interventions_Colombia.csv')
+interventions_st_df$Shelter_in_place <- as.Date(interventions_st_df$Shelter_in_place, format="%m/%d/%y")
+interventions_st_df$School_closure <- as.Date(interventions_st_df$School_closure, "%m/%d/%y")
 
 enable_shelter_in_place = 1
 enable_shelter_in_place_timeseries = 1
@@ -375,7 +376,7 @@ enable_face_mask_usage_in = 1
 min_age_face_masks_in = 8
 
 ## Age specific susceptibility
-susceptibility_params = read_csv('../../input_files/age_susceptibility_fit.csv')
+susceptibility_params = read_csv('../../fred_input_files/covid_data/age_susceptibility_fit.csv')
 enable_age_specific_susceptibility_in = 1
 
 ## School closure policies
@@ -873,14 +874,14 @@ scalars_sobol_df = bind_cols(scalars_sobol_df, get_ifr_param_string(scalars_sobo
 ## Initial conditions-------------------
 ##==============================================#
 ##initial_inf_file = sprintf('../../input_files/%d_imports_alternative.csv', state_code)
-initial_inf_file = sprintf('../../input_files/%d_imports_combined.csv', state_code)
+initial_inf_file = sprintf('../../fred_input_files/imports/%d_imports_combined.csv', 11001)
 
 primary_cases_file = file.path(output.dir, sprintf('initial_cases_%d_%d.txt',state_code,1:reps))
 
 initial_df = read_csv(initial_inf_file)
 initial_df$day = as.numeric(difftime(initial_df$Date, as.Date(start_date), units='days'))
 
-variants_imp_file = '../../input_files/COL_variant_imports.csv'
+variants_imp_file = '../../fred_input_files/imports/COL_variant_imports.csv'
 variants_imp_df = read_csv(variants_imp_file)
 
 ## Sample 'reps' from the initial conditions
@@ -906,38 +907,40 @@ for(nn in 1:reps){
         tmp_df = bind_rows(tmp_df, week_imp)
     }
     if(variants_in >= 1){
-        alpha_imports = filter(variants_imp_df, variant == "20I (Alpha, V1)") %>%
+        alpha_imports <- variants_imp_df %>%
+            filter(variant == "Alpha") %>%
             mutate(day = as.numeric(Date - as.Date('2020-01-01'))) %>%
-            mutate(Imports = round(scalars_sobol_df$variantalpha_imports_factor[nn] * TotalVariantImports)) %>%
-            filter(Imports >= 1)
+            mutate(Imports = round(scalars_sobol_df$variantalpha_imports_factor[nn] *  scaled_imports)) %>%
+            filter(Imports >= 1) %>%
+            select(day, Imports)
 
-        gamma_imports = filter(variants_imp_df, variant == "20J (Gamma, V3)") %>%
+        gamma_imports <- variants_imp_df %>%
+            filter(variant == "Gamma") %>%
             mutate(day = as.numeric(Date - as.Date('2020-01-01'))) %>%
-            mutate(Imports = round(scalars_sobol_df$variantgamma_imports_factor[nn] * TotalVariantImports)) %>%
-            filter(Imports >= 1,Date <= as.Date('2021-04-01'))
+            mutate(Imports = round(scalars_sobol_df$variantgamma_imports_factor[nn] * scaled_imports)) %>%
+            filter(Imports >= 1) %>%
+            select(day, Imports)
 
-        delta_imports = filter(variants_imp_df, variant == "21A (Delta)") %>%
+        delta_imports <- variants_imp_df %>%
+            filter(variant == "Delta") %>%
             mutate(day = as.numeric(Date - as.Date('2020-01-01'))) %>%
-            mutate(Imports = round(scalars_sobol_df$variantdelta_imports_factor[nn] * TotalVariantImports)) %>%
-            filter(Imports >= 1, Date >= as.Date('2021-04-01')) %>%
-            mutate(day = day + 60 + 15)
+            mutate(Imports = round(scalars_sobol_df$variantdelta_imports_factor[nn] * scaled_imports)) %>%
+            filter(Imports >= 1) %>%
+            select(day, Imports)
 
-        ########################################################################################################
-        omicron_imports = filter(variants_imp_df, variant == "21K (Omicron)" | variant == "21L (Omicron)" | variant == "22A (Omicron)") %>%
+        omicron_imports <- variants_imp_df %>%
+            filter(variant %in% c("Omicron")) %>%
             mutate(day = as.numeric(Date - as.Date('2020-01-01'))) %>%
-            mutate(Imports = round(scalars_sobol_df$variantomicron_imports_factor[nn] * TotalVariantImports)) %>%
-            filter(Imports >= 1, Date > as.Date('2021-11-01')) %>%
-            mutate(day = day + 9) %>%
-            dplyr::select(day, Imports)
+            mutate(Imports = round(scalars_sobol_df$variantomicron_imports_factor[nn] * scaled_imports)) %>%
+            filter(Imports >= 1) %>%
+            select(day, Imports)
 
-        ########################################################################################################
-        omicronBAX_imports = filter(variants_imp_df, variant == "22E (Omicron)") %>%
+        omicronBAX_imports <- variants_imp_df %>%
+            filter(variant == "OmicronBAX") %>%
             mutate(day = as.numeric(Date - as.Date('2020-01-01'))) %>%
-            mutate(Imports = round(scalars_sobol_df$variantomicronBAX_imports_factor[nn] * TotalVariantImports)) %>%
-            #filter(Imports >= 1, Date > as.Date('2021-12-15'), Date <= as.Date('2022-03-20')) %>%
-            filter(Imports >= 1, Date > as.Date('2022-09-01')) %>%
-            mutate(day = day - 90) %>%
-            dplyr::select(day, Imports)
+            mutate(Imports = round(scalars_sobol_df$variantomicronBAX_imports_factor[nn] * scaled_imports)) %>%
+            filter(Imports >= 1) %>%
+            select(day, Imports)
         
         tmp_df$Date = tmp_df$day + as.Date('2020-01-01')
         tmp_df_main = tmp_df[tmp_df$Date < as.Date('2020-12-10'),]
@@ -979,17 +982,15 @@ for(nn in 1:reps){
 ##==============================================#
 ## School closure-------------------
 ##==============================================#
-schools_open_list = read_csv('../../input_files/11001_schools_open_gps.csv')
-schools_open_list$PropOpen[schools_open_list$PropOpen > 1] = 1.0
-localidad_esc = read_csv('../../input_files/Localidad_Unidad_Catastral.csv')
-localidad_list = 1:19
+schools_open_list = read_csv('../../fred_input_files/interventions/15_schools_open.csv')
+schools_open_list$Capacity[schools_open_list$Capacity > 1] = 1.0
 
 school_schedule_closed_file = file.path(output.dir, sprintf('school_schedule_closed_%d.txt',state_code))
 
 ## Parse updated list of schools reopened
 ## Process school reopen files and transform into Unidad Catastral capacity
 sim_start_date = as.Date(start_date)
-school_reopen_list_file = '../../input_files/11001_schools_open_gps_2021.csv'
+school_reopen_list_file = '../../fred_input_files/interventions/15_schools_open_2021.csv'
 school_reopen_df = read_csv(school_reopen_list_file) %>%
     group_by(Grade, zipcode, start_date, end_date) %>%
     summarize(Capacity = ifelse(InPerson<Total_students, InPerson/Total_students, 1.0)) %>%
@@ -1016,19 +1017,35 @@ school_reopen_df = read_csv(school_reopen_list_file) %>%
     school_current_early_open_date = as.integer(current_open_date - as.Date(start_date)) + 1
     ## Schools already open in 2020
     current_open_school_lines = c(initial_closure, vacation_closure)
-    for(ll in 1:length(localidad_list)){
-        localidad_tmp = filter(schools_open_list, Localidad_ID == localidad_list[ll])        
-        esc_in_loc = sprintf("11001%s", localidad_esc$SCACODIGO[localidad_esc$Localidad == localidad_list[ll]])
-        
+
+    zipcodes = unique(schools_open_list$zipcode)
+    for(ll in 1:length(zipcodes)){
+        localidad_tmp = schools_open_list %>%
+                            filter(zipcode == zipcodes[ll])
+        esc_in_loc = sprintf("%s", zipcodes[ll])
+
+        if(nrow(localidad_tmp[localidad_tmp$Grade == 'SECONDARY','Capacity']) == 0){
+            secondary_capacity = 0
+        } else{
+            secondary_capacity = localidad_tmp[localidad_tmp$Grade == 'SECONDARY','Capacity']
+        }
+
+        if(nrow(localidad_tmp[localidad_tmp$Grade == 'UNIVERSITY','Capacity']) == 0){
+            university_capacity = 0
+        } else{
+            university_capacity = localidad_tmp[localidad_tmp$Grade == 'UNIVERSITY','Capacity']
+        }
+
+
         current_open_school_lines = c(current_open_school_lines,
                                       sprintf("%d %d 18 20 %0.4f 0 %s",
                                               school_current_early_open_date,
                                               as.integer(as.Date('2020-12-15') - as.Date(start_date)),
-                                              localidad_tmp[localidad_tmp$Grade == 'university','PropOpen'], esc_in_loc),
+                                              university_capacity, esc_in_loc),
                                       sprintf("%d %d 1 17 %.4f 0 %s",
                                               school_current_early_open_date,
                                               as.integer(as.Date('2020-12-15') - as.Date(start_date)),
-                                              localidad_tmp[localidad_tmp$Grade == 'basic_ed','PropOpen'], esc_in_loc))
+                                              secondary_capacity, esc_in_loc))
     }   
     ## 2021 reopened schools
     tmp_school_open = filter(school_reopen_df, Grade != 'UNIVERSITY')
@@ -1048,9 +1065,9 @@ school_reopen_df = read_csv(school_reopen_list_file) %>%
 ## Community increase-------------------
 ##==============================================#
 if(variants_in == 0){
-    community_timeseries_df = read_csv('../../input_files/interventions_covid_timevarying_community.csv')
+    community_timeseries_df = read_csv('../../fred_input_files/interventions/interventions_covid_timevarying_community.csv')
 }else{
-    community_timeseries_df = read_csv('../../input_files/interventions_covid_timevarying_community_baseline.csv')
+    community_timeseries_df = read_csv('../../fred_input_files/interventions/interventions_covid_timevarying_community_baseline.csv')
 }
 community_timeseries_file = file.path(output.dir, sprintf("community_timeseries_%d.txt", 1:reps))
 community_timeseries_df$day = as.numeric(community_timeseries_df$date - as.Date(start_date))
@@ -1077,10 +1094,10 @@ for(nn in 1:reps){
 vaccine_daily_capacity_file = file.path(output.dir, "vaccination_daily_capacity_timeseries.txt")
 vaccine_stock_file = file.path(output.dir, "vaccination_stock_timeseries.txt")
 
-vaccine_stock_df = read.csv('../../input_files/11001_vaccine_stock_timeseries.csv') %>%
+vaccine_stock_df = read.csv('../../fred_input_files/vaccines/11001_vaccine_stock_timeseries.csv') %>%
     drop_na()
 vaccine_stock_df$day = as.numeric(as.Date(vaccine_stock_df$Date) - as.Date(start_date))
-vaccine_daily_df = read.csv('../../input_files/11001_vaccine_capacity_timeseries.csv')
+vaccine_daily_df = read.csv('../../fred_input_files/vaccines/11001_vaccine_capacity_timeseries.csv')
 vaccine_daily_df$day = as.numeric(as.Date(vaccine_daily_df$Date) - as.Date(start_date))
 vaccine_daily_df$VaccinesApplied = round(vaccine_daily_df$VaccinesApplied)
 
@@ -1102,14 +1119,16 @@ close(fileConn)
 school_facemask_compliance = 0.75
 facemask_time_file = file.path(output.dir, sprintf('facemask_compliance_timeseries_%d_%d.txt',state_code,1:reps))
 
-facemask_timeseries_df = read_csv('../../input_files/facemask_timeseries_compliance.csv') %>%
+facemask_timeseries_df = read_csv('../../fred_input_files/facemask/facemask_timeseries_compliance.csv') %>%
     dplyr::select(-Day)
 facemask_timeseries_df$day = as.numeric(difftime(facemask_timeseries_df$Date, as.Date(start_date), units='days'))
 
 for(nn in 1:reps){
 # foreach(nn = 1:reps) %dopar% {
     ## For now, choose the mean
-    tmp_df = facemask_timeseries_df %>% filter(State == tolower(interventions_st_df$state_name[interventions_st_df$State == state_code])) %>%
+#    tmp_df = facemask_timeseries_df %>% filter(State == tolower(interventions_st_df$state_name[interventions_st_df$State == state_code])) %>%
+#        mutate(FacemaskTrends = FacemaskTrends * scalars_sobol_df$facemask_compliance[nn]) %>%
+    tmp_df = facemask_timeseries_df %>%
         mutate(FacemaskTrends = FacemaskTrends * scalars_sobol_df$facemask_compliance[nn]) %>%
         dplyr::select(day, FacemaskTrends)
     if(max(tmp_df$day) < numDays){
@@ -1149,19 +1168,30 @@ post_lockdown_mobility_in = 0.1
 shelter_time_file = file.path(output.dir, sprintf('shelter_timeseries_%d_%d.txt',state_code,1:reps))
 
 ## Moving away from google's data to Grandata census-tract specific
-## shelter_timeseries_df = read_csv('../../input_files/interventions_covid_timevarying_shelter.csv')
-shelter_timeseries_df = read_csv(sprintf('../../input_files/%d_mobility_trends.csv',state_code))
+shelter_timeseries_df = read_csv('../../fred_input_files/interventions/interventions_covid_timevarying_shelter.csv')
+# shelter_timeseries_df = read_csv(sprintf('../../fred_input_files/shelter_trends/%d_shelter_trends.csv',state_code))
+#shelter_timeseries_df = read_csv('../../fred_input_files/11001_mobility_trends_baseline.csv')
 shelter_timeseries_df$day = as.numeric(difftime(shelter_timeseries_df$date, as.Date(start_date), units='days'))
+#shelter_timeseries_df$State <- state_code
+#shelter_timeseries_df$replicate <- 1
 
-
-state_shelter_df = shelter_timeseries_df %>%
-    dplyr::filter(State == state_code, replicate == 1) %>%
-    mutate(StateCod = sprintf('%d%s',State,SCACODIGO),
-           minAge = 0, maxAge = 120) %>%
-    dplyr::select(day,shelter_trend,minAge,maxAge,StateCod)
+# Use map_df to iterate over ZIP codes, apply your operations, and concatenate the results
+state_shelter_df <- map_df(zipcodes, function(zip_code) {
+  shelter_timeseries_df %>%
+    filter(State == state_code, replicate == 1) %>%
+    #mutate(StateCod = sprintf('%s', State, zip_code),  # Assuming State is a number. Adjust the format as needed
+    mutate(StateCod = sprintf('%s', zip_code),  # Assuming State is a number. Adjust the format as needed
+           minAge = 0, 
+           maxAge = 120) %>%
+    select(day, shelter_trend, minAge, maxAge, StateCod)
+})
         
 max_tmp_day = max(state_shelter_df$day)
 if(max_tmp_day > numDays){max_tmp_day = numDays}
+
+ 
+#df_ = state_shelter_df %>% dplyr::filter(StateCod == '1515')
+#plot(df_$shelter_trend)
 
 # foreach(nn = 1:reps) %dopar% {
 # #for(nn in 1:reps){    
@@ -1473,24 +1503,24 @@ if(variants_in >= 1){
 ##===============================================##
 ## Write the parameters to files---------------
 ##===============================================##
-defaults_params         = '../../input_files/params_covid.txt'
-defaults_covid_params   = '../../input_files/params_covid.txt'
+defaults_params             = '../../fred_input_files/params_covid/params_covid.txt'
+defaults_covid_params       = '../../fred_input_files/params_covid/params_covid.txt'
 
-defaults_alpha_params   = '../../input_files/params_covid_alpha.txt'
-defaults_gamma_params   = '../../input_files/params_covid_gamma.txt'
-defaults_kappa_params   = '../../input_files/params_covid_kappa.txt'
-defaults_delta_params   = '../../input_files/params_covid_delta.txt'
-defaults_omicron_params = '../../input_files/params_covid_omicron.txt'
-defaults_omicronBAX_params = '../../input_files/params_covid_omicronBAX.txt'
-defaults_vaccine_params = '../../input_files/params_covid_vaccine.txt'
+defaults_alpha_params       = '../../fred_input_files/params_covid/params_covid_alpha.txt'
+defaults_gamma_params       = '../../fred_input_files/params_covid/params_covid_gamma.txt'
+defaults_kappa_params       = '../../fred_input_files/params_covid/params_covid_kappa.txt'
+defaults_delta_params       = '../../fred_input_files/params_covid/params_covid_delta.txt'
+defaults_omicron_params     = '../../fred_input_files/params_covid/params_covid_omicron.txt'
+defaults_omicronBAX_params  = '../../fred_input_files/params_covid/params_covid_omicronBAX.txt'
+defaults_vaccine_params     = '../../fred_input_files/params_covid/params_covid_vaccine.txt'
 
 print('------------------------------------------------------------')
 
 if(variants_in >= 1){
     if(vaccination_in > 0){
-        defaults_vaccine_params = sprintf('../../input_files/params_covid_vaccine_%d.txt', vaccination_in)
+        defaults_vaccine_params = sprintf('../../fred_input_files/params_covid/params_covid_vaccine_%d.txt', vaccination_in)
     }
-    defaults_params = '../../input_files/params_covid_combined.txt'
+    defaults_params = '../../fred_input_files/params_covid/params_covid_combined.txt'
   system(sprintf("/bin/cat %s %s %s %s %s %s %s %s > %s",
                  defaults_covid_params,
                  defaults_alpha_params, 
