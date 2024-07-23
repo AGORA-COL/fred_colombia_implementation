@@ -37,7 +37,6 @@ chunk_size <- 50
 ## local variables
 ####################################################
 workers = c("hpc02-w000.javeriana.edu.co",
-            "hpc02-w002.javeriana.edu.co", 
             "hpc02-w003.javeriana.edu.co", 
             "hpc02-w004.javeriana.edu.co", 
             "hpc02-w005.javeriana.edu.co", 
@@ -51,7 +50,7 @@ workers = c("hpc02-w000.javeriana.edu.co",
             "hpc02-w013.javeriana.edu.co")
 
 repo_name = 'fred_colombia_implementation'
-AGORA_path = '/home/deo/Documents/projects/jobs/puj'
+AGORA_path = '/zine/HPC02S1/ex-dveloza/AGORA/apps'
 
 worker_list <- paste(workers, collapse = '","')
 
@@ -257,16 +256,17 @@ write_cmd_function <- function(scalars_in, tmpfile, output_path='../run_files'){
 ##==============================================#
 calibration_label                   = 'production'
 state_code                          = 27
-reps                                = 10
+reps                                = 3000
 reps_per_job                        = 1
-fit_date                            = as.Date('2021-12-01')
+fit_date                            = as.Date('2021-08-01')
 asymp_infectivity_in                = 1.0
 face_mask_transmission_efficacy_in  = 0.73
 kids_susceptibility_age_in          = 10
-variants_in                         = 0
+variants_in                         = 1
 vaccination_in                      = 70
 subm_jobs                           = FALSE
 args                                = (commandArgs(TRUE))
+
 if(length(args) >= 1){
     state_code = as.numeric(args[1])
     if(length(args) >= 2){
@@ -294,6 +294,10 @@ if(length(args) >= 1){
         }
     }
 }
+##==============================================#
+## Synthetic populations setup-------------
+##==============================================#
+populations_dir     = sprintf('%s/synthetic_populations/output/formatted_populations/colombia_%s', AGORA_path, state_code)
 
 ##==============================================#
 ## FRED setup-------------
@@ -312,6 +316,7 @@ system(paste('mkdir -p ', output.dir,sep = ''))
 file.copy('../../scripts/post_process_fred_calibration_var_0.R',output.dir)
 file.copy('../../scripts/post_process_fred_calibration_var_1.R',output.dir)
 file.copy('../../scripts/post_process_fred_calibration_var_2.R',output.dir)
+file.copy('../../scripts/post_process_fred_calibration_var_3.R',output.dir)
 file.copy("../../fred_input_files/hospitalization/infection_hospitalization_risk.csv", output.dir)
 file.copy("../../fred_input_files/hospitalization/infection_hospitalization_risk_5.csv", output.dir)
 file.copy("../../fred_input_files/geoinfo_municipios_colombia.csv", output.dir)
@@ -397,7 +402,14 @@ school_reduced_capacity_day_in =  as.integer(early_school_vacation_end - as.Date
 school_student_teacher_ratio_in = 18
 
 ## Nursing home importations
-enable_nursing_homes_importations_in = 1
+gq_houses_file = sprintf('%s/colombia_%s_synth_gq.txt', populations_dir, state_code)
+gq_houses = read_csv(gq_houses_file)
+
+if(nrow(gq_houses) == 0){
+    enable_nursing_homes_importations_in = 0
+} else {
+    enable_nursing_homes_importations_in = 1
+}
 
 ## Contacts
 neighborhood_contacts_in = 0.7883
@@ -426,7 +438,7 @@ neighborhood_same_age_bias_in = 0.1
 imports_factor = c(0.08,1.0)
 influenza_transmissibility = c(0.3,1.5)
 shelter_in_place_compliance = c(0.3,1.0)
-facemask_compliance = c(0.1,0.96)
+facemask_compliance = c(0.1, 0.96)
 workplace_contact_factor_in = c(1.0,1.2)
 neighborhood_contact_factor_in = c(0.8,1.2)
 household_contact_factor_in = c(0.8,1.5)
@@ -437,64 +449,106 @@ influenza_susceptibility_by_age_cutoff_in = susceptibility_params %>% filter(est
 influenza_susceptibility_by_age_high_in =  susceptibility_params %>% filter(estimate != "mean") %>% pull(high)
 nursing_home_incidence_importations_factor_in = c(0.01, 0.15)
 neighborhood_same_age_bias_in = c(0.01,0.1)
+influenza_introduction_day_shift_in = c(10, 120)
+
    
 ## VARIANTS 
-variantalpha_transmissibility_factor_in = c(1,1)
+variantalpha_transmissibility_factor_in = c(0,0)
 variantalpha_cross_protection_prob_in = c(1,1)
 variantalpha_introduction_day_in = c(as.numeric(as.Date('2021-03-10') - as.Date('2020-01-01')),as.numeric(as.Date('2021-02-14') - as.Date('2020-01-01')))
-variantalpha_imports_factor_in = c(0.5,10)
+variantalpha_imports_factor_in = c(0.1,8)
 
 variantgamma_severity_factor_in = c(1,2.5)
-variantgamma_transmissibility_factor_in = c(1,1)
+variantgamma_transmissibility_factor_in = c(0,0)
 variantgamma_cross_protection_prob_in = c(1,1)
 variantgamma_introduction_day_in = c(as.numeric(as.Date('2020-12-10') - as.Date('2020-01-01')),as.numeric(as.Date('2020-12-14') - as.Date('2020-01-01')))
-variantgamma_imports_factor_in = c(0.5,10)
+variantgamma_imports_factor_in = c(0.1,8)
 
 variantkappa_severity_factor_in = c(1,2.5)
-variantkappa_transmissibility_factor_in = c(1,1)
+variantkappa_transmissibility_factor_in = c(0,0)
 variantkappa_cross_protection_prob_in = c(1,1)
-variantkappa_introduction_day_in = c(as.numeric(as.Date('2020-11-01') - as.Date('2020-01-01')),as.numeric(as.Date('2021-02-14') - as.Date('2020-01-01')))
+variantkappa_introduction_day_in = c(as.numeric(as.Date('2020-11-30') - as.Date('2020-01-01')),as.numeric(as.Date('2021-03-15') - as.Date('2020-01-01')))
 
 variantdelta_severity_factor_in = c(1,1.5)
-variantdelta_transmissibility_factor_in = c(1,1)
+variantdelta_transmissibility_factor_in = c(0,0)
 variantdelta_cross_protection_prob_in = c(1,1)
 variantdelta_introduction_day_in = c(as.numeric(as.Date('2021-07-08') - as.Date('2020-01-01')),as.numeric(as.Date('2021-07-09') - as.Date('2020-01-01')))
-variantdelta_imports_factor_in = c(0.5,10)
+variantdelta_imports_factor_in = c(0.1,8)
 
-variantomicron_transmissibility_factor_in   = c(1.1,1.5)
+variantomicron_transmissibility_factor_in   = c(0,0)
 variantomicron_severity_factor_in           = c(1,1.5)
 variantomicron_cross_protection_prob_in     = c(0.95,0.95)
 variantomicron_introduction_day_in          = c(as.numeric(as.Date('2020-12-15') - as.Date('2020-01-01')),as.numeric(as.Date('2021-03-10') - as.Date('2020-01-01')))
 variantomicron_imports_factor_in            = c(0.5,10)
 
-variantomicronBAX_transmissibility_factor_in   = c(1.1,1.5)
+variantomicronBAX_transmissibility_factor_in   = c(0,0)
 variantomicronBAX_severity_factor_in           = c(1,1.5)
 variantomicronBAX_cross_protection_prob_in     = c(0.95,0.95)
 variantomicronBAX_introduction_day_in          = c(as.numeric(as.Date('2020-12-15') - as.Date('2020-01-01')),as.numeric(as.Date('2021-03-10') - as.Date('2020-01-01')))
-variantomicronBAX_imports_factor_in            = c(0.5,10)
+variantomicronBAX_imports_factor_in            = c(1.1,1.5)
 
-variantomicronBQX_transmissibility_factor_in    = c(1.1,1.5)
-variantomicronBQX_severity_factor_in            = c(1,1.5)
-variantomicronBQX_cross_protection_prob_in      = c(0.95,0.95)
-variantomicronBQX_introduction_day_in           = c(as.numeric(as.Date('2020-12-15') - as.Date('2020-01-01')),as.numeric(as.Date('2021-03-10') - as.Date('2020-01-01')))
-variantomicronBQX_imports_factor_in             = c(0.5,10)
-
-if(variants_in == 1){    
+if(variants_in >= 1){    
     variantalpha_transmissibility_factor_in = c(1.1,1.5)
-    variantalpha_cross_protection_prob_in = c(0.95,0.95)
+    variantalpha_cross_protection_prob_in = c(0.91,0.91)
     variantalpha_introduction_day_in = c(as.numeric(as.Date('2020-12-15') - as.Date('2020-01-01')),as.numeric(as.Date('2021-03-10') - as.Date('2020-01-01')))
     variantalpha_imports_factor_in = c(0.5,10)
 
-    variantgamma_severity_factor_in = c(1,2.5)
-    variantgamma_transmissibility_factor_in = c(1.1,2.4)
-    variantgamma_cross_protection_prob_in = c(0.54,0.79)
+    variantgamma_severity_factor_in = c(0.90, 2.50)
+    variantgamma_transmissibility_factor_in = c(1.26, 3.10)
+    variantgamma_cross_protection_prob_in = c(0.28,0.90)
     variantgamma_introduction_day_in = c(as.numeric(as.Date('2020-11-04') - as.Date('2020-01-01')),as.numeric(as.Date('2021-03-24') - as.Date('2020-01-01')))
-    variantgamma_imports_factor_in = c(0.5,10)
+    variantgamma_imports_factor_in = c(0.5, 10)
+
+    # variantkappa_severity_factor_in = c(0.90, 2.50)
+    # variantkappa_transmissibility_factor_in = c(1.0,3.0)
+    # variantkappa_cross_protection_prob_in = c(0.28,0.90)
+    # variantkappa_introduction_day_in = c(as.numeric(as.Date('2020-11-11') - as.Date('2020-01-01')),as.numeric(as.Date('2021-08-14') - as.Date('2020-01-01')))
+
+    # variantdelta_severity_factor_in = c(1.56, 3.34)
+    # variantdelta_cross_protection_prob_in = c(0.34, 0.34) ## This is temporary
+    # variantdelta_transmissibility_factor_in = c(1.50,2.66)
+    # variantdelta_introduction_day_in = c(as.numeric(as.Date('2021-06-08') - as.Date('2020-01-01')),as.numeric(as.Date('2021-09-09') - as.Date('2020-01-01')))
+    # variantdelta_imports_factor_in = c(0.5,10)
 
     variantkappa_severity_factor_in = c(1,2.5)
     variantkappa_transmissibility_factor_in = c(1.0,2.0)
     variantkappa_cross_protection_prob_in = c(0.54,0.90)
-    variantkappa_introduction_day_in = c(as.numeric(as.Date('2020-11-11') - as.Date('2020-01-01')),as.numeric(as.Date('2021-03-14') - as.Date('2020-01-01')))
+    variantkappa_introduction_day_in = c(as.numeric(as.Date('2020-11-11') - as.Date('2020-01-01')),as.numeric(as.Date('2021-08-14') - as.Date('2020-01-01')))
+
+    variantdelta_severity_factor_in = c(1,1.5)
+    variantdelta_cross_protection_prob_in = c(0.3,1.0) ## This is temporary
+    variantdelta_transmissibility_factor_in = c(1.0,2.1)
+    variantdelta_introduction_day_in = c(as.numeric(as.Date('2021-06-08') - as.Date('2020-01-01')),as.numeric(as.Date('2021-06-09') - as.Date('2020-01-01')))
+    variantdelta_imports_factor_in = c(0.5,10)
+}
+
+if(variants_in >= 2){    
+    variantalpha_transmissibility_factor_in = c(1.1,1.5)
+    variantalpha_cross_protection_prob_in = c(0.91,0.91)
+    variantalpha_introduction_day_in = c(as.numeric(as.Date('2020-12-15') - as.Date('2020-01-01')),as.numeric(as.Date('2021-03-10') - as.Date('2020-01-01')))
+    variantalpha_imports_factor_in = c(0.5,10)
+
+    variantgamma_severity_factor_in = c(0.90, 2.50)
+    variantgamma_transmissibility_factor_in = c(1.26, 3.10)
+    variantgamma_cross_protection_prob_in = c(0.28,0.90)
+    variantgamma_introduction_day_in = c(as.numeric(as.Date('2020-11-04') - as.Date('2020-01-01')),as.numeric(as.Date('2021-03-24') - as.Date('2020-01-01')))
+    variantgamma_imports_factor_in = c(0.5, 10)
+
+    # variantkappa_severity_factor_in = c(0.90, 2.50)
+    # variantkappa_transmissibility_factor_in = c(1.0,3.0)
+    # variantkappa_cross_protection_prob_in = c(0.28,0.90)
+    # variantkappa_introduction_day_in = c(as.numeric(as.Date('2020-11-11') - as.Date('2020-01-01')),as.numeric(as.Date('2021-08-14') - as.Date('2020-01-01')))
+
+    # variantdelta_severity_factor_in = c(1.56, 3.34)
+    # variantdelta_cross_protection_prob_in = c(0.34, 0.34) ## This is temporary
+    # variantdelta_transmissibility_factor_in = c(1.50,2.66)
+    # variantdelta_introduction_day_in = c(as.numeric(as.Date('2021-06-08') - as.Date('2020-01-01')),as.numeric(as.Date('2021-09-09') - as.Date('2020-01-01')))
+    # variantdelta_imports_factor_in = c(0.5,10)
+
+    variantkappa_severity_factor_in = c(1,2.5)
+    variantkappa_transmissibility_factor_in = c(1.0,2.0)
+    variantkappa_cross_protection_prob_in = c(0.54,0.90)
+    variantkappa_introduction_day_in = c(as.numeric(as.Date('2020-11-11') - as.Date('2020-01-01')),as.numeric(as.Date('2021-08-14') - as.Date('2020-01-01')))
 
     variantdelta_severity_factor_in = c(1,1.5)
     variantdelta_cross_protection_prob_in = c(0.3,1.0) ## This is temporary
@@ -504,24 +558,24 @@ if(variants_in == 1){
 }
 
 ## Add Omicron variables
-if(variants_in == 2){    
-    variantomicron_transmissibility_factor_in   = c(1.1,1.5)
-    variantomicron_severity_factor_in           = c(1,1.5)
-    variantomicron_cross_protection_prob_in     = c(0.95,0.95)
-    variantomicron_introduction_day_in          = c(as.numeric(as.Date('2020-12-15') - as.Date('2020-01-01')),as.numeric(as.Date('2021-03-10') - as.Date('2020-01-01')))
-    variantomicron_imports_factor_in            = c(0.5,10)
+if(variants_in >= 3){    
+    variantomicron_transmissibility_factor_in   = c(3.2, 3.35)
+    variantomicron_severity_factor_in           = c(1.35, 1.45)
+    variantomicron_cross_protection_prob_in     = c(0.20, 0.35)
+    variantomicron_introduction_day_in          = c(as.numeric(as.Date('2021-11-01') - as.Date('2020-01-01')),as.numeric(as.Date('2021-12-20') - as.Date('2020-01-01')))
+    variantomicron_imports_factor_in            = c(1,10)
     
-    variantomicronBAX_transmissibility_factor_in   = c(1.1,1.5)
-    variantomicronBAX_severity_factor_in           = c(1,1.5)
-    variantomicronBAX_cross_protection_prob_in     = c(0.95,0.95)
-    variantomicronBAX_introduction_day_in          = c(as.numeric(as.Date('2020-12-15') - as.Date('2020-01-01')),as.numeric(as.Date('2021-03-10') - as.Date('2020-01-01')))
-    variantomicronBAX_imports_factor_in            = c(0.5,10)
+    variantomicronBAX_transmissibility_factor_in   = c(3.25, 3.25)
+    variantomicronBAX_severity_factor_in           = c(1.40, 1.40)
+    variantomicronBAX_cross_protection_prob_in     = c(0.25, 0.25)
+    variantomicronBAX_introduction_day_in          = c(as.numeric(as.Date('2022-02-15') - as.Date('2020-01-01')),as.numeric(as.Date('2022-04-01') - as.Date('2020-01-01')))
+    variantomicronBAX_imports_factor_in            = c(1,10)
 
-    variantomicronBQX_transmissibility_factor_in    = c(1.1,1.5)
-    variantomicronBQX_severity_factor_in            = c(1,1.5)
-    variantomicronBQX_cross_protection_prob_in      = c(0.95,0.95)
-    variantomicronBQX_introduction_day_in           = c(as.numeric(as.Date('2020-12-15') - as.Date('2020-01-01')),as.numeric(as.Date('2021-03-10') - as.Date('2020-01-01')))
-    variantomicronBQX_imports_factor_in             = c(0.5,10)
+    # variantomicronBQX_transmissibility_factor_in    = c(1.1,1.5)
+    # variantomicronBQX_severity_factor_in            = c(1,1.5)
+    # variantomicronBQX_cross_protection_prob_in      = c(0.4,0.95)
+    # variantomicronBQX_introduction_day_in           = c(as.numeric(as.Date('2021-11-01') - as.Date('2020-01-01')),as.numeric(as.Date('2021-12-20') - as.Date('2020-01-01')))
+    # variantomicronBQX_imports_factor_in             = c(0.5,10)
 }
 
 enable_age_specific_susceptibility_min_in = 0
@@ -535,6 +589,7 @@ influenza_susceptibility_by_age_cutoff_in = c(kids_susceptibility_age_in, kids_s
 if(variants_in == 0){
     scalars_sobol_df = sobol_design(
         lower = c(seed=1,
+                  influenza_introduction_day_shift              = influenza_introduction_day_shift_in[1],
                   imports_factor                                = imports_factor[1],
                   influenza_transmissibility                    = influenza_transmissibility[1],
                   shelter_in_place_compliance                   = shelter_in_place_compliance[1],
@@ -550,6 +605,7 @@ if(variants_in == 0){
                   community_contact_rate_1                      = community_contact_rate_1_in[1]
                   ),
         upper = c(seed=as.integer(Sys.time()),
+                  influenza_introduction_day_shift              = influenza_introduction_day_shift_in[2],
                   imports_factor                                = imports_factor[2],
                   influenza_transmissibility                    = influenza_transmissibility[2],
                   shelter_in_place_compliance                   = shelter_in_place_compliance[2],
@@ -568,22 +624,25 @@ if(variants_in == 0){
     scalars_sobol_df$variants_in                            = variants_in
     scalars_sobol_df$variantalpha_transmissibility_factor   = variantalpha_transmissibility_factor_in[1]
     scalars_sobol_df$variantalpha_cross_protection_prob     = variantalpha_cross_protection_prob_in[1]
+    scalars_sobol_df$variantalpha_introduction_day          = variantalpha_introduction_day_in[1]
+    scalars_sobol_df$variantalpha_imports_factor            = variantalpha_imports_factor_in[1]
+
     scalars_sobol_df$variantgamma_transmissibility_factor   = variantgamma_transmissibility_factor_in[1]
     scalars_sobol_df$variantgamma_cross_protection_prob     = variantgamma_cross_protection_prob_in[1]
+    scalars_sobol_df$variantgamma_introduction_day          = variantgamma_introduction_day_in[1]
+    scalars_sobol_df$variantgamma_imports_factor            = variantgamma_imports_factor_in[1]
+    scalars_sobol_df$variantgamma_severity_factor           = variantgamma_severity_factor_in[1]
+
     scalars_sobol_df$variantkappa_transmissibility_factor   = variantkappa_transmissibility_factor_in[1]
     scalars_sobol_df$variantkappa_cross_protection_prob     = variantkappa_cross_protection_prob_in[1]
-    scalars_sobol_df$variantalpha_introduction_day          = variantalpha_introduction_day_in[1]
     scalars_sobol_df$variantkappa_introduction_day          = variantkappa_introduction_day_in[1]
-    scalars_sobol_df$variantgamma_introduction_day          = variantgamma_introduction_day_in[1]
+    scalars_sobol_df$variantkappa_introduction_day          = variantkappa_introduction_day_in[1]
+    scalars_sobol_df$variantkappa_severity_factor           = variantkappa_severity_factor_in[1]
+
     scalars_sobol_df$variantdelta_introduction_day          = variantdelta_introduction_day_in[1]
     scalars_sobol_df$variantdelta_transmissibility_factor   = mean(variantdelta_transmissibility_factor_in)
     scalars_sobol_df$variantdelta_cross_protection_prob     = mean(variantdelta_cross_protection_prob_in)
-    scalars_sobol_df$variantkappa_introduction_day          = variantkappa_introduction_day_in[1]
-    scalars_sobol_df$variantalpha_imports_factor            = variantalpha_imports_factor_in[1]
-    scalars_sobol_df$variantgamma_imports_factor            = variantgamma_imports_factor_in[1]
     scalars_sobol_df$variantdelta_imports_factor            = variantdelta_imports_factor_in[1]
-    scalars_sobol_df$variantgamma_severity_factor           = variantgamma_severity_factor_in[1]
-    scalars_sobol_df$variantkappa_severity_factor           = variantkappa_severity_factor_in[1]
     scalars_sobol_df$variantdelta_severity_factor           = variantdelta_severity_factor_in[1]
 
     scalars_sobol_df$variantomicron_transmissibility_factor  = variantomicron_transmissibility_factor_in[1]
@@ -623,21 +682,52 @@ if(variants_in == 1){
         filter(state_code == state_code_in) %>%
         mutate(LL_total = LL_deaths)
 
-
     # 2. Sample based on their likelihood to ensure 10% sampled
-    particles_w = 0.02
-    prob_array = exp(-params_sweep_ll$LL_total*particles_w)
-    if(sum(prob_array) > 0){
-        indx_sampled = sample.int(n = length(prob_array), size = reps, prob = prob_array, replace = T)
-        n_sampled = length(unique(indx_sampled))
-    }    
+
+    # # max_LL = max(params_sweep_ll$LL_deaths)
+    # # particles_w = 1311/max_LL
+    # # prob_array = exp(-(params_sweep_ll$LL_deaths)*particles_w)
+
+    # max_LL = max(params_sweep_ll$LL_deaths)
+    # particles_w = 1100 / max_LL
+    # prob_array = exp(-(params_sweep_ll$LL_deaths)*particles_w)
+
+    # if(sum(prob_array) > 0){
+    #     indx_sampled = sample.int(n = length(prob_array), size = reps, prob = prob_array, replace = T)
+    #     n_sampled = length(unique(indx_sampled))
+    #     print("_________________________-")
+    # }    
+  
+    # print(unique(params_sweep_ll[indx_sampled,]$job_id)) 
+
+    params_sweep_ll <- params_sweep_ll %>% replace_na(list(LL_deaths = 0))
+    max_LL <- max(params_sweep_ll$LL_deaths)
+    particles_w <- 0.001
+    num_selected_jobs <- 30  # Change this to the desired number
+
+    while (TRUE) {
+    prob_array <- exp(-(params_sweep_ll$LL_deaths) * particles_w  / max_LL)
     
-    # indx_sampled = c(rep(1544, 667), rep(1683,667), rep(1712,666))
-    # print(params_sweep_ll$job_id[unique(indx_sampled)])
-    # n_sampled = length(indx_sampled)
-    # print(n_sampled)
+    if (sum(prob_array) > 0) {
+        indx_sampled <- sample.int(n = length(prob_array), size = reps, prob = prob_array, replace = TRUE)
+        n_sampled <- length(unique(indx_sampled))
+        
+        if (n_sampled <= num_selected_jobs) {
+        break
+        }
+    }
+    particles_w <- particles_w + 0.1
+
+    print(sprintf("particles_w : %s, N : %s", particles_w, n_sampled))
+    }
+
+    selected_jobs <- params_sweep_ll[indx_sampled, ] %>% pull(job_id)
+    print(unique(selected_jobs))
+
+    
     scalars_sampled = params_sweep_ll[indx_sampled,] %>%
-        dplyr::select(imports_factor, influenza_transmissibility,
+        dplyr::select(imports_factor, influenza_introduction_day_shift,
+                      influenza_transmissibility,
                       shelter_in_place_compliance, facemask_compliance,                  
                       influenza_susceptibility_by_age_offset,influenza_susceptibility_by_age_rate,
                       influenza_susceptibility_by_age_cutoff,influenza_susceptibility_by_age_high,
@@ -652,38 +742,39 @@ if(variants_in == 1){
         lower = c(seed=1,
                   variantalpha_transmissibility_factor  = variantalpha_transmissibility_factor_in[1],
                   variantalpha_cross_protection_prob    = variantalpha_cross_protection_prob_in[1],
+                  variantalpha_imports_factor           = variantalpha_imports_factor_in[1],
+
                   variantgamma_transmissibility_factor  = variantgamma_transmissibility_factor_in[1],
                   variantgamma_severity_factor          = variantgamma_severity_factor_in[1],
                   variantgamma_cross_protection_prob    = variantgamma_cross_protection_prob_in[1],
-                  variantkappa_transmissibility_factor  = variantkappa_transmissibility_factor_in[1],
-                  variantkappa_severity_factor          = variantkappa_severity_factor_in[1],
-                  variantkappa_cross_protection_prob    = variantkappa_cross_protection_prob_in[1],
-                  variantalpha_imports_factor           = variantalpha_imports_factor_in[1],
-                  variantkappa_introduction_day         = variantkappa_introduction_day_in[1],
-                  variantgamma_imports_factor           = variantgamma_imports_factor_in[1],
-                  variantdelta_cross_protection_prob    = variantdelta_cross_protection_prob_in[1],
-                  variantdelta_severity_factor          = variantdelta_severity_factor_in[1],
-                  variantdelta_transmissibility_factor  = variantdelta_transmissibility_factor_in[1],
-                  variantdelta_imports_factor           = variantdelta_imports_factor_in[1]
+                  variantgamma_imports_factor           = variantgamma_imports_factor_in[1]
                   ),
         upper = c(seed=as.integer(Sys.time()),
                   variantalpha_transmissibility_factor  = variantalpha_transmissibility_factor_in[2],
                   variantalpha_cross_protection_prob    = variantalpha_cross_protection_prob_in[2],
+                  variantalpha_imports_factor           = variantalpha_imports_factor_in[2],
+
                   variantgamma_transmissibility_factor  = variantgamma_transmissibility_factor_in[2],
                   variantgamma_severity_factor          = variantgamma_severity_factor_in[2],
                   variantgamma_cross_protection_prob    = variantgamma_cross_protection_prob_in[2],
-                  variantkappa_transmissibility_factor  = variantkappa_transmissibility_factor_in[2],
-                  variantkappa_severity_factor          = variantkappa_severity_factor_in[2],
-                  variantkappa_cross_protection_prob    = variantkappa_cross_protection_prob_in[2],
-                  variantalpha_imports_factor           = variantalpha_imports_factor_in[2],
-                  variantkappa_introduction_day         = variantkappa_introduction_day_in[2],
-                  variantgamma_imports_factor           = variantgamma_imports_factor_in[2],
-                  variantdelta_cross_protection_prob    = variantdelta_cross_protection_prob_in[2],
-                  variantdelta_severity_factor          = variantdelta_severity_factor_in[2],
-                  variantdelta_transmissibility_factor  = variantdelta_transmissibility_factor_in[2],
-                  variantdelta_imports_factor           = variantdelta_imports_factor_in[2]),
+                  variantgamma_imports_factor           = variantgamma_imports_factor_in[2]
+                  ),
         reps)
+
     scalars_sobol_df$variants_in = variants_in
+
+    scalars_sobol_df$variantkappa_transmissibility_factor   = variantkappa_transmissibility_factor_in[1]
+    scalars_sobol_df$variantkappa_cross_protection_prob     = variantkappa_cross_protection_prob_in[1]
+    scalars_sobol_df$variantkappa_introduction_day          = variantkappa_introduction_day_in[1]
+    scalars_sobol_df$variantkappa_introduction_day          = variantkappa_introduction_day_in[1]
+    scalars_sobol_df$variantkappa_severity_factor           = variantkappa_severity_factor_in[1]
+
+    scalars_sobol_df$variantdelta_introduction_day          = variantdelta_introduction_day_in[1]
+    scalars_sobol_df$variantdelta_transmissibility_factor   = mean(variantdelta_transmissibility_factor_in)
+    scalars_sobol_df$variantdelta_cross_protection_prob     = mean(variantdelta_cross_protection_prob_in)
+    scalars_sobol_df$variantdelta_imports_factor            = variantdelta_imports_factor_in[1]
+    scalars_sobol_df$variantdelta_severity_factor           = variantdelta_severity_factor_in[1]
+
     scalars_sobol_df$variantomicron_transmissibility_factor  = variantomicron_transmissibility_factor_in[1]
     scalars_sobol_df$variantomicron_severity_factor          = variantomicron_severity_factor_in[1]
     scalars_sobol_df$variantomicron_cross_protection_prob    = variantomicron_cross_protection_prob_in[1]
@@ -696,19 +787,6 @@ if(variants_in == 1){
     scalars_sobol_df$variantomicronBAX_introduction_day          = variantomicronBAX_introduction_day_in[1]
     scalars_sobol_df$variantomicronBAX_imports_factor            = variantomicronBAX_imports_factor_in[1]
 
-    # scalars_sobol_df$variantomicronBQX_transmissibility_factor   = variantomicronBQX_transmissibility_factor_in[1]
-    # scalars_sobol_df$variantomicronBQX_severity_factor           = variantomicronBQX_severity_factor_in[1]
-    # scalars_sobol_df$variantomicronBQX_cross_protection_prob     = variantomicronBQX_cross_protection_prob_in[1]
-    # scalars_sobol_df$variantomicronBQX_introduction_day          = variantomicronBQX_introduction_day_in[1]
-    # scalars_sobol_df$variantomicronBQX_imports_factor            = variantomicronBQX_imports_factor_in[1]
-
-    ##variantdelta_cross_protection_prob = variantdelta_cross_protection_prob_in[2],    
-    ##scalars_sobol_df$variantdelta_transmissibility_factor = mean(variantdelta_transmissibility_factor_in)
-    ##scalars_sobol_df$variantdelta_imports_factor = mean(variantdelta_imports_factor_in)
-    ##scalars_sobol_df$variantdelta_cross_protection_prob = 1 - rbeta(reps, 0.9, 8.2)
-    ##scalars_sobol_df$variantdelta_cross_protection_prob[scalars_sobol_df$variantdelta_cross_protection_prob < variantdelta_cross_protection_prob_in[1]] = variantdelta_cross_protection_prob_in[1]
-
-    ## variantdelta_cross_protection_prob_in[2]
     scalars_sobol_df = bind_cols(scalars_sobol_df, scalars_sampled)
 }
 
@@ -728,23 +806,173 @@ if(variants_in == 2){
     #fred_sweep_df = read_csv(file.path(calibration_dir, 'fred_output.csv'))
     params_sweep_ll = params_df %>%
         filter(state_code == state_code_in) %>%
+        mutate(LL_total = LL)
+
+
+    # # 2. Sample based on their likelihood to ensure 10% sampled
+    # max_LL = max(params_sweep_ll$LL)
+    # particles_w = 450/max_LL
+    # #prob_array = exp(-params_sweep_ll$LL_total*particles_w)
+    # prob_array = exp(-(params_sweep_ll$LL)*particles_w)
+    # print(sum(prob_array))
+    # if(sum(prob_array) > 0){
+    #     print('#########################')
+    #     indx_sampled = sample.int(n = length(prob_array), size = reps, prob = prob_array, replace = T)
+    #     n_sampled = length(unique(indx_sampled))
+    # }    
+    
+    # print(unique(params_sweep_ll[indx_sampled,]$job_id))
+
+
+    params_sweep_ll <- params_sweep_ll %>% replace_na(list(LL_deaths = 0))
+    max_LL <- max(params_sweep_ll$LL_deaths)
+    particles_w <- 1
+    num_selected_jobs <- 20  # Change this to the desired number
+
+    while (TRUE) {
+    print(particles_w)
+    prob_array <- exp(-(params_sweep_ll$LL_deaths) * particles_w  / max_LL)
+    
+    if (sum(prob_array) > 0) {
+        indx_sampled <- sample.int(n = length(prob_array), size = reps, prob = prob_array, replace = TRUE)
+        n_sampled <- length(unique(indx_sampled))
+        
+        if (n_sampled <= num_selected_jobs) {
+        break
+        }
+    }
+    particles_w <- particles_w + 100
+    }
+
+    selected_jobs <- params_sweep_ll[indx_sampled, ] %>% pull(job_id)
+    print(unique(selected_jobs))
+
+    scalars_sampled = params_sweep_ll[indx_sampled,] %>%
+        dplyr::select(imports_factor, influenza_introduction_day_shift, 
+                        influenza_transmissibility,
+                        shelter_in_place_compliance, facemask_compliance,                  
+                        influenza_susceptibility_by_age_offset,influenza_susceptibility_by_age_rate,
+                        influenza_susceptibility_by_age_cutoff,influenza_susceptibility_by_age_high,
+
+                        variantalpha_imports_factor,
+                        variantalpha_transmissibility_factor,
+                        variantalpha_cross_protection_prob,
+
+                        variantgamma_transmissibility_factor, 
+                        variantgamma_imports_factor,
+                        variantgamma_severity_factor,
+                        variantgamma_cross_protection_prob,
+
+                        nursing_home_incidence_importations_factor,neighborhood_same_age_bias,
+                        workplace_contacts, office_contacts, workplace_contact_factor,
+                        neighborhood_contacts, neighborhood_contact_factor, holiday_contact_rate,
+                        community_contact_rate_1,
+                        school_contacts, classroom_contacts,school_contact_factor
+                      ) 
+
+    scalars_sobol_df = sobol_design(
+        lower = c(seed=1,
+                  variantkappa_introduction_day         = variantkappa_introduction_day_in[1],
+                  variantkappa_transmissibility_factor  = variantkappa_transmissibility_factor_in[1],
+                  variantkappa_severity_factor          = variantkappa_severity_factor_in[1],
+                  variantkappa_cross_protection_prob    = variantkappa_cross_protection_prob_in[1],
+
+                  variantdelta_cross_protection_prob    = variantdelta_cross_protection_prob_in[1],
+                  variantdelta_severity_factor          = variantdelta_severity_factor_in[1],
+                  variantdelta_transmissibility_factor  = variantdelta_transmissibility_factor_in[1],
+                  variantdelta_imports_factor           = variantdelta_imports_factor_in[1]
+                  ),
+        upper = c(seed=as.integer(Sys.time()),
+                  variantkappa_introduction_day         = variantkappa_introduction_day_in[2],
+                  variantkappa_transmissibility_factor  = variantkappa_transmissibility_factor_in[2],
+                  variantkappa_severity_factor          = variantkappa_severity_factor_in[2],
+                  variantkappa_cross_protection_prob    = variantkappa_cross_protection_prob_in[2],
+
+                  variantdelta_cross_protection_prob    = variantdelta_cross_protection_prob_in[2],
+                  variantdelta_severity_factor          = variantdelta_severity_factor_in[2],
+                  variantdelta_transmissibility_factor  = variantdelta_transmissibility_factor_in[2],
+                  variantdelta_imports_factor           = variantdelta_imports_factor_in[2]),
+        reps)
+    scalars_sobol_df$variants_in = variants_in
+    scalars_sobol_df$variantomicron_transmissibility_factor  = variantomicron_transmissibility_factor_in[1]
+    scalars_sobol_df$variantomicron_severity_factor          = variantomicron_severity_factor_in[1]
+    scalars_sobol_df$variantomicron_cross_protection_prob    = variantomicron_cross_protection_prob_in[1]
+    scalars_sobol_df$variantomicron_introduction_day         = variantomicron_introduction_day_in[1]
+    scalars_sobol_df$variantomicron_imports_factor           = variantomicron_imports_factor_in[1]
+    
+    scalars_sobol_df$variantomicronBAX_transmissibility_factor   = variantomicronBAX_transmissibility_factor_in[1]
+    scalars_sobol_df$variantomicronBAX_severity_factor           = variantomicronBAX_severity_factor_in[1]
+    scalars_sobol_df$variantomicronBAX_cross_protection_prob     = variantomicronBAX_cross_protection_prob_in[1]
+    scalars_sobol_df$variantomicronBAX_introduction_day          = variantomicronBAX_introduction_day_in[1]
+    scalars_sobol_df$variantomicronBAX_imports_factor            = variantomicronBAX_imports_factor_in[1]
+
+    scalars_sobol_df = bind_cols(scalars_sobol_df, scalars_sampled)
+}
+
+if(variants_in == 3){  
+    state_code_in = state_code
+    calibration_simdir = sprintf('FRED_%.0f_calibration_asymp_%.2f_fm_%.2f_ksus_%.2f_var_%.0f_vax_%03d_mov_%s',
+                                 state_code, 
+                                 asymp_infectivity_in,
+                                 face_mask_transmission_efficacy_in,
+                                 kids_susceptibility_age_in, 
+                                 2,
+                                 vaccination_in,
+                                 calibration_label)
+
+    calibration_dir = file.path(getwd(), '../output','CALIBRATION',sprintf("%s_%s", calibration_simdir, "out"))
+    params_df = read_csv(file.path(calibration_dir, 'FRED_parameters_out.csv'))
+    #fred_sweep_df = read_csv(file.path(calibration_dir, 'fred_output.csv'))
+    params_sweep_ll = params_df %>%
+        filter(state_code == state_code_in) %>%
         mutate(LL_total = LL_deaths)
 
 
-    # 2. Sample based on their likelihood to ensure 10% sampled
-    particles_w = 0.02
-    prob_array = exp(-params_sweep_ll$LL_total*particles_w)
-    if(sum(prob_array) > 0){
-        indx_sampled = sample.int(n = length(prob_array), size = reps, prob = prob_array, replace = T)
-        n_sampled = length(unique(indx_sampled))
-    }    
+    # # 2. Sample based on their likelihood to ensure 10% sampled
+    # #particles_w = 0.0007803
+    # max_LL = max(params_sweep_ll$LL)
+    # particles_w = 450/max_LL
+    # #prob_array = exp(-params_sweep_ll$LL_total*particles_w)
+    # prob_array = exp(-(params_sweep_ll$LL)*particles_w)
+    # print(sum(prob_array))
+    # if(sum(prob_array) > 0){
+    #     print('#########################')
+    #     indx_sampled = sample.int(n = length(prob_array), size = reps, prob = prob_array, replace = T)
+    #     n_sampled = length(unique(indx_sampled))
+    # }    
+    
+    # print(unique(params_sweep_ll[indx_sampled,]$job_id))
+
+    params_sweep_ll <- params_sweep_ll %>% replace_na(list(LL_deaths = 0))
+    max_LL <- max(params_sweep_ll$LL_deaths)
+    particles_w <- 1
+    num_selected_jobs <- 30  # Change this to the desired number
+
+    while (TRUE) {
+    print(particles_w)
+    prob_array <- exp(-(params_sweep_ll$LL_deaths) * particles_w  / max_LL)
+    
+    if (sum(prob_array) > 0) {
+        indx_sampled <- sample.int(n = length(prob_array), size = reps, prob = prob_array, replace = TRUE)
+        n_sampled <- length(unique(indx_sampled))
+        
+        if (n_sampled <= num_selected_jobs) {
+        break
+        }
+    }
+    particles_w <- particles_w + 100
+    }
+
+    selected_jobs <- params_sweep_ll[indx_sampled, ] %>% pull(job_id)
+    print(unique(selected_jobs))
     
     # indx_sampled = c(rep(1544, 667), rep(1683,667), rep(1712,666))
     # print(params_sweep_ll$job_id[unique(indx_sampled)])
     # n_sampled = length(indx_sampled)
     # print(n_sampled)
     scalars_sampled = params_sweep_ll[indx_sampled,] %>%
-        dplyr::select(imports_factor, influenza_transmissibility,
+        dplyr::select(imports_factor, influenza_introduction_day_shift,
+                        influenza_transmissibility,
                         shelter_in_place_compliance, facemask_compliance,                  
                         influenza_susceptibility_by_age_offset,influenza_susceptibility_by_age_rate,
                         influenza_susceptibility_by_age_cutoff,influenza_susceptibility_by_age_high,
@@ -788,14 +1016,7 @@ if(variants_in == 2){
                 variantomicronBAX_severity_factor_in           = variantomicronBAX_severity_factor_in[1],
                 variantomicronBAX_cross_protection_prob_in     = variantomicronBAX_cross_protection_prob_in[1],
                 variantomicronBAX_introduction_day_in          = variantomicronBAX_introduction_day_in[1],
-                variantomicronBAX_imports_factor_in            = variantomicronBAX_imports_factor_in[1]
-
-                # variantomicronBQX_transmissibility_factor_in   = variantomicronBQX_transmissibility_factor_in[1],
-                # variantomicronBQX_severity_factor_in           = variantomicronBQX_severity_factor_in[1],
-                # variantomicronBQX_cross_protection_prob_in     = variantomicronBQX_cross_protection_prob_in[1],
-                # variantomicronBQX_introduction_day_in          = variantomicronBQX_introduction_day_in[1],
-                # variantomicronBQX_imports_factor_in            = variantomicronBQX_imports_factor_in[1]
-                  ),
+                variantomicronBAX_imports_factor_in            = variantomicronBAX_imports_factor_in[1]),
         upper = c(seed=as.integer(Sys.time()),
                 variantomicron_transmissibility_factor_in  = variantomicron_transmissibility_factor_in[2],
                 variantomicron_severity_factor_in          = variantomicron_severity_factor_in[2],
@@ -806,25 +1027,11 @@ if(variants_in == 2){
                 variantomicronBAX_transmissibility_factor_in   = variantomicronBAX_transmissibility_factor_in[2],
                 variantomicronBAX_severity_factor_in           = variantomicronBAX_severity_factor_in[2],
                 variantomicronBAX_cross_protection_prob_in     = variantomicronBAX_cross_protection_prob_in[2],
-                variantomicronBAX_introduction_day_in          = variantomicronBAX_introduction_day_in[2],
-                variantomicronBAX_imports_factor_in            = variantomicronBAX_imports_factor_in[2]
-
-                # variantomicronBQX_transmissibility_factor_in   = variantomicronBQX_transmissibility_factor_in[2],
-                # variantomicronBQX_severity_factor_in           = variantomicronBQX_severity_factor_in[2],
-                # variantomicronBQX_cross_protection_prob_in     = variantomicronBQX_cross_protection_prob_in[2],
-                # variantomicronBQX_introduction_day_in          = variantomicronBQX_introduction_day_in[2],
-                # variantomicronBQX_imports_factor_in            = variantomicronBQX_imports_factor_in[2]
-                ),
+                variantomicronBAX_introduction_day_in          
+                = variantomicronBAX_introduction_day_in[2],
+                variantomicronBAX_imports_factor_in            = variantomicronBAX_imports_factor_in[2]),
         reps)
     scalars_sobol_df$variants_in = variants_in
-    ##variantdelta_cross_protection_prob = variantdelta_cross_protection_prob_in[2],    
-    ##scalars_sobol_df$variantdelta_transmissibility_factor = mean(variantdelta_transmissibility_factor_in)
-    ##scalars_sobol_df$variantdelta_imports_factor = mean(variantdelta_imports_factor_in)
-
-    ##scalars_sobol_df$variantdelta_cross_protection_prob = 1 - rbeta(reps, 0.9, 8.2)
-    ##scalars_sobol_df$variantdelta_cross_protection_prob[scalars_sobol_df$variantdelta_cross_protection_prob < variantdelta_cross_protection_prob_in[1]] = variantdelta_cross_protection_prob_in[1]
-
-    ## variantdelta_cross_protection_prob_in[2]
     scalars_sobol_df = bind_cols(scalars_sobol_df, scalars_sampled)
 }
 
@@ -832,7 +1039,8 @@ scalars_sobol_df$variantalpha_transmissibility =  scalars_sobol_df$influenza_tra
 scalars_sobol_df$variantkappa_transmissibility =  scalars_sobol_df$influenza_transmissibility * scalars_sobol_df$variantkappa_transmissibility_factor
 scalars_sobol_df$variantgamma_transmissibility =  scalars_sobol_df$influenza_transmissibility * scalars_sobol_df$variantgamma_transmissibility_factor
 scalars_sobol_df$variantdelta_transmissibility =  scalars_sobol_df$influenza_transmissibility * scalars_sobol_df$variantdelta_transmissibility_factor   
-scalars_sobol_df$variantomicron_transmissibility =  scalars_sobol_df$influenza_transmissibility * scalars_sobol_df$variantomicron_transmissibility_factor  
+scalars_sobol_df$variantomicron_transmissibility =  scalars_sobol_df$variantdelta_transmissibility * scalars_sobol_df$variantomicron_transmissibility_factor 
+scalars_sobol_df$variantomicronBAX_transmissibility =  scalars_sobol_df$variantdelta_transmissibility * scalars_sobol_df$variantomicronBAX_transmissibility_factor  
 
 scalars_sobol_df$variantalpha_susceptibility_by_age_offset  = scalars_sobol_df$influenza_susceptibility_by_age_offset 
 scalars_sobol_df$variantalpha_susceptibility_by_age_rate    = scalars_sobol_df$influenza_susceptibility_by_age_rate 
@@ -859,6 +1067,11 @@ scalars_sobol_df$variantomicron_susceptibility_by_age_rate    = scalars_sobol_df
 scalars_sobol_df$variantomicron_susceptibility_by_age_cutoff  = scalars_sobol_df$influenza_susceptibility_by_age_cutoff
 scalars_sobol_df$variantomicron_susceptibility_by_age_high    = scalars_sobol_df$influenza_susceptibility_by_age_high
 
+scalars_sobol_df$variantomicronBAX_susceptibility_by_age_offset  = scalars_sobol_df$influenza_susceptibility_by_age_offset 
+scalars_sobol_df$variantomicronBAX_susceptibility_by_age_rate    = scalars_sobol_df$influenza_susceptibility_by_age_rate 
+scalars_sobol_df$variantomicronBAX_susceptibility_by_age_cutoff  = scalars_sobol_df$influenza_susceptibility_by_age_cutoff
+scalars_sobol_df$variantomicronBAX_susceptibility_by_age_high    = scalars_sobol_df$influenza_susceptibility_by_age_high
+
 scalars_sobol_df$school_contact_factor  = 1.0
 scalars_sobol_df$holiday_contact_rate   = 1.0
 
@@ -869,6 +1082,104 @@ scalars_sobol_df = bind_cols(scalars_sobol_df, get_ifr_param_string(scalars_sobo
 scalars_sobol_df = bind_cols(scalars_sobol_df, get_ifr_param_string(scalars_sobol_df$variantomicronBAX_severity_factor, 'omicronBAX'))
 
 ## get_ifr_param_string(scalars_sobol_df$variantdelta_severity_factor[4], 'delta')
+
+
+parameters <- c('workplace_contact_factor',
+                'neighborhood_contact_factor', 
+                'community_contact_rate_1', 
+                'shelter_in_place_compliance', 
+                'influenza_transmissibility',
+                'facemask_compliance',
+                'neighborhood_same_age_bias',
+                'variantalpha_cross_protection_prob',
+                'variantgamma_cross_protection_prob', 
+                'variantkappa_cross_protection_prob',
+                'variantdelta_cross_protection_prob',
+                'variantomicron_cross_protection_prob',
+                'variantalpha_imports_factor',
+                'variantgamma_imports_factor', 
+                'variantdelta_imports_factor',
+                'variantomicron_imports_factor',
+                'variantalpha_transmissibility_factor',
+                'variantgamma_transmissibility_factor',
+                'variantkappa_transmissibility_factor',
+                'variantdelta_transmissibility_factor', 
+                'variantomicron_transmissibility_factor',
+                'variantgamma_severity_factor',
+                'variantkappa_severity_factor',
+                'variantdelta_severity_factor',
+                'variantomicron_severity_factor',
+                'variantkappa_introduction_day')
+
+lower_limit <- c(workplace_contact_factor_in[1],
+                neighborhood_contact_factor_in[1],
+                community_contact_rate_1_in[1],
+                shelter_in_place_compliance[1],
+                influenza_transmissibility[1],
+                facemask_compliance[1],
+                neighborhood_same_age_bias_in[1],
+                variantalpha_cross_protection_prob_in[1],
+                variantgamma_cross_protection_prob_in[1],
+                variantkappa_cross_protection_prob_in[1],
+                variantdelta_cross_protection_prob_in[1],
+                variantomicron_cross_protection_prob_in[1],
+                variantalpha_imports_factor_in[1],
+                variantgamma_imports_factor_in[1],
+                variantdelta_imports_factor_in[1],
+                variantomicron_imports_factor_in[1],
+                variantalpha_transmissibility_factor_in[1],
+                variantgamma_transmissibility_factor_in[1],
+                variantkappa_transmissibility_factor_in[1],
+                variantdelta_transmissibility_factor_in[1],
+                variantomicron_transmissibility_factor_in[1],
+                variantgamma_severity_factor_in[1],
+                variantkappa_severity_factor_in[1],
+                variantdelta_severity_factor_in[1],
+                variantomicron_severity_factor_in[1],
+                variantkappa_introduction_day_in[1])
+
+upper_limit <- c(workplace_contact_factor_in[2],
+                neighborhood_contact_factor_in[2],
+                community_contact_rate_1_in[2],
+                shelter_in_place_compliance[2],
+                influenza_transmissibility[2],
+                facemask_compliance[2],
+                neighborhood_same_age_bias_in[2],
+                variantalpha_cross_protection_prob_in[2],
+                variantgamma_cross_protection_prob_in[2],
+                variantkappa_cross_protection_prob_in[2],
+                variantdelta_cross_protection_prob_in[2],
+                variantomicron_cross_protection_prob_in[2],
+                variantalpha_imports_factor_in[2],
+                variantgamma_imports_factor_in[2],
+                variantdelta_imports_factor_in[2],
+                variantomicron_imports_factor_in[2],
+                variantalpha_transmissibility_factor_in[2],
+                variantgamma_transmissibility_factor_in[2],
+                variantkappa_transmissibility_factor_in[2],
+                variantdelta_transmissibility_factor_in[2],
+                variantomicron_transmissibility_factor_in[2],
+                variantgamma_severity_factor_in[2],
+                variantkappa_severity_factor_in[2],
+                variantdelta_severity_factor_in[2],
+                variantomicron_severity_factor_in[2],
+                variantkappa_introduction_day_in[2])
+
+
+# Function to save vectors limits to a CSV file
+save_limits_to_csv <- function() {
+  limits <- data.frame(
+    parameter = parameters,
+    lower_limit = lower_limit,
+    upper_limit = upper_limit
+  )
+  write.csv(limits, file.path(output.dir, 'FRED_parameters_limits.csv'), row.names = FALSE)
+  write.csv(limits, 'FRED_parameters_limits.csv', row.names = FALSE)
+}
+
+# Call the function to save the limits to CSV
+save_limits_to_csv()
+
 
 ##==============================================#
 ## Initial conditions-------------------
@@ -881,7 +1192,8 @@ primary_cases_file = file.path(output.dir, sprintf('initial_cases_%d_%d.txt',sta
 initial_df = read_csv(initial_inf_file)
 initial_df$day = as.numeric(difftime(initial_df$Date, as.Date(start_date), units='days'))
 
-variants_imp_file = '../../fred_input_files/imports/COL_variant_imports.csv'
+#variants_imp_file = '../../fred_input_files/imports/COL_variant_imports.csv'
+variants_imp_file = sprintf("../../fred_input_files/imports/%s_scaled_imports.csv", state_code)
 variants_imp_df = read_csv(variants_imp_file)
 
 ## Sample 'reps' from the initial conditions
@@ -895,6 +1207,8 @@ for(nn in 1:reps){
     ## For now, choose the mean
     tmp_df = initial_df %>% group_by(day) %>% summarize(Imports = ceiling(mean(Imports))) %>% ungroup()
     
+    tmp_df$day = tmp_df$day + scalars_sobol_df$influenza_introduction_day_shift[nn]
+
     tmp_df$Imports = round(tmp_df$Imports * scalars_sobol_df$imports_factor[nn])
     month_imports = ceiling(mean(tmp_df$Imports[(tmp_df$day <= (max(tmp_df$day) - 30)) & (tmp_df$Imports > 0)]))
 
@@ -906,40 +1220,73 @@ for(nn in 1:reps){
         week_imp$day = seq(from=max(tmp_df$day) + 1, by = 7, length.out = nrow(week_imp))
         tmp_df = bind_rows(tmp_df, week_imp)
     }
-    if(variants_in >= 1){
+    if(variants_in >= 0){
+        # alpha_imports = filter(variants_imp_df, variant == "20I (Alpha, V1)") %>%
+        #     mutate(day = as.numeric(Date - as.Date('2020-01-01'))) %>%
+        #     mutate(Imports = round(scalars_sobol_df$variantalpha_imports_factor[nn] * TotalVariantImports)) %>%
+        #     filter(Imports >= 1)
+
+        # gamma_imports = filter(variants_imp_df, variant == "20J (Gamma, V3)") %>%
+        #     mutate(day = as.numeric(Date - as.Date('2020-01-01'))) %>%
+        #     mutate(Imports = round(scalars_sobol_df$variantgamma_imports_factor[nn] * TotalVariantImports)) %>%
+        #     filter(Imports >= 1,Date <= as.Date('2021-04-01'))
+
+        # delta_imports = filter(variants_imp_df, variant == "21A (Delta)") %>%
+        #     mutate(day = as.numeric(Date - as.Date('2020-01-01'))) %>%
+        #     mutate(Imports = round(scalars_sobol_df$variantdelta_imports_factor[nn] * TotalVariantImports)) %>%
+        #     filter(Imports >= 1, Date >= as.Date('2021-04-01')) %>%
+        #     mutate(day = day + 60 + 15)
+
+        # ########################################################################################################
+        # omicron_imports = filter(variants_imp_df, variant == "21K (Omicron)" | variant == "21L (Omicron)" | variant == "22A (Omicron)") %>%
+        #     mutate(day = as.numeric(Date - as.Date('2020-01-01'))) %>%
+        #     mutate(Imports = round(scalars_sobol_df$variantomicron_imports_factor[nn] * TotalVariantImports)) %>%
+        #     filter(Imports >= 1, Date > as.Date('2021-11-01')) %>%
+        #     mutate(day = day + 9) %>%
+        #     dplyr::select(day, Imports)
+
+        # ########################################################################################################
+        # omicronBAX_imports = filter(variants_imp_df, variant == "22E (Omicron)") %>%
+        #     mutate(day = as.numeric(Date - as.Date('2020-01-01'))) %>%
+        #     mutate(Imports = round(scalars_sobol_df$variantomicronBAX_imports_factor[nn] * TotalVariantImports)) %>%
+        #     #filter(Imports >= 1, Date > as.Date('2021-12-15'), Date <= as.Date('2022-03-20')) %>%
+        #     filter(Imports >= 1, Date > as.Date('2022-09-01')) %>%
+        #     mutate(day = day - 90) %>%
+        #     dplyr::select(day, Imports)
+
         alpha_imports <- variants_imp_df %>%
             filter(variant == "Alpha") %>%
             mutate(day = as.numeric(Date - as.Date('2020-01-01'))) %>%
-            mutate(Imports = round(scalars_sobol_df$variantalpha_imports_factor[nn] *  scaled_imports)) %>%
-            filter(Imports >= 1) %>%
-            select(day, Imports)
+            mutate(Imports = round(scaled_imports)) %>%
+            filter(Imports >= 1)
 
         gamma_imports <- variants_imp_df %>%
             filter(variant == "Gamma") %>%
             mutate(day = as.numeric(Date - as.Date('2020-01-01'))) %>%
-            mutate(Imports = round(scalars_sobol_df$variantgamma_imports_factor[nn] * scaled_imports)) %>%
-            filter(Imports >= 1) %>%
-            select(day, Imports)
+            mutate(Imports = round(scaled_imports)) %>%
+            filter(Imports >= 1) #, Date <= as.Date('2021-04-01')
 
         delta_imports <- variants_imp_df %>%
             filter(variant == "Delta") %>%
             mutate(day = as.numeric(Date - as.Date('2020-01-01'))) %>%
-            mutate(Imports = round(scalars_sobol_df$variantdelta_imports_factor[nn] * scaled_imports)) %>%
-            filter(Imports >= 1) %>%
-            select(day, Imports)
+            mutate(Imports = round(scaled_imports)) %>%
+            filter(Imports >= 1) %>% #Date >= as.Date('2021-04-01')
+            mutate(day = day)
 
         omicron_imports <- variants_imp_df %>%
             filter(variant %in% c("Omicron")) %>%
             mutate(day = as.numeric(Date - as.Date('2020-01-01'))) %>%
-            mutate(Imports = round(scalars_sobol_df$variantomicron_imports_factor[nn] * scaled_imports)) %>%
-            filter(Imports >= 1) %>%
+            mutate(Imports = round(scaled_imports)) %>%
+            filter(Imports >= 1) %>% #, Date > as.Date('2021-11-01')
+            mutate(day = day + 9) %>%
             select(day, Imports)
 
         omicronBAX_imports <- variants_imp_df %>%
-            filter(variant == "OmicronBAX") %>%
+            filter(variant == "Omicron") %>%
             mutate(day = as.numeric(Date - as.Date('2020-01-01'))) %>%
-            mutate(Imports = round(scalars_sobol_df$variantomicronBAX_imports_factor[nn] * scaled_imports)) %>%
-            filter(Imports >= 1) %>%
+            mutate(Imports = round(scaled_imports)) %>%
+            filter(Imports >= 1) %>% # Date > as.Date('2022-09-01')
+            mutate(day = day) %>%
             select(day, Imports)
         
         tmp_df$Date = tmp_df$day + as.Date('2020-01-01')
@@ -978,11 +1325,10 @@ for(nn in 1:reps){
     close(fileConn)
 }
 
-
 ##==============================================#
 ## School closure-------------------
 ##==============================================#
-schools_open_list = read_csv('../../fred_input_files/interventions/15_schools_open.csv')
+schools_open_list = read_csv(sprintf('../../fred_input_files/interventions/%d_schools_open.csv',state_code))
 schools_open_list$Capacity[schools_open_list$Capacity > 1] = 1.0
 
 school_schedule_closed_file = file.path(output.dir, sprintf('school_schedule_closed_%d.txt',state_code))
@@ -990,7 +1336,7 @@ school_schedule_closed_file = file.path(output.dir, sprintf('school_schedule_clo
 ## Parse updated list of schools reopened
 ## Process school reopen files and transform into Unidad Catastral capacity
 sim_start_date = as.Date(start_date)
-school_reopen_list_file = '../../fred_input_files/interventions/15_schools_open_2021.csv'
+school_reopen_list_file = sprintf('../../fred_input_files/interventions/%d_schools_open_2021.csv',state_code)
 school_reopen_df = read_csv(school_reopen_list_file) %>%
     group_by(Grade, zipcode, start_date, end_date) %>%
     summarize(Capacity = ifelse(InPerson<Total_students, InPerson/Total_students, 1.0)) %>%
@@ -1329,6 +1675,7 @@ scalars_intervention = scalars_sobol_df %>%
         shelter_in_place_compliance                 = scalars_sobol_df$shelter_in_place_compliance,
         face_mask_timeseries_file                   = facemask_time_file,
         facemask_compliance                         = scalars_sobol_df$facemask_compliance,
+        influenza_introduction_day_shift            = scalars_sobol_df$influenza_introduction_day_shift,
         influenza_transmissibility                  = scalars_sobol_df$influenza_transmissibility,
         influenza_susceptibility_by_age_offset      = scalars_sobol_df$influenza_susceptibility_by_age_offset,
         influenza_susceptibility_by_age_rate        = scalars_sobol_df$influenza_susceptibility_by_age_rate,
@@ -1387,7 +1734,7 @@ scalars_intervention = scalars_sobol_df %>%
         variantdelta_susceptibility_by_age_high = scalars_sobol_df$variantdelta_susceptibility_by_age_high,   
         variantdelta_severity_factor = scalars_sobol_df$variantdelta_severity_factor,
         
-        variantomicron_transmissibility =  scalars_sobol_df$variantomicron_transmissibility,
+        variantomicron_transmissibility =  1.5*scalars_sobol_df$variantomicron_transmissibility,
         variantomicron_transmissibility_factor =  scalars_sobol_df$variantomicron_transmissibility_factor,
         variantomicron_cross_protection_prob = scalars_sobol_df$variantomicron_cross_protection_prob,
         variantomicron_imports_factor = scalars_sobol_df$variantomicron_imports_factor,
@@ -1423,7 +1770,7 @@ scalars = scalars_intervention %>%
            influenza_susceptibility_by_age_minage       = influenza_susceptibility_by_age_minage_in,
            influenza_susceptibility_by_age_minvalue     = influenza_susceptibility_by_age_minvalue_in,
            influenza_face_mask_transmission_efficacy    = face_mask_transmission_efficacy_in,
-           
+          
            variantalpha_asymp_infectivity               = asymp_infectivity_in,
            variantalpha_susceptibility_by_age_minage    = influenza_susceptibility_by_age_minage_in,
            variantalpha_susceptibility_by_age_minvalue  = influenza_susceptibility_by_age_minvalue_in,
@@ -1485,11 +1832,12 @@ scalars = scalars_intervention %>%
            enable_holiday_contacts                      = enable_holiday_contacts_in,
            enable_community_contact_timeseries          = enable_community_contact_timeseries_in,
            start_date                                   = start_date)
+
 if(variants_in >= 1){
-    scalars$diseases = 7
+    scalars$diseases = 6
     scalars$enable_disease_cross_protection = 1
     scalars$influenza_cross_protection_prob = 1.0
-    scalars$disease_names = "7 influenza variantalpha variantgamma variantkappa variantdelta variantomicron variantomicronBAX"
+    scalars$disease_names = "6 influenza variantalpha variantgamma variantkappa variantdelta variantomicron"
 
     ## Vaccination
     scalars$enable_vaccination              = 1
@@ -1499,6 +1847,7 @@ if(variants_in >= 1){
 }else{
     scalars$enable_vaccination = 0
 }
+
 
 ##===============================================##
 ## Write the parameters to files---------------
@@ -1540,6 +1889,7 @@ write_fred_parameters(scalars, defaults_params, output.dir,basename.in=basename_
 ## print report scalars parameters file with IDs
 report_scalars = dplyr::select(
                             scalars, variants_in, 
+                            influenza_introduction_day_shift,
                             influenza_transmissibility,
                             influenza_asymp_infectivity,
                             shelter_in_place_compliance,influenza_face_mask_transmission_efficacy,
@@ -1667,6 +2017,7 @@ eval $cmd
 write_condor_sh_execution_file <- function(experiment_label_in, 
                                            jobs_queue, 
                                            tmp_cmd_file,
+                                           state_code,
                                            worker         = "worker4",
                                            local_apps_dir = AGORA_path, 
                                            output_path    = "../run_files/") {
@@ -1675,16 +2026,22 @@ write_condor_sh_execution_file <- function(experiment_label_in,
   sh_script <- paste0(
     "#!/bin/bash\n\n",
     
+
     "### JOB NUMBER\n",
     "PROCESS_NUMBER=$1\n",
     "PROCESS_NUMBER=$((PROCESS_NUMBER))\n\n",
     
     "### PATHS\n",
-    "export HOME=",local_apps_dir,"\n\n",
+    "#export HOME=",local_apps_dir,"\n\n",
+    "export HOME=/zine/HPC02S1/ex-dveloza\n",
     
     "### SET ENV PATH\n",
     "export PATH=/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin\n",
     "export PATH=$HOME/mambaforge/bin:$PATH\n\n",
+
+    "### PATHS\n",
+    "export PERL5LIB=/zine/HPC02S1/ex-dveloza/mambaforge/lib/perl5/vendor_perl\n",
+    "export LD_LIBRARY_PATH=/zine/HPC02S1/ex-dveloza/mambaforge/lib/:/usr/lib/:/usr/lib64/\n",
     
     "### FRED SETUP\n",
     "export condor_local=$(realpath ./)\n",
@@ -1693,7 +2050,28 @@ write_condor_sh_execution_file <- function(experiment_label_in,
     
     "export PATH=${PATH}:${FRED_HOME}/bin\n",
     'echo "PATH is set to $PATH"\n\n',
-   
+
+    "### FRED populations\n",
+    "mv colombia_", state_code, " $FRED_HOME/populations\n",
+
+    "mkdir $condor_local/", experiment_label_in, "\n",
+    "mv community_timeseries_$PROCESS_NUMBER.txt $condor_local/", experiment_label_in, "\n",
+    "mv covid_",state_code,"_params_$PROCESS_NUMBER.txt $condor_local/", experiment_label_in, "\n",
+    "mv facemask_compliance_timeseries_",state_code,"_$PROCESS_NUMBER.txt $condor_local/", experiment_label_in, "\n",
+    "mv initial_cases_",state_code,"_$PROCESS_NUMBER.txt $condor_local/", experiment_label_in, "\n",
+    "mv shelter_timeseries_",state_code,"_$PROCESS_NUMBER.txt $condor_local/", experiment_label_in, "\n",
+    "mv FRED_parameters.csv $condor_local/", experiment_label_in, "\n",
+    "mv FRED_parameters_limits.csv $condor_local/", experiment_label_in, "\n",
+    "mv infection_hospitalization_risk_5.csv $condor_local/", experiment_label_in, "\n",
+    "mv infection_hospitalization_risk.csv $condor_local/", experiment_label_in, "\n",
+    "mv geoinfo_municipios_colombia.csv $condor_local/", experiment_label_in, "\n",
+    "mv post_process_fred_calibration_var_0.R $condor_local/", experiment_label_in, "\n",
+    "mv post_process_fred_calibration_var_1.R $condor_local/", experiment_label_in, "\n",
+    "mv post_process_fred_calibration_var_2.R $condor_local/", experiment_label_in, "\n",
+    "mv post_process_fred_calibration_var_3.R $condor_local/", experiment_label_in, "\n",
+    "mv vaccination_daily_capacity_timeseries.txt $condor_local/", experiment_label_in, "\n",
+    "mv vaccination_stock_timeseries.txt $condor_local/", experiment_label_in, "\n\n",
+    
     "export FRED_RESULTS=$condor_local/", experiment_label_in, "/FRED_RESULTS\n",
     'echo "FRED_RESULTS is set to $FRED_RESULTS"\n\n',
     
@@ -1727,7 +2105,7 @@ generate_condor_scheduler_script <- function(experiment_supername_in,
                                              workers,
                                              output_path = "../run_files/") {
   
-  submission_file = sprintf("%s-%s.condor", experiment_supername_in, experiment_name_in)
+  submission_file = sprintf("%s/%s-%s.condor", output_path, experiment_supername_in, experiment_name_in)
   worker_list <- paste(workers, collapse = '" "')
   script_content <- sprintf('#!/bin/bash
 
@@ -1752,13 +2130,15 @@ submit_job_to_worker() {
     CURRENT_LINE=$((CURRENT_LINE+1))
 }
 
-worker_buffer=30
-slot_buffer=60
+cd %s
+
+worker_buffer=1
+slot_buffer=1
 while [ $CURRENT_LINE -le $TOTAL_LINES ]; do
     for WORKER in "${WORKERS[@]}"; do
         RUNNING_JOBS=$(get_running_jobs $WORKER)
         
-        while [ $RUNNING_JOBS -lt 2 ] && [ $CURRENT_LINE -le $TOTAL_LINES ]; do
+        while [ $RUNNING_JOBS -lt 8 ] && [ $CURRENT_LINE -le $TOTAL_LINES ]; do
             echo "${WORKER} is running ${RUNNING_JOBS} jobs"
             submit_job_to_worker $WORKER
             
@@ -1774,7 +2154,7 @@ while [ $CURRENT_LINE -le $TOTAL_LINES ]; do
 done
 
 echo "All jobs submitted!"
-', worker_list, tmp_cmd_file, submission_file, submission_file, submission_file, submission_file)
+', worker_list, tmp_cmd_file, submission_file, submission_file, submission_file, submission_file, output.dir)
   
   script_file_name <- sprintf("%s/condor_scheduler_%s.sh", output_path, calibration_label)
   writeLines(script_content, script_file_name)
@@ -1788,6 +2168,7 @@ write_submission_array_htcondor = function(experiment_supername_in,
                                            experiment_label_in,
                                            experiment_name_in,
                                            experiment_dir_in,
+                                           synthetic_population_dir_in,
                                            params_base,
                                            job_base,
                                            reps, scalars, FUN, 
@@ -1809,7 +2190,12 @@ Log                         = FRED_job_$(Cluster)_$(Process).log
 Output                      = FRED_job_$(Cluster)_$(Process).out
 Error                       = FRED_job_$(Cluster)_$(Process).err
 Notification                = Error
-Executable                  = job_executor_STAGELABEL.sh
+Should_Transfer_Files       = Yes
+Transfer_Executable         = True
+Transfer_Input_Files        = ../job_executor_STAGELABEL.sh, ../TMPCMDFILE, FREDHOMESTR, SYNPOPULATIONSDIR, EXPERIMENTDIR/community_timeseries_1.txt, EXPERIMENTDIR/covid_STATECODE_params_1.txt, EXPERIMENTDIR/facemask_compliance_timeseries_STATECODE_1.txt, EXPERIMENTDIR/initial_cases_STATECODE_1.txt,EXPERIMENTDIR/shelter_timeseries_STATECODE_1.txt, EXPERIMENTDIR/FRED_parameters.csv, EXPERIMENTDIR/FRED_parameters_limits.csv, EXPERIMENTDIR/infection_hospitalization_risk_5.csv, EXPERIMENTDIR/infection_hospitalization_risk.csv, EXPERIMENTDIR/geoinfo_municipios_colombia.csv, EXPERIMENTDIR/post_process_fred_calibration_var_0.R, EXPERIMENTDIR/post_process_fred_calibration_var_1.R, EXPERIMENTDIR/post_process_fred_calibration_var_2.R, EXPERIMENTDIR/post_process_fred_calibration_var_3.R, EXPERIMENTDIR/vaccination_daily_capacity_timeseries.txt, EXPERIMENTDIR/vaccination_stock_timeseries.txt
+Transfer_Output_Files       = EXPERIMENTLABEL/FRED_RESULTS
+Executable                  = ../job_executor_STAGELABEL.sh
+When_To_Transfer_Output     = ON_EXIT_OR_EVICT
 Arguments                   = 1
 requirements                = (Machine == \"WORKERNAME\")
 Queue JOBSPERWORKER
@@ -1818,8 +2204,10 @@ Queue JOBSPERWORKER
 
     submission_str = submission_template %>%
         str_replace_all(pattern="JOBNAME", replacement = jobname) %>%
+        str_replace_all(pattern="SYNPOPULATIONSDIR", replacement = synthetic_population_dir_in) %>%
         str_replace_all(pattern="EXPERIMENTDIR", replacement = experiment_dir_in) %>%
         str_replace_all(pattern="EXPERIMENTLABEL", replacement = experiment_label_in) %>%
+        str_replace_all(pattern="STATECODE", replacement = as.character(state_code)) %>%
         str_replace_all(pattern="STAGELABEL", replacement = calibration_label) %>%
         str_replace_all(pattern="FREDHOMESTR", replacement = fred_home_dir_in) %>%
         str_replace_all(pattern="FREDRESULTSSTR", replacement = fred_results_in) %>%
@@ -1842,6 +2230,7 @@ Queue JOBSPERWORKER
     write_condor_sh_execution_file(experiment_label_in = experiment_label_in, 
                                   jobs_queue           = cores_per_worker, 
                                   tmp_cmd_file         = tmp_cmd_file,
+                                  state_code           = state_code,
                                   worker               = worker,
                                   output_path          = output_path)
 
@@ -1901,6 +2290,7 @@ submit_jobs = function(experiment_supername_in,
                        experiment_label_in,
                        experiment_name_in,
                        experiment_dir_in,
+                       synthetic_population_dir_in,
                        params_base,
                        job_base,
                        reps, scalars,
@@ -1964,6 +2354,7 @@ submit_jobs = function(experiment_supername_in,
         experiment_label_in     = experiment_label_in,
         experiment_name_in      = experiment_name_in,
         experiment_dir_in       = experiment_dir_in,
+        synthetic_population_dir_in = synthetic_population_dir_in,
         params_base             = params_base,
         job_base                = job_base,
         reps                    = reps, 
@@ -2015,6 +2406,7 @@ submit_jobs(experiment_supername_in   = sprintf('FRED_CALIB-ASYMP-%.2fFM%.2f-KSU
             experiment_label_in       = experiment_label,
             experiment_name_in        = as.character(state_code),
             experiment_dir_in         = output.dir,
+            synthetic_population_dir_in = populations_dir,
             params_base               = basename_params,
             job_base                  = basename_jobs,
             reps                      = reps_per_job,
