@@ -2,8 +2,8 @@
 	path = process_inputs/colombia_mobility_series
 	url = https://github.com/dvelozad/colombia_mobility_series.git
 [submodule "process_inputs/contact_series_estimation"]
-    path = process_inputs/contact_series_estimation
-    url = https://github.com/dvelozad/contact_series_estimation.git
+	path = process_inputs/contact_series_estimation
+	url = https://github.com/dvelozad/contact_series_estimation.git
 [submodule "process_inputs/covid_dominance_model"]
 	path = process_inputs/covid_dominance_model
 	url = https://github.com/dvelozad/covid_dominance_model.git
