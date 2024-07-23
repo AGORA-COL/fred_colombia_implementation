@@ -1,4 +1,6 @@
 setup:
+	@echo "Updating submodules"
+	@git submodule update --init --recursive 
 	@mkdir -p output
 	@mkdir -p scratch
 	@mkdir -p fred_run_stages/run_files
@@ -9,7 +11,7 @@ setup:
 		cd .. || (echo "Failed to change directory" && exit 1); \
 		git clone https://github.com/confunguido/FRED || (echo "Failed to clone repository" && exit 1); \
         echo "Copying custom Epidemic.cc and Global.h files"; \
-        cp -R ./fred_colombia_implementation/input_files/FRED_compile_files/* FRED/src/ || (echo "Failed to copy files" && exit 1); \
+        cp -R ./fred_colombia_implementation/fred_input_files/FRED_compile_files/* FRED/src/ || (echo "Failed to copy files" && exit 1); \
 		cd FRED/src || (echo "Failed to change into repository directory" && exit 1); \
 		make || (echo "Make command failed" && exit 1); \
 		echo "Remember to add the synthetic populations"; \
