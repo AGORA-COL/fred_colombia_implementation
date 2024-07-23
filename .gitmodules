@@ -1,0 +1,18 @@
+[submodule "process_inputs/colombia_mobility_series"]
+    path = process_inputs/colombia_mobility_series
+    url = https://github.com/dvelozad/colombia_mobility_series.git
+[submodule "process_inputs/contact_series_estimation"]
+    path = process_inputs/contact_series_estimation
+    url = https://github.com/dvelozad/contact_series_estimation.git
+[submodule "process_inputs/covid_dominance_model"]
+    path = process_inputs/covid_dominance_model
+    url = https://github.com/dvelozad/covid_dominance_model.git
+[submodule "process_inputs/covid_uci_beds"]
+    path = process_inputs/covid_uci_beds
+    url = https://github.com/dvelozad/covid_uci_beds.git
+[submodule "process_inputs/fred_widgets"]
+    path = process_inputs/fred_widgets
+    url = https://github.com/dvelozad/fred_widgets.git
+[submodule "process_inputs/school_open_series"]
+    path = process_inputs/school_open_series
+    url = https://github.com/dvelozad/school_open_series.git
