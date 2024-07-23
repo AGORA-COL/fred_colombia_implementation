@@ -16,3 +16,6 @@
 [submodule "process_inputs/school_open_series"]
     path = process_inputs/school_open_series
     url = https://github.com/dvelozad/school_open_series.git
+[submodule "fred_run_experiments/post_process/model-reports"]
+    path = fred_run_experiments/post_process/model-reports
+    url = https://github.com/AGORA-COL/model-reports.git
