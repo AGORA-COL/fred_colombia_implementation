@@ -9,3 +9,7 @@
 **/dominance_data/
 **/gadm_data/
 **/mobility_trends/
+**/nohup.out 
+**/.RData 
+**/.RDataTmp 
+**/.Rhistory 
