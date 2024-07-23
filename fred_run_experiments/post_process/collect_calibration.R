@@ -12,6 +12,9 @@
 library(tidyverse)
 library(fredtools)
 library(DirichletReg)
+library(dplyr)
+library(parallel)
+library(readr)
 
 ####################################################
 ## local variables
@@ -34,7 +37,7 @@ Sys.setenv(PATH=sprintf('/zine/HPC02S1/ex-dveloza/mambaforge/bin:/bin/:/usr/loca
 ## load dirs -------------
 ##==============================================#
 fred_home = Sys.getenv('FRED_HOME')
-fred_defaults = sprintf("%s/input_files/defaults", fred_home)
+fred_defaults = sprintf("%s/fred_input_files/defaults", fred_home)
 
 ##========================================#
 ## Functions -------------
@@ -45,17 +48,28 @@ get_loglikelihood_poisson <- function(data_in, model_in){
     return(ll_out)
 }
 
-get_loglikelihood <- function(data_in, model_in, reps_in = 1){
+get_loglikelihood <- function(data_in, model_in, reps_in = 1, lambda = 0.8) {
+    # Basic Prior Settings
     shape.prior = 1e-3
     scale.prior = 1e3
     
+    # Posterior shape based on the prior and the simulated model values
     shape.post = shape.prior + model_in
-    size = shape.post
-    
+    # Adjusting the probability parameter to reflect the expected number of events (deaths)
     scale.post = scale.prior / (reps_in * scale.prior + 1)
     prob = 1 / (1 + scale.post)
     
-    return(-sum(dnbinom(data_in, size=size, prob=prob, log=T), na.rm = T))
+    # Calculate the negative binomial log-likelihood
+    nbinom_ll = -sum(dnbinom(data_in, size = shape.post, prob = prob, log = TRUE), na.rm = TRUE)
+    
+    # Adding a penalty for differences between actual deaths and simulated deaths
+    # The penalty is lambda times the sum of squared differences
+    penalty = lambda * sum((data_in - model_in)^2, na.rm = TRUE)
+    
+    # Total log-likelihood adjusted for the penalty
+    total_loglikelihood = nbinom_ll + penalty
+
+    return(total_loglikelihood)
 }
 
 get_agegroups_likelihood <- function(data_df){
@@ -129,9 +143,9 @@ check_finished_jobs <- function(params_in){
 }
 
 process_job_data <- function(job_id, process_age = FALSE, age_data = data.frame()){
+    #browser()
     fred_dir = system(sprintf("fred_find -k %s", job_id), intern = TRUE)
     data_dir = file.path(fred_dir, "DATA", "OUT")   
-    
     fred_csv = sprintf("fred_csv -k %s", job_id)
     ##system(fred_csv, intern = T)
 
@@ -144,7 +158,6 @@ process_job_data <- function(job_id, process_age = FALSE, age_data = data.frame(
     job_df = read.csv(text = fred_csv_st, stringsAsFactors = FALSE)
 
     print(sprintf("Processing job %s", job_id))
-
    
     ##========================================#
     ## Age stuff-------------
@@ -162,12 +175,19 @@ process_job_data <- function(job_id, process_age = FALSE, age_data = data.frame(
 
     ## Group by date and get the overall deaths
     ## Near future -> collect by localidad
-    tmp_data = filter(BOG_data, MunCode == state_input) %>%
+    # tmp_data = filter(BOG_data, DeptCode == state_input) %>%
+    #     group_by(Date) %>%
+    #     summarize(Cases = sum(Cases), Deaths = sum(Deaths), ICU_admissions = sum(ICU_admissions)) %>%
+    #     ungroup() %>%
+    #     left_join(job_df, by = c("Date" = "Date"))    
+
+    tmp_data = filter(BOG_data, DeptCode == state_input) %>%
         group_by(Date) %>%
-        summarize(Cases = sum(Cases), Deaths = sum(Deaths), ICU_admissions = sum(ICU_admissions)) %>%
+        summarize(Deaths = sum(Deaths), UCI_prevalence = sum(UCI_prevalence)) %>%
         ungroup() %>%
         left_join(job_df, by = c("Date" = "Date"))    
     
+
     tmp_data$CF_total = tmp_data$CF_mean
     if('CF_1_mean' %in% colnames(job_df)){
         tmp_data$CF_total = tmp_data$CF_1_mean + tmp_data$CF_mean
@@ -193,45 +213,104 @@ process_job_data <- function(job_id, process_age = FALSE, age_data = data.frame(
 
     tmp_data$Chosp_total = tmp_data$Chosp_mean
     if('Chosp_1_mean' %in% colnames(job_df)){
-        tmp_data$Chosp_total = tmp_data$Chosp_mean + tmp_data$Chosp_1_mean
+        tmp_data$Chosp_total = tmp_data$Chosp_total + tmp_data$Chosp_1_mean
     }
     if('Chosp_2_mean' %in% colnames(job_df)){
-        tmp_data$Chosp_total = tmp_data$Chosp_mean + tmp_data$Chosp_2_mean
+        tmp_data$Chosp_total = tmp_data$Chosp_total + tmp_data$Chosp_2_mean
     }
     if('Chosp_3_mean' %in% colnames(job_df)){
-        tmp_data$Chosp_total = tmp_data$Chosp_mean + tmp_data$Chosp_3_mean
+        tmp_data$Chosp_total = tmp_data$Chosp_total + tmp_data$Chosp_3_mean
     }
     if('Chosp_4_mean' %in% colnames(job_df)){
-        tmp_data$Chosp_total = tmp_data$Chosp_mean + tmp_data$Chosp_4_mean
+        tmp_data$Chosp_total = tmp_data$Chosp_total + tmp_data$Chosp_4_mean
     }
     if('Chosp_5_mean' %in% colnames(job_df)){
-        tmp_data$Chosp_total = tmp_data$Chosp_mean + tmp_data$Chosp_5_mean
+        tmp_data$Chosp_total = tmp_data$Chosp_total + tmp_data$Chosp_5_mean
     }
     if('Chosp_6_mean' %in% colnames(job_df)){
-        tmp_data$Chosp_total = tmp_data$Chosp_mean + tmp_data$Chosp_6_mean
+        tmp_data$Chosp_total = tmp_data$Chosp_total + tmp_data$Chosp_6_mean
     }
+
+
+    tmp_data$Phosp_total = tmp_data$Phosp_mean
+    if('Phosp_1_mean' %in% colnames(job_df)){
+        tmp_data$Phosp_total = tmp_data$Phosp_total + tmp_data$Phosp_1_mean
+    }
+    if('Phosp_2_mean' %in% colnames(job_df)){
+        tmp_data$Phosp_total = tmp_data$Phosp_total + tmp_data$Phosp_2_mean
+    }
+    if('Phosp_3_mean' %in% colnames(job_df)){
+        tmp_data$Phosp_total = tmp_data$Phosp_total + tmp_data$Phosp_3_mean
+    }
+    if('Phosp_4_mean' %in% colnames(job_df)){
+        tmp_data$Phosp_total = tmp_data$Phosp_total + tmp_data$Phosp_4_mean
+    }
+    if('Phosp_5_mean' %in% colnames(job_df)){
+        tmp_data$Phosp_total = tmp_data$Phosp_total + tmp_data$Phosp_5_mean
+    }
+    if('Phosp_6_mean' %in% colnames(job_df)){
+        tmp_data$Phosp_total = tmp_data$Phosp_total + tmp_data$Phosp_6_mean
+    }
+
+    tmp_data <- tmp_data %>% mutate(CF_total = replace_na(CF_total, 0),
+                                    Phosp_total = replace_na(Phosp_total, 0), 
+                                    Chosp_total = replace_na(Chosp_total, 0))
+
     tmp_data_dic = tmp_data %>% 
         filter(Date < as.Date('2021-02-01'))
-        
+
+    # job_df_daily <- job_df
+
+    # job_df$Date <- as.Date(job_df$Date)
+    # tmp_data$Date <- as.Date(tmp_data$Date)
+    # age_data$Date <- as.Date(age_data$Date)
+    
+
+    # #browser()
+
+    # # Assuming `job_df` requires specific numeric columns, adjust `c()` as needed
+    # job_df <- job_df %>%
+    # select(Date, N_mean, matches("^C(_\\d+)?_mean$"), starts_with('ACF')) %>%
+    # mutate(Date = floor_date(Date, unit = "week")) %>%
+    # group_by(Date) %>%
+    # summarise(N_mean = first(N_mean),  # Retain the first N_mean value for each group
+    #             across(where(is.numeric) & !matches("^N_mean$"), sum, na.rm = TRUE),
+    #             .groups = 'drop')
+
+    # # Assuming `tmp_data` requires specific numeric columns
+    # tmp_data <- tmp_data %>%
+    # select(Date, Deaths, ICU_admissions, CF_total, Chosp_total) %>%
+    # mutate(Date = floor_date(Date, unit = "week")) %>%
+    # group_by(Date) %>%
+    # summarise(across(where(is.numeric), sum, na.rm = TRUE), .groups = 'drop')
+
+    # # For `age_data`, assuming the inclusion of 'Deaths' with 'AgeGroup'
+    # age_data <- age_data %>%
+    # select(Date, AgeGroup, Deaths) %>%
+    # mutate(Date = floor_date(Date, unit = "week")) %>%
+    # group_by(Date, AgeGroup) %>%
+    # summarise(across(where(is.numeric), sum, na.rm = TRUE), .groups = 'drop')
+
+    #browser()
     if(nrow(job_df) > 0){
         tmp_LL = get_loglikelihood(tmp_data$Deaths, tmp_data$CF_total)
-        tmp_LL_icu = get_loglikelihood(tmp_data$ICU_admissions, tmp_data$Chosp_total)
+        tmp_LL_icu = get_loglikelihood(tmp_data$UCI_prevalence, tmp_data$Phosp_total)
         
         tmp_LL_dic = get_loglikelihood(tmp_data_dic$Deaths, tmp_data_dic$CF_total)
-        tmp_LL_icu_dic = get_loglikelihood(tmp_data_dic$ICU_admissions, tmp_data_dic$Chosp_total)
+        tmp_LL_icu_dic = get_loglikelihood(tmp_data_dic$UCI_prevalence, tmp_data_dic$Phosp_total)
 
         job_age_df = job_df %>%
-            dplyr::select(Day, Date, N_mean,  starts_with('ACF')) %>%
-            gather(key = AgeGroup, value = CF_mean, -c('Day','Date','N_mean')) %>%
-            group_by(Date, Day, N_mean,  AgeGroup) %>%
+            dplyr::select(Date, N_mean,  starts_with('ACF')) %>%
+            gather(key = AgeGroup, value = CF_mean, -c('Date','N_mean')) %>%
+            group_by(Date, N_mean,  AgeGroup) %>%
             summarize(CF_mean = sum(CF_mean, na.rm = T),.groups = 'drop') %>%
             left_join(BOG_age_time_data, by = c('Date','AgeGroup')) %>%
             drop_na()
         tmp_job_df = job_df %>%
-            dplyr::select(Day, Date, N_mean, C_mean) %>%
+            dplyr::select(Date, N_mean, C_mean) %>%
             filter(Date <= as.Date('2020-11-07')) %>%
             summarize(AR_mean = sum(C_mean, na.rm = T),.groups = 'drop',
-                      AR_data = 0.25 * N_mean[1]) %>%
+                      AR_data = as.integer(0.25 * N_mean[1])) %>%
             drop_na()
         tmp_LL_age_time = get_agegroups_likelihood(job_age_df)
         
@@ -286,8 +365,8 @@ process_job_data <- function(job_id, process_age = FALSE, age_data = data.frame(
                 summarize_at(vars(starts_with('ACF')), 'sum', rm.na = T) %>%
                 gather(key = AgeGroup, value = CF_mean) %>%
                 left_join(age_data, by = "AgeGroup")
-            
-            LL_CF_age = get_death_age_likelihood(tmp_fred_CF$NDeaths, tmp_fred_CF$CF_mean)
+
+            LL_CF_age = get_death_age_likelihood(replace_na(tmp_fred_CF$NDeaths, 0), replace_na(tmp_fred_CF$CF_mean, 0))
             
             total_LL = tmp_LL + LL_CF_age + tmp_LL_icu
             job_df$LL = total_LL
@@ -310,6 +389,8 @@ process_job_data <- function(job_id, process_age = FALSE, age_data = data.frame(
     }
     if(is.infinite(job_df$LL[1])){browser()}
 
+    ##browser()
+
     cols_output = c('Day', 'Week', 'Year', 'Runs', 'N_mean', 'N_std',
                     'C_mean', 'C_std', 'Cs_mean', 'Cs_std','CFR_mean', 'Is_mean', 'I_mean',
                     'CFR_std', 'CF_mean', 'CF_std',
@@ -319,34 +400,158 @@ process_job_data <- function(job_id, process_age = FALSE, age_data = data.frame(
 
     cols_output = c(cols_output, cols_age)
     if('CF_1_mean' %in% colnames(job_df)){
-        cols_output = c(cols_output, "CF_1_mean", "C_1_mean", "Chosp_1_mean", 'Wrk_mean', 'H_mean', 'Nbr_mean')
+        cols_output = c(cols_output, "CF_1_mean", "C_1_mean", "Cs_1_mean", "Phosp_1_mean", "Chosp_1_mean", "RR_1_mean")
     }
     if('CF_2_mean' %in% colnames(job_df)){
-        cols_output = c(cols_output, 'CF_2_mean',  "C_2_mean",  "Chosp_2_mean")  
+        cols_output = c(cols_output, 'CF_2_mean',  "C_2_mean", "Cs_2_mean", "Phosp_2_mean", "Chosp_2_mean", "RR_2_mean")
     }
     if('CF_3_mean' %in% colnames(job_df)){
-        cols_output = c(cols_output, 'CF_3_mean',  "C_3_mean",  "Chosp_3_mean")  
+        cols_output = c(cols_output, 'CF_3_mean',  "C_3_mean", "Cs_3_mean", "Phosp_3_mean", "Chosp_3_mean", "RR_3_mean")
     }
     if('CF_4_mean' %in% colnames(job_df)){
-        cols_output = c(cols_output, 'CF_4_mean',  "C_4_mean",  "Chosp_4_mean")                  
+        cols_output = c(cols_output, 'CF_4_mean',  "C_4_mean", "Cs_4_mean", "Phosp_4_mean", "Chosp_4_mean", "RR_4_mean")
     }
     if('CF_5_mean' %in% colnames(job_df)){
-        cols_output = c(cols_output, 'CF_5_mean',  "C_5_mean",  "Chosp_5_mean")                  
+        cols_output = c(cols_output, 'CF_5_mean',  "C_5_mean", "Cs_5_mean", "Phosp_5_mean", "Chosp_5_mean", "RR_5_mean")
     }
     if('CF_6_mean' %in% colnames(job_df)){
-        cols_output = c(cols_output, 'CF_6_mean',  "C_6_mean",  "Chosp_6_mean")                  
+        cols_output = c(cols_output, 'CF_6_mean',  "C_6_mean", "Cs_6_mean", "Phosp_6_mean", "Chosp_6_mean", "RR_6_mean")
     }
+    if('CF_7_mean' %in% colnames(job_df)){
+        cols_output = c(cols_output, 'CF_7_mean',  "C_7_mean", "Cs_7_mean", "Phosp_7_mean", "Chosp_7_mean", "RR_7_mean")
+    }
+    if(!('V_mean' %in% colnames(job_df))){
+        job_df$V_mean = 0
+    }
+    if(!('Vtd_mean' %in% colnames(job_df))){
+        job_df$Vtd_mean = 0
+    }
+
+    # Add columns starting with "VA" to cols_output
+    vax_cols <- grep("^V", colnames(job_df), value = TRUE)
+    cols_output <- c(cols_output, vax_cols)
+
+    #browser()
+    #extra_LL_cols <- c("LL", "LL_dic", "LL_age_time", "LL_AR", "V_mean", "Vtd_mean")
+    #job_df_daily <- job_df_daily %>% dplyr::select(-all_of(extra_LL_cols))
+
+    # job_df_daily$LL <- tmp_LL_df$LL[[1]]
+    # job_df_daily$LL_dic <- tmp_LL_df$LL_dic[[1]]
+    # job_df_daily$LL_age_time <- tmp_LL_df$LL_age_time[[1]]
+    # job_df_daily$LL_AR <- tmp_LL_df$LL_AR[[1]]
+    # job_df_daily$V_mean <- job_df$V_mean[[1]]
+    # job_df_daily$Vtd_mean <- job_df$Vtd_mean[[1]]
+
+    print(sprintf("Sucess processing job %s", job_id))
+
     return(list(job_df = job_df[,cols_output],
                 extra_params_df = tmp_LL_df))
 }
 
+fred_gather_data <- function(params, outdir, outfile, rm_out = FALSE, appendToFile = FALSE, process_age = FALSE, age_data = data.frame()){
+  # Check and prepare the output directory
+  if (dir.exists(outdir) && rm_out) {
+    unlink(outdir, recursive = TRUE)
+    dir.create(outdir)
+  } else if (!dir.exists(outdir)) {    
+    dir.create(outdir)
+  }
+
+  # Initialize the output files
+  outfile_path <- file.path(outdir, outfile)
+  if (file.exists(outfile_path)) {
+    unlink(outfile_path)
+  }
+  
+  # Copy and read parameter file
+  param_file_path <- file.path(outdir, basename(params))
+  file.copy(params, param_file_path)
+  params_orig <- read_csv(params, show_col_types = FALSE) %>% mutate(Finished = 0)
+  
+  # Set up parallel cluster
+  cl <- makeCluster(detectCores() - 1)
+  on.exit(stopCluster(cl))  # Ensures the cluster is stopped when the function exits
+
+  # Export necessary objects to each worker node
+  env_vars <- list(params_orig = params_orig, process_age = process_age, age_data = age_data)
+  clusterExport(cl=cl, varlist=c("env_vars", "BOG_data", "dominance_data", "ddirichlet", "state_input", "BOG_age_time_data", "get_loglikelihood_dominance", "get_death_age_likelihood",  "get_loglikelihood_poisson", "get_loglikelihood", "get_agegroups_likelihood"), envir=environment())
+  clusterExport(cl, c("check_finished_jobs", "process_job_data"))
+
+
+  # Define progress tracking functions and initialize progress tracking
+  clusterEvalQ(cl, {
+    library(dplyr)
+    library(readr)
+    library(tidyverse)
+
+    incrementClusterProgress <- function() {
+      progress$counter <- progress$counter + 1
+      cat(sprintf("\rProgress: %d/%d", progress$counter, progress$total))
+      flush.console()
+    }
+  })
+  progress <- new.env()
+  progress$counter <- 0
+  progress$total <- nrow(params_orig)
+  clusterExport(cl, varlist=c("progress"), envir=environment())
+
+  #browser()
+    # params_row <- params_orig[1, , drop = FALSE]
+    # job_processed_list <- process_job_data(params_row$job_id, process_age, age_data)
+    
+    # Parallel processing  seq_len(nrow(params_orig))
+    results <- parLapply(cl, seq_len(nrow(params_orig)), function(index) {
+        params_row <- params_orig[index, , drop = FALSE]
+        if (check_finished_jobs(params_row)) {
+            job_processed_list <- process_job_data(params_row$job_id, process_age, age_data)
+
+            # Ensure job_id is present and non-empty; provide a fallback if necessary
+            job_id_to_use <- if (!is.na(params_row$job_id) && length(params_row$job_id) > 0) {
+                as.character(params_row$job_id)
+            } else {
+                "default_job_id"  # Fallback job_id
+            }
+
+            job_processed <- job_processed_list$job_df %>%
+                mutate(job_id = job_id_to_use, Finished = 1)
+
+            if ("extra_params_df" %in% names(job_processed_list)) {
+                params_row <- bind_cols(params_row, job_processed_list$extra_params_df)
+            }
+
+            return(list(params_tmp = params_row, job_processed = job_processed))
+        } else {
+            return(list(params_tmp = params_row, job_processed = tibble(job_id = character(), Finished = integer())))
+        }
+    })
+
+ # Combine results using bind_rows instead of rbind
+  #browser()
+  params_finished <- bind_rows(lapply(results, '[[', "params_tmp"))
+  job_processed_all <- bind_rows(lapply(results, '[[', "job_processed"))
+
+  # Write results to files
+  params_outfile <- file.path(outdir, 'FRED_parameters_out.csv')
+  write_csv(x = params_finished, path = params_outfile)
+
+  if (appendToFile) {
+    write_csv(job_processed_all, path = outfile_path, append = TRUE)
+  } else {
+    job_processed_all <- filter(job_processed_all, Finished == 1)
+    write_csv(job_processed_all, path = outfile_path)
+  }
+
+  return(0)
+}
+
+
 ##========================================#
 ## Inputs --------------------
 ##========================================#
-calibration_label = 'calibra_test_4'
-state_input = 11001
+calibration_label = 'production'
+state_input = 27
 data_days_rm = 4
-variants_in = 1
+variants_in = 0
 args = (commandArgs(TRUE))
 
 process_age_flag = TRUE
@@ -378,36 +583,42 @@ if(length(args) >= 1){
 ##========================================#
 ## Incidence data 
 incidence_file      = 'COL_covid_death_data.csv'
+incidence_file_sm   = 'smooth_test_27.csv'
 age_incidence_file  = 'Age_COL_covid_data.csv'
-uci_incidence_file  = 'BOG_UCI_timeseries.csv'
-variance_dom_file   = 'dominance_data/11_dominance_data.csv'
-#variance_dom_file   = 'Bogota_Covid_Variants_Dominance.csv'
+uci_incidence_file  = 'COL_UCI_prevalence_timeseries.csv'
+variance_dom_file   = sprintf('%s_dominance_data.csv', state_input)
 
-if(!file.exists(file.path('../../input_files',incidence_file))){
+if(!file.exists(file.path('../../fred_input_files/covid_data',incidence_file))){
     stop("Incidence data not found")
 }
 
-#file.copy(file.path('../../input_files',incidence_file),file.path('./input_files', incidence_file),  overwrite = T)
-#file.copy(file.path('../../input_files',uci_incidence_file),file.path('./input_files', uci_incidence_file),  overwrite = T)
-#file.copy(file.path('../../input_files', age_incidence_file), file.path('./input_files', age_incidence_file), overwrite = T)
-#file.copy(file.path('../../input_files', variance_dom_file), file.path('./input_files', variance_dom_file), overwrite = T)
+interventions_df = read_csv('../../fred_input_files/interventions/interventions_Colombia.csv') %>% dplyr::filter(State == state_input)
+interventions_df$Shelter_in_place <- as.Date(interventions_df$Shelter_in_place, format="%m/%d/%y")
+interventions_df$School_closure <- as.Date(interventions_df$School_closure, "%m/%d/%y")
 
-interventions_df = read_csv('../../input_files/interventions_Colombia.csv')
-
-BOG_uci_df = read_csv(file.path('../../input_files',uci_incidence_file)) %>%
-    dplyr::select(Date, ICU_admissions) %>%
+BOG_uci_df = read_csv(file.path('../../fred_input_files/covid_data',uci_incidence_file)) %>%
+    dplyr::select(Date, UCI_prevalence) %>%
     filter(Date < (max(Date, na.rm = T) - 2))
 
-BOG_data = read_csv(file.path('../../data', incidence_file)) %>%
-    mutate(MunCode = as.numeric(MunCode)) %>%
-    filter(MunCode %in% interventions_df$State) %>%
-    filter(Date < (max(Date, na.rm = T) - data_days_rm)) %>%
-    left_join(interventions_df, by = c("MunCode" = "State")) %>%
-    right_join(BOG_uci_df, by = 'Date')
+# BOG_data = read_csv(file.path('../../fred_input_files/covid_data', incidence_file)) %>%
+#     mutate(DeptCode = as.numeric(substr(as.character(MunCode), 1, nchar(MunCode) - 3))) %>%
+#     filter(DeptCode %in% interventions_df$State) %>%
+#     filter(Date < (max(Date, na.rm = T) - data_days_rm)) %>%
+#     left_join(interventions_df, by = c("MunCode" = "State")) %>%
+#     right_join(BOG_uci_df, by = 'Date')
 
-BOG_age_time_data = read_csv(file.path('../../input_files', age_incidence_file)) %>%
+BOG_data <- read_csv(file.path('../../fred_input_files/covid_data', incidence_file_sm)) %>% 
+            dplyr::select(Date, smoothed_by_parts_integer) %>%
+            rename(c("Deaths" = "smoothed_by_parts_integer")) %>%
+            mutate(DeptCode = state_input) %>%
+            left_join(BOG_uci_df, by = 'Date') %>% 
+            replace_na(list(UCI_prevalence = 0))
+
+
+BOG_age_time_data = read_csv(file.path('../../fred_input_files/covid_data', age_incidence_file)) %>%
+    mutate(DeptCode = as.numeric(substr(as.character(MunCode), 1, nchar(MunCode) - 3))) %>%
     mutate(MunCode = as.numeric(MunCode)) %>%
-    filter(MunCode %in% interventions_df$State) %>%
+    filter(DeptCode %in% interventions_df$State) %>%
     filter(Date < (max(Date, na.rm = T) - data_days_rm)) %>%
     mutate(MaxDate = max(Date, na.rm = T)) %>%
     left_join(interventions_df, by = c("MunCode" = "State")) %>%  
@@ -415,9 +626,18 @@ BOG_age_time_data = read_csv(file.path('../../input_files', age_incidence_file))
     summarize(Deaths = sum(Deaths, na.rm = T)) %>%
     ungroup() 
 
-BOG_age_data =  read_csv(file.path('../../input_files', age_incidence_file)) %>%
+# # For `BOG_age_time_data`, assuming the inclusion of 'Deaths' and other numeric cols
+# BOG_age_time_data$Date <- as.Date(BOG_age_time_data$Date)
+# BOG_age_time_data <- BOG_age_time_data %>%
+#                     select(MunCode, Date, AgeGroup, starts_with('Death')) %>%
+#                     mutate(Date = floor_date(Date, unit = "week")) %>%
+#                     group_by(MunCode, Date, AgeGroup) %>%
+#                     summarise(across(where(is.numeric), sum, na.rm = TRUE), .groups = 'drop')
+
+BOG_age_data =  read_csv(file.path('../../fred_input_files/covid_data', age_incidence_file)) %>%
+    mutate(DeptCode = as.numeric(substr(as.character(MunCode), 1, nchar(MunCode) - 3))) %>%
     mutate(MunCode = as.numeric(MunCode)) %>%
-    filter(MunCode %in% interventions_df$State) %>%
+    filter(DeptCode %in% interventions_df$State) %>%
     filter(Date < (max(Date, na.rm = T) - data_days_rm)) %>%
     mutate(MaxDate = max(Date, na.rm = T)) %>%
     left_join(interventions_df, by = c("MunCode" = "State")) %>%
@@ -425,15 +645,16 @@ BOG_age_data =  read_csv(file.path('../../input_files', age_incidence_file)) %>%
     summarize(Deaths = sum(Deaths), Date = MaxDate[1]) %>%
     ungroup()
 
-Bog_dom_data = read_csv(file.path('../../input_files', variance_dom_file)) %>%
-    rename(Date = date)
+Bog_dom_data = read_csv(file.path('../../fred_input_files/dominance_data', variance_dom_file)) %>%
+    rename(Date = date, Kappa = Mu)
+
+names(Bog_dom_data)
 
 col_variants = 1:5
-variants_list = c('Alpha', 'Gamma', 'Kappa', 'Delta') #, 'Omicron', 'OmicronBAX'
+variants_list = c('Alpha','Gamma','Kappa','Delta', 'Omicron')
+Bog_dom_data <- Bog_dom_data %>% dplyr::select('Date','days','Alpha','Gamma','Kappa','Delta', 'Omicron')
 
-Bog_dom_data <- Bog_dom_data %>% dplyr::select('Date','week','Alpha', 'Gamma', 'Kappa', 'Lambda','Others')
-
-dominance_data = Bog_dom_data %>% gather(key = Variant, value = Dominance, -Date, -week) %>%
+dominance_data = Bog_dom_data %>% gather(key = Variant, value = Dominance, -Date, -days) %>%
     left_join(data.frame(Color = col_variants[1:length(variants_list)], Variant = variants_list), by = 'Variant') %>%
     drop_na()
 
@@ -449,21 +670,41 @@ if(!dir.exists(file.path(getwd(), '../output','CALIBRATION'))){
 fred_results_dir = file.path(simdir,"FRED_RESULTS")
 Sys.setenv(FRED_RESULTS=fred_results_dir)
 
-output_dir = file.path(getwd(), '../output','CALIBRATION',sprintf("%s_%s", simdir_name, "out"))
+
+job_id_list = list.dirs(file.path(fred_results_dir, "JOB"), recursive=FALSE, full.names=FALSE)
+system(paste('rm -rf ', file.path(fred_results_dir, "KEY")))
+for(job_id in job_id_list){
+    cat(sprintf("FRED_%s_calibration_%s %s", state_input, job_id, job_id), file=file.path(fred_results_dir, "KEY"), sep="\n", append = TRUE)
+}
+
+output_dir = file.path(getwd(), '../output','CALIBRATION', sprintf("%s_%s", simdir_name, "out"))
 fred_outputs = 'fred_output.csv'
 params_file = sprintf("%s/%s",simdir, "FRED_parameters.csv")
+params_limit_file = sprintf("%s/%s",simdir, "FRED_parameters_limits.csv")
 
-fredtools::fred_gather_data(params=params_file, outdir=output_dir, outfile=fred_outputs,
-                            FUN=check_finished_jobs, FUN2=process_job_data, rm_out = TRUE,
+
+fred_gather_data(params=params_file, outdir=output_dir, outfile=fred_outputs,
+                            rm_out = TRUE,
                             appendToFile = FALSE,
                             process_age = process_age_flag,
                             age_data = BOG_age_data)
 
 
-## Save a copy of the file used for calibration: don't save today's or yesterday's data
-epi_data_out = read_csv(file.path('../../input_files', incidence_file)) %>%
-    filter(MunCode %in% interventions_df$State) %>%
-    filter(Date < (max(Date, na.rm = T) - data_days_rm))
 
-write.csv(epi_data_out, file.path(output_dir,incidence_file))
-write.csv(BOG_age_data, file.path(output_dir,age_incidence_file))
+if(!file.exists(file.path(params_limit_file))){
+    stop("Limits data not found")
+}
+
+print(file.path(output_dir,'FRED_parameters_limits.csv'))
+file.copy(params_limit_file, file.path(output_dir,'FRED_parameters_limits.csv'), overwrite = T)
+
+
+## Save a copy of the file used for calibration: don't save today's or yesterday's data
+epi_data_out = read_csv(file.path('../../fred_input_files/covid_data', incidence_file)) %>%
+    mutate(DeptCode = as.numeric(substr(as.character(MunCode), 1, nchar(MunCode) - 3))) %>%
+    mutate(MunCode = as.numeric(MunCode)) %>%
+    filter(DeptCode %in% interventions_df$State) %>%
+    filter(Date < (max(Date, na.rm = T) - data_days_rm)) 
+
+write.csv(epi_data_out, file.path(output_dir, incidence_file))
+write.csv(BOG_age_data, file.path(output_dir, age_incidence_file))
