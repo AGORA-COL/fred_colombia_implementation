@@ -85,7 +85,7 @@ Disponible en: https://github.com/AGORA-COL/fred_colombia_implementation
 También puedes exportar esta cita en formatos como BibTeX, RIS, APA y más desde el botón “Cite this repository” en la parte superior derecha de este repositorio (disponible si has agregado el archivo CITATION.cff).
 
 ## Contacto
-Si tienes preguntas, sugerencias o comentarios, por favor crea un Issue en este repositorio.
+Si tienes preguntas, sugerencias o comentarios, por favor crea un Issue en este repositorio o escribir al siguiente correo: zulma.cucunuba@javeriana.edu.co
 
 ## Agradecimientos
 * FRED es un sistema de modelado basado en agentes desarrollado por el Laboratorio de Dinámica de Salud Pública de la Universidad de Pittsburgh.
