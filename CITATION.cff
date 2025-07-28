@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+message: "Si usas este recurso, por favor cita como se indica abajo."
+title: "ÁGORA: Ciencia y decisiones en salud pública"
+authors:
+  - family-names: Veloza Díaz
+    given-names: Diego
+  - family-names: Camargo España
+    given-names: Guido
+  - family-names: Bonilla Betancourth
+    given-names: Daniel Santiago
+  - family-names: Murillo-Alvarado
+    given-names: Jennifer
+  - family-names: Moreno
+    given-names: Andrés
+  - family-names: Pavlich-Mariscal
+    given-names: Jaime
+  - family-names: Cucunubá
+    given-names: Zulma M.
+date-released: 2025-07-27
+url: "https://agora.saludpublicacolombia.org"
+version: "1.0"
+type: generic
