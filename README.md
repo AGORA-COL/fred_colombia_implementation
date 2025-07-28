@@ -1,6 +1,6 @@
 #  _FRED Agent-Based Model for COVID-19 – Implementación para Colombia_ 
 
-Este repositorio contiene una implementación adaptada del modelo FRED (A Framework for Reconstructing Epidemiological Dynamics) para simular la dinámica del brote de COVID-19 en diferentes departamentos de Colombia. Este modelo permite representar de manera realista las interacciones y comportamientos individuales en la población, y evaluar el efecto de diversas intervenciones farmacéuticas y no farmacéuticas.
+Este repositorio contiene una implementación adaptada del modelo FRED (A Framework for Reconstructing Epidemiological Dynamics) para simular la dinámica del brote de COVID-19 en diferentes departamentos de Colombia. Este modelo permite representar de manera realista las interacciones y comportamientos individuales en la población, y evaluar el efecto de diversas intervenciones farmacéuticas y no farmacéuticas como parte del proyecto [ÁGORA](https://agora-colombia.com/).
 
 ## Descripción
 El modelo FRED es un sistema de simulación estocástico basado en agentes, desarrollado por el Public Health Dynamics Laboratory de la Universidad de Pittsburgh. Esta adaptación busca apoyar el análisis de la situación epidemiológica en Colombia durante la pandemia de COVID-19 y evaluar el impacto de distintas medidas de control a nivel local y nacional.
