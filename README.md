@@ -1,72 +1,93 @@
-# FRED Agent Model for COVID-19 Outbreak
+# FRED Agent-Based Model for COVID-19 – Implementación para Colombia 
 
-This repository contains the implementation of the FRED (A Framework for Reconstructing Epidemiological Dynamics) agent-based model for simulating the spread of the COVID-19 outbreak in various departments of Colombia. The model allows for a realistic representation of individual behaviors and interactions, allowing users to study the spread of the disease and assess the impact of various intervention strategies.
+Este repositorio contiene una implementación adaptada del modelo FRED (A Framework for Reconstructing Epidemiological Dynamics) para simular la dinámica del brote de COVID-19 en diferentes departamentos de Colombia. Este modelo permite representar de manera realista las interacciones y comportamientos individuales en la población, y evaluar el efecto de diversas intervenciones farmacéuticas y no farmacéuticas.
 
-## Project Description
+## Descripción
+El modelo FRED es un sistema de simulación estocástico basado en agentes, desarrollado por el Public Health Dynamics Laboratory de la Universidad de Pittsburgh. Esta adaptación busca apoyar el análisis de la situación epidemiológica en Colombia durante la pandemia de COVID-19 y evaluar el impacto de distintas medidas de control a nivel local y nacional.
 
-The FRED agent model is a stochastic, agent-based simulation package designed to study the spread of diseases through a population. The simulation follows individuals as they go about their daily routines and interact with each other, potentially spreading the disease. This implementation of the FRED model aims to analyze the COVID-19 pandemic situation across different departments in Colombia.
+La presente implementación hace parte del producto:
+“Modelo de aproximación estadística: soporte en Excel o código de programación que justifica los cálculos planteados en los diferentes modelos utilizados con el fin de simular y evaluar situación epidemiológica, y/o medidas farmacéuticas y/o no farmacéuticas en relación con la pandemia COVID-19 en Colombia.”
 
-## Getting Started
+## Primeros pasos
+### Requisitos
+- Compilador de C++
+- R (versión 4.0 o superior)
+- (Opcional) Jupyter Lab para visualización adicional
 
-### Dependencies
+### Instalación
 
-* C++ compiler
-* R 4.0 or newer
-* (Optional) Jupyter lab
-
-### Installation
-
-1. Clone this repository:
+1. Clona este repositorio:
 
 ```bash
 git clone https://github.com/AGORA-COL/fred_colombia_implementation.git
 ```
 
-2. Navigate into the cloned repository:
+2. Navegue hasta el repositorio clonado:
 
 ```bash
 cd fred_colombia_implementation
 ```
 
-3. Run the FRED setup:
+
+3. Ejecuta el script de instalación de FRED:
 ```bash
 make setup
 ```
-This will setup FRED from https://github.com/confunguido/FRED
+Esto descargará y configurará la versión base de FRED desde
+https://github.com/confunguido/FRED
 
-4. Download the synthetic populations:
+4. Descarga las poblaciones sintéticas necesarias:
 ```bash
 make download files="colombia_11001 colombia_1100101 ..."
 ```
-You can select which populations to download and use.
+Puedes modificar los códigos para seleccionar los municipios o departamentos que desees simular.
 
-## Input files
+## Archivos de entrada (Input files)
+Este repositorio incluye los insumos necesarios para correr las simulaciones en FRED:
 
-Here are listed the input files used in each simulation. Click at the link to access a visualization of the data.
-
-[Dominance plot per department](https://dvelozad.github.io/fred_widgets/dominance_widget.html)
-
-[Beds usage plot per department](https://dvelozad.github.io/fred_widgets/bed_utilization_plot.html)
-
-[Shelter and mobility input plot per department](https://dvelozad.github.io/fred_widgets/mobility_shelter_trends.html)
-
-[Contacts input plot per department](https://dvelozad.github.io/fred_widgets/mobility_contacts_trends.html)
+- Dominancia de variantes por departamento: [Dominance plot per department](https://dvelozad.github.io/fred_widgets/dominance_widget.html)
+- Ocupación de camas hospitalarias: [Beds usage plot per department](https://dvelozad.github.io/fred_widgets/bed_utilization_plot.html)
+- Parámetros de movilidad y confinamiento: [Shelter and mobility input plot per department](https://dvelozad.github.io/fred_widgets/mobility_shelter_trends.html)
+- Contactos por tipo de espacio: [Contacts input plot per department](https://dvelozad.github.io/fred_widgets/mobility_contacts_trends.html)
 
 
-## Outputs
+## Salidas del modelo (Outputs)
+El programa generará una serie de tablas de datos que muestran la progresión de la enfermedad, como el número de infectados, el número de recuperados, el número de fallecidos, las hospitalizaciones y el uso de la UCI a lo largo del tiempo.
 
-The program will output a series of data tables showing the progression of the disease, such as number of infected, number of recovered, number of deceased individuals, Hospitalizations, and ICU usage over time. 
+⚠️ Nota: Este repositorio no incluye los archivos de salida debido a su gran tamaño. Sin embargo, se proveen todos los insumos necesarios para ejecutar el modelo y reproducir los análisis.
 
-This repo doesn't cointain any of FRED's outputs due to their large sizes. However here we include the input files neccesary to run the model.
+## Contribuciones
+Las contribuciones son bienvenidas. Puedes:
 
-## Contributing
+- Hacer un fork del repositorio
+- Crear una rama con tus cambios
+- Enviar un Pull Request
 
-We welcome contributions to this project. Please fork this repository and create a Pull Request with your changes.
+## Autores
+- Diego Veloza Díaz.
+- Guido Camargo España.
+- Daniel Santiago Bonilla Betancourth.
+- Jennifer Murillo-Alvarado.
+- Andrés Moreno.
+- Jaime Pavlich-Mariscal.
+- Zulma M. Cucunubá.
 
-## Contact
 
-Please create an issue in this repository for any questions, suggestions, or comments. 
+## Financiación
+Esta investigación fue financiada por el Ministerio de Ciencia, Tecnología e Innovación de Colombia, proyecto ÁGORA: “Alianza para la Generación de Evidencia sobre COVID-19, su Respuesta y Lecciones Aprendidas para la Postpandemia y Futuras Epidemias” (Contrato N° 637-2022).
 
-## Acknowledgments
+## Cómo citar este recurso
+Si utilizas esta rutina o sus sistemas de agrupación en tus análisis o publicaciones, por favor citarlo de la siguiente manera:
 
-* FRED is an agent-based modeling system developed by the Public Health Dynamics Laboratory at the University of Pittsburgh.
+Veloza Díaz, D., Camargo España, G., Bonilla Betancourth, D. S., Murillo-Alvarado, J., Moreno, A., Pavlich-Mariscal, J., & Cucunubá, Z. M. (2025). ÁGORA: Ciencia y decisiones en salud pública. Proyecto ÁGORA Colombia.
+Disponible en: https://github.com/AGORA-COL/fred_colombia_implementation
+
+También puedes exportar esta cita en formatos como BibTeX, RIS, APA y más desde el botón “Cite this repository” en la parte superior derecha de este repositorio (disponible si has agregado el archivo CITATION.cff).
+
+## Contacto
+Si tienes preguntas, sugerencias o comentarios, por favor crea un Issue en este repositorio.
+
+## Agradecimientos
+* FRED es un sistema de modelado basado en agentes desarrollado por el Laboratorio de Dinámica de Salud Pública de la Universidad de Pittsburgh.
+
+  
