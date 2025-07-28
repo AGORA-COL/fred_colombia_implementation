@@ -51,7 +51,7 @@ Este repositorio incluye los insumos necesarios para correr las simulaciones en 
 - Contactos por tipo de espacio: [Contacts input plot per department](https://dvelozad.github.io/fred_widgets/mobility_contacts_trends.html)
 
 
-## Salidas del modelo (Outputs)
+## Salidas del modelo (Outputs files)
 El programa generará una serie de tablas de datos que muestran la progresión de la enfermedad, como el número de infectados, el número de recuperados, el número de fallecidos, las hospitalizaciones y el uso de la UCI a lo largo del tiempo.
 
 ⚠️ Nota: Este repositorio no incluye los archivos de salida debido a su gran tamaño. Sin embargo, se proveen todos los insumos necesarios para ejecutar el modelo y reproducir los análisis.
